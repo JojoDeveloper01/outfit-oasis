@@ -1,11 +1,33 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Login_RegisterModal from "@components/Login_Register.astro";
+import InventoryTable from "@components/InventoryTable.astro";
+import { getInventory } from "@lib/utils";
+import { turso } from "@turso";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const items = await getInventory();
 ---
 
 <Layout>
-	<Welcome />
+	<main class="container mx-auto p-4">
+		<h1 class="text-2xl font-bold mb-4">Inventário</h1>
+		<InventoryTable items={items} />
+		<button
+			class="btn btn-primary"
+			data-modal-target="login-modal"
+			data-modal-toggle="login-modal"
+		>
+			Login
+		</button>
+		<button
+			class="btn btn-secondary"
+			data-modal-target="register-modal"
+			data-modal-toggle="register-modal"
+		>
+			Registrar
+		</button>
+
+		<!-- Modais -->
+		<Login_RegisterModal />
+	</main>
 </Layout>
