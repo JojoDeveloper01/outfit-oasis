@@ -5,7 +5,7 @@ import { getInventory } from "@lib/dbFunctions";
 import { getUser } from "@lib/dbFunctions";
 import { turso } from "@turso";
 
-const get_user = await getUser(1);
+const get_user = await getUser(0);
 const user = get_user?.[0] ?? null;
 const items = await getInventory();
 ---
@@ -17,7 +17,7 @@ const items = await getInventory();
 	canonical="https://outfit-oasis.com"
 >
 	<h1 class="text-2xl font-bold mb-4">Inventário</h1>
-	{user.user_type === "staff" && <InventoryTable items={items} />}
+	{user?.user_type === "staff" && <InventoryTable items={items} />}
 
 	<section></section>
 </Layout>

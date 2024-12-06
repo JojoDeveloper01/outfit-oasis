@@ -7,7 +7,7 @@ import UserMenu from "./UserMenu.astro";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const user_id = 1;
+const user_id = 0;
 
 const get_user = await getUser(user_id);
 const user = get_user?.[0] ?? null;
@@ -16,7 +16,7 @@ console.log(user);
 ---
 
 <header>
-    <nav class="bg-white px-8">
+    <nav class="px-8">
         <div
             class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
         >
@@ -30,7 +30,7 @@ console.log(user);
                     alt="Flowbite Logo"
                 />
                 <span
-                    class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+                    class="self-center text-2xl font-semibold whitespace-nowrap"
                     >OutFit Oasis</span
                 >
             </a>
