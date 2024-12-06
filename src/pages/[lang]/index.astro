@@ -1,0 +1,23 @@
+---
+import Layout from "@layouts/Layout.astro";
+import InventoryTable from "@components/InventoryTable.astro";
+import { getInventory } from "@lib/dbFunctions";
+import { getUser } from "@lib/dbFunctions";
+import { turso } from "@turso";
+
+const get_user = await getUser(1);
+const user = get_user?.[0] ?? null;
+const items = await getInventory();
+---
+
+<Layout
+	title="Home"
+	description="O teu relevante lugar de aluguer de roupa"
+	keywords="aluguer, roupa, "
+	canonical="https://outfit-oasis.com"
+>
+	<h1 class="text-2xl font-bold mb-4">Inventário</h1>
+	{user.user_type === "staff" && <InventoryTable items={items} />}
+
+	<section></section>
+</Layout>

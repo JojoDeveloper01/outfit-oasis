@@ -1,0 +1,103 @@
+---
+import { languages } from "@i18n/ui";
+import { getLangFromUrl, useTranslatedPath } from "@i18n/utils";
+
+// Idioma atual da URL
+const lang = getLangFromUrl(Astro.url) ?? "";
+const translatePath = useTranslatedPath(lang as keyof typeof languages);
+
+// Busca informações de um país pelo idioma
+async function fetchCountryInfo(countryName: string) {
+    const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+    if (!response.ok) {
+        console.error("Erro ao buscar informações do país:", response.status);
+        return null;
+    }
+    const data = await response.json();
+    return {
+        name: data[0]?.name?.common || "Unknown",
+        flag: data[0]?.flags?.png || "",
+    };
+}
+
+// Busca informações de todos os países
+async function fetchAllCountries() {
+    const countryPromises = Object.entries(languages).map(async ([code, { defaultCountry }]) => {
+        const country = await fetchCountryInfo(defaultCountry);
+        return { code, country };
+    });
+
+    const countryData = await Promise.all(countryPromises);
+    return countryData.reduce((acc:any, { code, country }) => {
+        if (country) acc[code] = country;
+        return acc;
+    }, {});
+}
+
+// Fetch dos dados
+let allCountries = null;
+try {
+    allCountries = await fetchAllCountries();
+} catch (error) {
+    console.error("Erro ao buscar países:", error);
+}
+---
+
+{allCountries ? (
+    <div
+        class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
+    >
+        <!-- Botão com a bandeira do idioma atual -->
+        <button
+            type="button"
+            data-dropdown-toggle="language-dropdown-menu"
+            class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+            {allCountries[lang]?.flag ? (
+                <img
+                    src={allCountries[lang].flag}
+                    alt={`${allCountries[lang].name} flag`}
+                    class="w-6 h-5 rounded-full mr-2"
+                />
+            ) : (
+                <div class="w-6 h-5 rounded-full mr-2 bg-gray-200 animate-pulse"></div>
+            )}
+            {languages[lang].label}
+        </button>
+
+        <!-- Dropdown com todas as bandeiras e idiomas -->
+        <div
+            class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
+            id="language-dropdown-menu"
+        >
+            <ul id="language-picker" class="py-2 font-medium" role="none">
+                {Object.entries(languages).map(([code, { label }]) => (
+                    <li>
+                        <a
+                            href={translatePath("/", code)}
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                            role="menuitem"
+                        >
+                            <div class="inline-flex items-center">
+                                {allCountries[code]?.flag ? (
+                                    <img
+                                        src={allCountries[code].flag}
+                                        alt={`${allCountries[code].name} flag`}
+                                        class="w-6 h-4 mr-2"
+                                    />
+                                ) : (
+                                    <div class="w-6 h-4 mr-2 bg-gray-200 animate-pulse"></div>
+                                )}
+                                {label}
+                            </div>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </div>
+) : (
+    <div class="animate-pulse">
+        <div class="w-32 h-10 bg-gray-200 rounded-md"></div>
+    </div>
+)}

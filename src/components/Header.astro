@@ -1,0 +1,97 @@
+---
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+import { getUser } from "@lib/dbFunctions";
+import LanguagePicker from "./LanguagePicker.astro";
+import UserMenu from "./UserMenu.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const user_id = 1;
+
+const get_user = await getUser(user_id);
+const user = get_user?.[0] ?? null;
+
+console.log(user);
+---
+
+<header>
+    <nav class="bg-white px-8">
+        <div
+            class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
+        >
+            <a
+                href={`/${lang}/`}
+                class="flex items-center space-x-3 rtl:space-x-reverse"
+            >
+                <img
+                    src="/docs/images/logo.svg"
+                    class="h-8"
+                    alt="Flowbite Logo"
+                />
+                <span
+                    class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+                    >OutFit Oasis</span
+                >
+            </a>
+
+            <div
+                class="gap-4 items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+                id="navbar-user"
+            >
+                <ul
+                    class="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
+                >
+                    <li>
+                        <a
+                            href={`/${lang}/`}
+                            class="block py-2 px-3 rounded md:p-0"
+                            aria-current="page">{t("nav.home")}</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href={`/${lang}/dashboard/`}
+                            class="block py-2 px-3 rounded md:p-0"
+                            >{t("nav.dashboard")}</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href=`/${lang}/inventory/`
+                            class="block py-2 px-3 rounded md:p-0"
+                            >{t("nav.inventory")}</a
+                        >
+                    </li>
+                </ul>
+
+                <LanguagePicker />
+
+                {
+                    user ? (
+                        <UserMenu name={user.name} email={user.email} />
+                    ) : (
+                        <div class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl">
+                            <button
+                                id="modalLogin"
+                                class="link"
+                                data-modal-target="login"
+                                data-modal-toggle="login"
+                            >
+                                Login
+                            </button>
+                            <button
+                                id="modalRegister"
+                                class="link"
+                                data-modal-target="register"
+                                data-modal-toggle="register"
+                            >
+                                Register
+                            </button>
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+    </nav>
+</header>
