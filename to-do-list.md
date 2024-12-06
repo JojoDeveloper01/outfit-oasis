@@ -1,0 +1,15 @@
+- Login Register distinguir entre user e stuff
+- Só ser utilizada pelos funcionários e User
+- User
+  - Podem vizualizar e reservar items
+- Stuff
+  - Gerir o inventário (CRUD)
+  - Iserção:
+    -  roupa,
+    -  tamanho
+    -  marca
+    -  cor
+  - Consulta
+    - Procurar por categoria, tamanho, cor ou marca
+  - Atualização
+    - 
