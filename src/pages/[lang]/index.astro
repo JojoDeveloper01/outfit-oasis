@@ -19,5 +19,5 @@ const items = await getInventory();
 	<h1 class="text-2xl font-bold mb-4">Inventário</h1>
 	{user?.user_type === "staff" && <InventoryTable items={items} />}
 
-	<section></section>
+	<section class="container"></section>
 </Layout>

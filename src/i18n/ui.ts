@@ -12,20 +12,25 @@ export const ui = {
         'nav.home': 'Home',
         'nav.dashboard': 'dashboard',
         'nav.inventory': 'Inventory',
+        'nav.users': 'Users',
+        'nav.inbox': 'Inbox',
+        'nav.historical': 'Historical',
     },
     pt: {
         'nav.home': 'Início',
         'nav.dashboard': 'Painel',
         'nav.inventory': 'Inventario',
+        'nav.historical': 'Historico',
     },
     es: {
         'nav.home': 'Inicio',
         'nav.dashboard': 'Panel',
         'nav.inventory': 'Inventario',
+        'nav.historical': 'Historico',
     },
 } as const;
 
-export const routes = {
+/* export const routes = {
     en: {
         'dashboard': 'dashboard',
         'Inventory': 'inventory',
@@ -38,4 +43,4 @@ export const routes = {
         'dashboard': 'panel',
         'Inventory': 'inventario',
     },
-}
+} */
