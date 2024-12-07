@@ -43,6 +43,7 @@ try {
 }
 ---
 
+
 {allCountries ? (
     <div
         class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
@@ -65,35 +66,34 @@ try {
             {languages[lang].label}
         </button>
 
-        <!-- Dropdown com todas as bandeiras e idiomas -->
+        {/* Dropdown com todas as bandeiras e idiomas */}
         <div
             class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
             id="language-dropdown-menu"
         >
-            <ul id="language-picker" class="py-2 font-medium" role="none">
-                {Object.entries(languages).map(([code, { label }]) => (
-                    <li>
-                        <a
-                            href={translatePath("/", code)}
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                        >
-                            <div class="inline-flex items-center">
-                                {allCountries[code]?.flag ? (
-                                    <img
-                                        src={allCountries[code].flag}
-                                        alt={`${allCountries[code].name} flag`}
-                                        class="w-6 h-4 mr-2"
-                                    />
-                                ) : (
-                                    <div class="w-6 h-4 mr-2 bg-gray-200 animate-pulse"></div>
-                                )}
-                                {label}
-                            </div>
-                        </a>
-                    </li>
-                ))}
-            </ul>
+            <ul>
+            {Object.entries(languages).map(([code, { label }]) => (
+                <li >
+                    <a
+                        href={translatePath(Astro.url.pathname, code)}
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                        <div class="inline-flex items-center">
+                            {allCountries[code]?.flag ? (
+                                <img
+                                    src={allCountries[code].flag}
+                                    alt={`${allCountries[code].name} flag`}
+                                    class="w-6 h-4 mr-2"
+                                />
+                            ) : (
+                                <div class="w-6 h-4 mr-2 bg-gray-200 animate-pulse"></div>
+                            )}
+                            {label}
+                        </div>
+                    </a>
+                </li>
+            ))}
+        </ul>
         </div>
     </div>
 ) : (

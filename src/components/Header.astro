@@ -15,7 +15,7 @@ const user = get_user?.[0] ?? null;
 console.log(user);
 ---
 
-<header>
+<header transition:persist="header">
     <nav class="px-8">
         <div
             class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
