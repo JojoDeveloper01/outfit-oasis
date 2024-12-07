@@ -15,12 +15,13 @@ const user = get_user?.[0] ?? null;
 console.log(user);
 ---
 
-<header transition:persist="header">
+<header>
     <nav class="px-8">
         <div
             class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
         >
             <a
+                transition:persist="logo"
                 href={`/${lang}/`}
                 class="flex items-center space-x-3 rtl:space-x-reverse"
             >
@@ -58,7 +59,7 @@ console.log(user);
                     </li>
                     <li>
                         <a
-                            href=`/${lang}/dashboard/inventory/`
+                            href=`/${lang}/inventory/`
                             class="block py-2 px-3 rounded md:p-0"
                             >{t("nav.inventory")}</a
                         >
@@ -71,7 +72,10 @@ console.log(user);
                     user ? (
                         <UserMenu name={user.name} email={user.email} />
                     ) : (
-                        <div class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl">
+                        <div
+                            transition:persist="loginRegister"
+                            class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl"
+                        >
                             <button
                                 id="modalLogin"
                                 class="link"
