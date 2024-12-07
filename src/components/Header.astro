@@ -15,6 +15,14 @@ const user = get_user?.[0] ?? null;
 console.log(user);
 ---
 
+<style>
+    button {
+        &:hover {
+            color: var(--colo-white);
+        }
+    }
+</style>
+
 <header>
     <nav class="px-8">
         <div
@@ -66,19 +74,16 @@ console.log(user);
                     </li>
                 </ul>
 
-                <LanguagePicker />
-
                 {
                     user ? (
                         <UserMenu name={user.name} email={user.email} />
                     ) : (
                         <div
                             transition:persist="loginRegister"
-                            class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl"
+                            class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl "
                         >
                             <button
                                 id="modalLogin"
-                                class="link"
                                 data-modal-target="login"
                                 data-modal-toggle="login"
                             >
@@ -86,7 +91,6 @@ console.log(user);
                             </button>
                             <button
                                 id="modalRegister"
-                                class="link"
                                 data-modal-target="register"
                                 data-modal-toggle="register"
                             >
@@ -95,6 +99,7 @@ console.log(user);
                         </div>
                     )
                 }
+                <LanguagePicker />
             </div>
         </div>
     </nav>

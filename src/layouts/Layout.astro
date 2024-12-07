@@ -30,6 +30,38 @@ const { title, description, canonical, keywords } = Astro.props;
 		margin: 0;
 		width: 100%;
 		height: 100%;
+
+		font-family: system-ui, sans-serif;
+		scrollbar-color: var(--color-black), var(--color);
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease;
+	}
+
+	::-webkit-scrollbar {
+		display: none;
+	}
+
+	h1,
+	h2 {
+		position: relative;
+		font-weight: bolder;
+		text-transform: capitalize;
+		letter-spacing: 2px;
+
+		margin: 0;
+	}
+
+	h1 {
+		font-size: 8em;
+	}
+
+	h2 {
+		font-size: larger;
+	}
+
+	h3 {
+		font-size: x-large;
 	}
 
 	header,
@@ -45,10 +77,28 @@ const { title, description, canonical, keywords } = Astro.props;
 
 	a {
 		color: var(--color-white);
+		text-decoration: none;
 		font-weight: bolder;
-		opacity: 1;
+		cursor: pointer;
 
 		&:hover {
+			color: var(--color-black);
+		}
+	}
+
+	.link {
+		color: #0088ff;
+	}
+
+	p {
+		text-align: left;
+		line-height: 1.7em;
+		text-wrap: pretty;
+	}
+
+	button {
+		&:hover {
+			color: var(--color5);
 		}
 	}
 </style>
