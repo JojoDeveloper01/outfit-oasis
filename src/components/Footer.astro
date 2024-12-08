@@ -3,6 +3,8 @@ import { getLangFromUrl, useTranslations } from "@i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const { user, isStaff } = Astro.props;
 ---
 
 <footer
@@ -29,16 +31,16 @@ const t = useTranslations(lang);
             </li>
             <li>
                 <a
-                    href={`/${lang}/dashboard/`}
-                    class="block py-2 px-3 rounded md:p-0"
-                    >{t("nav.dashboard")}</a
-                >
-            </li>
-            <li>
-                <a
                     href=`/${lang}/inventory/`
                     class="block py-2 px-3 rounded md:p-0"
                     >{t("nav.inventory")}</a
+                >
+            </li>
+            <li class=`${isStaff}`>
+                <a
+                    href={`/${lang}/dashboard/`}
+                    class="block py-2 px-3 rounded md:p-0"
+                    >{t("nav.dashboard")}</a
                 >
             </li>
         </ul>

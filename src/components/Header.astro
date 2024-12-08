@@ -72,6 +72,7 @@ const { user, isStaff } = Astro.props;
                 {
                     user ? (
                         <UserMenu
+                            isStaff={isStaff}
                             name={user.name}
                             email={user.email}
                             lang={lang}

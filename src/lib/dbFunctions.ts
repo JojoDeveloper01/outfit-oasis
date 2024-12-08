@@ -9,12 +9,12 @@ export async function getInventory() {
 
 export async function registerUser(name: string, email: string, password: string) {
     const result = await turso.execute({
-        sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING id;",
+        sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING user_id;",
         args: [name, email, password]
     });
     console.log("result: ", result);
     const userId = result.rows[0]?.user_id; // Obtém o ID da resposta
-    return { id: userId, email, name };
+    return { user_id: userId, email, name };
 }
 
 export async function getUserLogin(email: string, password: string) {

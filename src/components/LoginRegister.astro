@@ -301,8 +301,12 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    console.log(JSON.stringify(result.user));
-                    sessionStorage.setItem("User", JSON.stringify(result.user));
+                    const userData = result.user;
+
+                    console.log(JSON.stringify(userData));
+                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=1800;`; // 30 min
+                    sessionStorage.setItem("User", JSON.stringify(userData));
+
                     location.reload();
                 } else {
                     alert(result.message || "Erro no login.");
@@ -320,12 +324,22 @@
             event.preventDefault();
 
             // Coleta os dados do formulário
-            const name = document.getElementById("name_register").value;
-            const email = document.getElementById("email_register").value;
-            const password = document.getElementById("password_register").value;
-            const confirmPassword = document.getElementById(
-                "password_register_try",
-            ).value;
+            const name = document.getElementById("name_register").value.trim();
+            const email = document
+                .getElementById("email_register")
+                .value.trim();
+            const password = document
+                .getElementById("password_register")
+                .value.trim();
+            const confirmPassword = document
+                .getElementById("password_register_try")
+                .value.trim();
+
+            // Validações básicas
+            if (!name || !email || !password || !confirmPassword) {
+                alert("Todos os campos são obrigatórios.");
+                return;
+            }
 
             if (password !== confirmPassword) {
                 alert("As senhas não coincidem.");
@@ -340,11 +354,13 @@
                 });
 
                 const result = await response.json();
-                consol;
                 if (response.ok) {
-                    console.log(JSON.stringify(result.user));
-                    sessionStorage.setItem("user", JSON.stringify(result.user));
-                    alert("Registro bem-sucedido!");
+                    const userData = result.user;
+
+                    console.log(userData);
+                    sessionStorage.setItem("user", JSON.stringify(userData));
+                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=1800;`; // 30 min
+
                     location.reload();
                 } else {
                     alert(result.message || "Erro ao registrar.");

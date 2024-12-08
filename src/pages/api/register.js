@@ -24,7 +24,7 @@ export async function POST({ request }) {
 
         // Registra o novo usuário no banco de dados
         const newUser = await registerUser(email, password, name);
-
+        console.log(newUser)
         return new Response(JSON.stringify({ success: true, user: newUser }), {
             status: 201,
             headers: { "Content-Type": "application/json" },

@@ -1,9 +1,24 @@
 ---
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Layout from "./Layout.astro";
+import { userExistsByID } from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+let user_id;
+let $user;
+
+if (Astro.cookies.has("user_id")) {
+    const getCookie = Astro.cookies.get("user_id");
+    user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+
+    $user = await userExistsByID(`${user_id}`);
+    console.log($user);
+}
+
+const user = $user;
+const isStaff = user?.user_type || null;
 
 const dashboard = `/${lang}/dashboard`;
 ---
@@ -162,16 +177,10 @@ const dashboard = `/${lang}/dashboard`;
             <slot />
         </div>
     </div>
-
-    <script>
-        (async () => {
-            const response = await fetch("/api/protected");
-            const result = await response.json();
-
-            if (!result.success) {
-                alert("Você precisa estar logado!");
-                window.location.href = "/login";
-            }
-        })();
-    </script>
 </Layout>
+
+<script is:inline define:vars={{ isStaff, lang }}>
+    if (isStaff === null || isStaff !== "staff") {
+        window.location.href = `/${lang}/`;
+    }
+</script>

@@ -1,6 +1,6 @@
 ---
-const { name, email, lang, t } = Astro.props;
-
+const { isStaff, name, email, lang, t } = Astro.props;
+console.log(isStaff);
 const dashboard = `/${lang}/dashboard`;
 ---
 
@@ -34,43 +34,53 @@ const dashboard = `/${lang}/dashboard`;
             >
         </div>
         <ul class="py-2" aria-labelledby="user-menu-button">
+            {
+                isStaff !== 'hidden' && (
+                        <li>
+                            <a
+                                href={`${dashboard}/analytics`}
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                {t("nav.analytics")}
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href={`${dashboard}/users`}
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                {t("nav.users")}
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href={`${dashboard}/articles`}
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                {t("nav.articles")}
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href={`${dashboard}/inbox`}
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                {t("nav.inbox")}
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href={`${dashboard}/historical`}
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                            >
+                                {t("nav.historical")}
+                            </a>
+                        </li>
+                )
+            }
             <li>
                 <a
-                    href={`${dashboard}/analytics`}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >{t("nav.analytics")}</a
-                >
-            </li>
-            <li>
-                <a
-                    href={`${dashboard}/users`}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >{t("nav.users")}</a
-                >
-            </li>
-            <li>
-                <a
-                    href={`${dashboard}/articles`}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >{t("nav.articles")}</a
-                >
-            </li>
-            <li>
-                <a
-                    href={`${dashboard}/inbox`}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >{t("nav.inbox")}</a
-                >
-            </li>
-            <li>
-                <a
-                    href={`${dashboard}/historical`}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >{t("nav.historical")}</a
-                >
-            </li>
-            <li>
-                <a
+                    id="logout"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                     >{t("nav.logout")}</a
                 >
@@ -101,3 +111,14 @@ const dashboard = `/${lang}/dashboard`;
         </svg>
     </button>
 </div>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        document.getElementById("logout")?.addEventListener("click", () => {
+            // Apaga a cookie 'user_id'
+            document.cookie =
+                "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+            location.reload();
+        });
+    });
+</script>
