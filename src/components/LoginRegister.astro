@@ -40,7 +40,7 @@
             </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5">
-                <form class="space-y-4" action="#">
+                <form id="login-form" class="space-y-4" action="#">
                     <div>
                         <label
                             for="email_login"
@@ -155,7 +155,22 @@
             </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5">
-                <form class="space-y-4" action="#">
+                <form id="register-form" class="space-y-4" action="#">
+                    <div>
+                        <label
+                            for="name_register"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >Name</label
+                        >
+                        <input
+                            type="text"
+                            name="name_register"
+                            id="name_register"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[--color3] focus:border-ring-[--color3] block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            placeholder="example name"
+                            required
+                        />
+                    </div>
                     <div>
                         <label
                             for="email_register"
@@ -241,6 +256,7 @@
         </div>
     </div>
 </div>
+
 <!-- <script>
     document.addEventListener("click", (event: MouseEvent) => {
         const target = event.target as HTMLElement;
@@ -265,3 +281,75 @@
     });
 </script>
  -->
+
+<script is:inline>
+    document
+        .getElementById("login-form")
+        .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            // Coleta os dados do formulário
+            const email = document.getElementById("email_login").value;
+            const password = document.getElementById("password_loin").value;
+
+            try {
+                const response = await fetch("/api/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Login bem-sucedido!");
+                    console.log(result.user); // Dados do usuário logado
+                    // Redirecionar ou fechar o modal
+                } else {
+                    alert(result.message || "Erro no login.");
+                }
+            } catch (error) {
+                console.error("Erro ao fazer login:", error);
+                alert("Erro no servidor.");
+            }
+        });
+
+    // Manipula o registro
+    document
+        .getElementById("register-form")
+        .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            // Coleta os dados do formulário
+            const name = document.getElementById("name_register").value;
+            const email = document.getElementById("email_register").value;
+            const password = document.getElementById("password_register").value;
+            const confirmPassword = document.getElementById(
+                "password_register_try",
+            ).value;
+
+            if (password !== confirmPassword) {
+                alert("As senhas não coincidem.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Registro bem-sucedido!");
+                    console.log(result.user); // Dados do usuário registrado
+                    // Redirecionar ou fechar o modal
+                } else {
+                    alert(result.message || "Erro ao registrar.");
+                }
+            } catch (error) {
+                console.error("Erro ao fazer registro:", error);
+                alert("Erro no servidor.");
+            }
+        });
+</script>

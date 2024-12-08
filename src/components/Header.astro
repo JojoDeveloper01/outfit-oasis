@@ -1,18 +1,18 @@
 ---
-import { getLangFromUrl, useTranslations } from "@i18n/utils";
-import { getUser } from "@lib/dbFunctions";
+import {
+    getLangFromUrl,
+    useTranslations,
+    useTranslatedPath,
+} from "@i18n/utils";
+import { languages } from "@i18n/ui";
 import LanguagePicker from "./LanguagePicker.astro";
 import UserMenu from "./UserMenu.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang as keyof typeof languages);
 
-const user_id = 0;
-
-const get_user = await getUser(user_id);
-const user = get_user?.[0] ?? null;
-
-console.log(user);
+const { user, isStaff } = Astro.props;
 ---
 
 <style>
@@ -23,21 +23,16 @@ console.log(user);
     }
 </style>
 
-<header>
+<header class="capitalize">
     <nav class="px-8">
         <div
             class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
         >
             <a
-                transition:persist="logo"
                 href={`/${lang}/`}
                 class="flex items-center space-x-3 rtl:space-x-reverse"
             >
-                <img
-                    src="/docs/images/logo.svg"
-                    class="h-8"
-                    alt="Outfit Oasis Logo"
-                />
+                <img src="" class="h-8" alt="Outfit Oasis Logo" />
                 <span
                     class="self-center text-2xl font-semibold whitespace-nowrap"
                     >OutFit Oasis</span
@@ -49,7 +44,7 @@ console.log(user);
                 id="navbar-user"
             >
                 <ul
-                    class="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
+                    class="flex flex-col font-medium p-4 md:p-0 mt-4 mr-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
                 >
                     <li>
                         <a
@@ -60,26 +55,31 @@ console.log(user);
                     </li>
                     <li>
                         <a
-                            href={`/${lang}/dashboard/`}
-                            class="block py-2 px-3 rounded md:p-0"
-                            >{t("nav.dashboard")}</a
-                        >
-                    </li>
-                    <li>
-                        <a
                             href=`/${lang}/inventory/`
                             class="block py-2 px-3 rounded md:p-0"
                             >{t("nav.inventory")}</a
+                        >
+                    </li>
+                    <li class=`${isStaff}`>
+                        <a
+                            href={`/${lang}/dashboard/`}
+                            class="block py-2 px-3 rounded md:p-0"
+                            >{t("nav.dashboard")}</a
                         >
                     </li>
                 </ul>
 
                 {
                     user ? (
-                        <UserMenu name={user.name} email={user.email} />
+                        <UserMenu
+                            name={user.name}
+                            email={user.email}
+                            lang={lang}
+                            t={t}
+                        />
                     ) : (
                         <div
-                            transition:persist="loginRegister"
+                            transition:persist="buttonRegisterLogin"
                             class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl "
                         >
                             <button
@@ -99,7 +99,11 @@ console.log(user);
                         </div>
                     )
                 }
-                <LanguagePicker />
+                <LanguagePicker
+                    languages={languages}
+                    lang={lang}
+                    translatePath={translatePath}
+                />
             </div>
         </div>
     </nav>

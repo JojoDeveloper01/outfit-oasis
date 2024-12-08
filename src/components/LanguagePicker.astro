@@ -1,18 +1,12 @@
 ---
-import { languages } from "@i18n/ui";
-import { getLangFromUrl, useTranslatedPath } from "@i18n/utils";
-import { fetchAllCountries, loadDataWithFallback } from "@lib/utils";
+type Language = {
+    label: string;
+};
 
-// Idioma atual da URL
-const lang = getLangFromUrl(Astro.url) ?? "";
-const translatePath = useTranslatedPath(lang as keyof typeof languages);
-
-// Estado inicial
-const fallbackCountries = {};
-const allCountries = await loadDataWithFallback(
-    () => fetchAllCountries(languages),
-    fallbackCountries,
-);
+const { languages, lang } = Astro.props as {
+    languages: Record<string, Language>;
+    lang: string;
+};
 ---
 
 <div
@@ -22,20 +16,26 @@ const allCountries = await loadDataWithFallback(
     <button
         type="button"
         data-dropdown-toggle="language-dropdown-menu"
-        class="inline-flex items-center font-medium justify-center px-4 py-2 text-sm rounded-lg cursor-pointer text-white hover:bg-[#B1BAA5]"
+        aria-haspopup="true"
+        aria-label={`Selecionar idioma atual: ${languages[lang]?.label}`}
+        class="w-32 inline-flex items-center font-medium justify-center px-4 py-2 text-sm rounded-lg cursor-pointer text-white hover:bg-[#B1BAA5]"
+        id="language-button"
     >
         <div id={`flag-${lang}`} class="relative">
+            <!-- Exibir apenas a bandeira do idioma atual -->
             <img
-                src={allCountries[lang]?.flag || ""}
-                alt={`${allCountries[lang]?.name || "Unknown"} flag`}
-                class="w-6 h-5 rounded-full mr-2 transition-transform duration-500 ease-in-out transform scale-100"
+                src="/icons/language.svg"
+                alt={`Bandeira de ${languages[lang]?.label || "Idioma desconhecido"}`}
+                class="w-6 h-5 rounded-full mr-2"
             />
         </div>
-        {languages[lang].label}
+        <span id="current-language-label">
+            {languages[lang]?.label || "Idioma desconhecido"}
+        </span>
     </button>
 
     <div
-        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
+        class="relative z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
         id="language-dropdown-menu"
     >
         <ul>
@@ -43,17 +43,11 @@ const allCountries = await loadDataWithFallback(
                 Object.entries(languages).map(([code, { label }]) => (
                     <li>
                         <a
-                            href={translatePath(Astro.url.pathname, code)}
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-lang-code={code}
+                            data-lang-label={label}
                         >
-                            <div class="inline-flex items-center">
-                                <img
-                                    src={allCountries[code]?.flag || ""}
-                                    alt={`${allCountries[code]?.name || "Unknown"} flag`}
-                                    class="w-6 h-4 mr-2"
-                                />
-                                {label}
-                            </div>
+                            {label || "Idioma desconhecido"}
                         </a>
                     </li>
                 ))
@@ -61,3 +55,46 @@ const allCountries = await loadDataWithFallback(
         </ul>
     </div>
 </div>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const currentPath = window.location.pathname;
+
+        const languageDropdown = document.getElementById(
+            "language-dropdown-menu",
+        );
+        const currentLanguageLabel = document.getElementById(
+            "current-language-label",
+        );
+
+        // Adicionar evento de clique nas opções do dropdown
+        languageDropdown?.addEventListener("click", (event: any) => {
+            const target = event.target.closest("a[data-lang-code]");
+
+            if (target) {
+                const selectedLangCode = target.getAttribute("data-lang-code");
+                const selectedLangLabel =
+                    target.getAttribute("data-lang-label");
+
+                if (selectedLangCode) {
+                    // Atualizar o texto do botão
+                    if (currentLanguageLabel && selectedLangLabel) {
+                        currentLanguageLabel.textContent = selectedLangLabel;
+                    }
+
+                    // Redirecionar para o novo idioma
+                    const pathParts = currentPath.split("/").filter(Boolean);
+
+                    if (pathParts.length > 0) {
+                        pathParts[0] = selectedLangCode; // Substituir o prefixo do idioma
+                    } else {
+                        pathParts.unshift(selectedLangCode); // Adicionar prefixo se não existir
+                    }
+
+                    const newPath = `/${pathParts.join("/")}`;
+                    window.location.href = newPath; // Redirecionar
+                }
+            }
+        });
+    });
+</script>

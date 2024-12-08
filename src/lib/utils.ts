@@ -1,41 +1,34 @@
-export async function fetchCountryInfo(countryName: string) {
-    const response = await fetch(
-        `https://restcountries.com/v3.1/name/${countryName}`,
-    );
-    if (!response.ok) {
-        console.error("Erro ao buscar informações do país:", response.status);
+export async function fetchCountryFlag(countryName: string): Promise<string | null> {
+    try {
+        const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+        if (!response.ok) {
+            console.error(`Erro ao buscar bandeira do país ${countryName}:`, response.status);
+            return null;
+        }
+        const data = await response.json();
+        return data[0]?.flags?.png || null; // Retorna diretamente o link da bandeira
+    } catch (error) {
+        console.error("Erro ao buscar bandeira:", error);
         return null;
     }
-    const data = await response.json();
-    return {
-        name: data[0]?.name?.common || "Unknown",
-        flag: data[0]?.flags?.png || "",
-    };
 }
 
-export async function fetchAllCountries(languages: Record<string, any>) {
-    const countryPromises = Object.entries(languages).map(
-        async ([code, { defaultCountry }]) => {
-            const country = await fetchCountryInfo(defaultCountry);
-            return { code, country };
-        },
-    );
-
-    const countryData = await Promise.all(countryPromises);
-    return countryData.reduce((acc: any, { code, country }) => {
-        if (country) acc[code] = country;
-        return acc;
-    }, {});
-}
-
-export async function loadDataWithFallback<T>(
-    fetchData: () => Promise<T>,
-    fallback: T,
-): Promise<T> {
+export async function fetchAllCountryFlags(languages: Record<string, any>): Promise<Record<string, string>> {
     try {
-        return await fetchData();
+        const flagPromises = Object.entries(languages).map(
+            async ([code, { defaultCountry }]) => {
+                const flag = await fetchCountryFlag(defaultCountry);
+                return { code, flag };
+            },
+        );
+
+        const flagData = await Promise.all(flagPromises);
+        return flagData.reduce((acc: Record<string, string>, { code, flag }) => {
+            if (flag) acc[code] = flag;
+            return acc;
+        }, {});
     } catch (error) {
-        console.error("Erro ao carregar dados:", error);
-        return fallback;
+        console.error("Erro ao buscar bandeiras:", error);
+        return {};
     }
 }

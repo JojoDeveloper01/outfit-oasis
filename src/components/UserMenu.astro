@@ -1,8 +1,11 @@
 ---
-const { name, email } = Astro.props;
+const { name, email, lang, t } = Astro.props;
+
+const dashboard = `/${lang}/dashboard`;
 ---
 
 <div
+    transition:persist="userMenu"
     class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
 >
     <button
@@ -14,11 +17,7 @@ const { name, email } = Astro.props;
         data-dropdown-placement="bottom"
     >
         <span class="sr-only">Open user menu</span>
-        <img
-            class="w-8 h-8 rounded-full"
-            src="/docs/images/people/profile-picture-3.jpg"
-            alt="user photo"
-        />
+        <img class="w-8 h-8 rounded-full" src="" alt="user photo" />
     </button>
     <!-- Dropdown menu -->
     <div
@@ -37,30 +36,43 @@ const { name, email } = Astro.props;
         <ul class="py-2" aria-labelledby="user-menu-button">
             <li>
                 <a
-                    href="#"
+                    href={`${dashboard}/analytics`}
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >Dashboard</a
+                    >{t("nav.analytics")}</a
                 >
             </li>
             <li>
                 <a
-                    href="#"
+                    href={`${dashboard}/users`}
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >Settings</a
+                    >{t("nav.users")}</a
                 >
             </li>
             <li>
                 <a
-                    href="#"
+                    href={`${dashboard}/articles`}
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >Earnings</a
+                    >{t("nav.articles")}</a
                 >
             </li>
             <li>
                 <a
-                    href="#"
+                    href={`${dashboard}/inbox`}
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                    >Sign out</a
+                    >{t("nav.inbox")}</a
+                >
+            </li>
+            <li>
+                <a
+                    href={`${dashboard}/historical`}
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >{t("nav.historical")}</a
+                >
+            </li>
+            <li>
+                <a
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >{t("nav.logout")}</a
                 >
             </li>
         </ul>

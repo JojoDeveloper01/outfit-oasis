@@ -1,12 +1,14 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import InventoryTable from "@components/InventoryTable.astro";
-import { getInventory } from "@lib/dbFunctions";
-import { getUser } from "@lib/dbFunctions";
+import { getInventory, getUserLogin } from "@lib/dbFunctions";
 import { turso } from "@turso";
 
-const get_user = await getUser(0);
-const user = get_user?.[0] ?? null;
+const email = "";
+const pass = "";
+const user = (await getUserLogin(email, pass)) || null;
+const isStaff = user?.user_type === "staff" ? "block" : "hidden";
+
 const items = await getInventory();
 ---
 
@@ -17,7 +19,7 @@ const items = await getInventory();
 	canonical="https://outfit-oasis.com"
 >
 	<h1 class="text-2xl font-bold mb-4">asasa</h1>
-	{user?.user_type === "staff" && <InventoryTable items={items} />}
+	<!-- {isStaff && <InventoryTable items={items} />} -->
 
 	<section class="container">sdsdds</section>
 </Layout>

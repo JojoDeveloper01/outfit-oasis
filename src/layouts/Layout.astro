@@ -4,8 +4,26 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LoginRegister from "@components/LoginRegister.astro";
 import { getLangFromUrl } from "@i18n/utils";
+import { getUserLogin } from "@lib/dbFunctions";
+
+//canonical
+//const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+//const socialImageURL = new URL("/preview.png", Astro.url);
+
+if (Astro.cookies.has("sessionId")) {
+	const session = Astro.cookies.get("sessionId");
+	console.log("cookie", session);
+}
 
 const lang = getLangFromUrl(Astro.url);
+
+const user_id = 0;
+const email = ""; //register-form
+const pass = "";
+const user = await getUserLogin(email, pass);
+
+const isStaff = user?.user_type === "staff" ? "block" : "hidden";
 
 const { title, description, canonical, keywords } = Astro.props;
 ---
@@ -98,7 +116,7 @@ const { title, description, canonical, keywords } = Astro.props;
 
 	button {
 		&:hover {
-			color: var(--color5);
+			color: var(--background);
 		}
 	}
 </style>
@@ -112,6 +130,8 @@ const { title, description, canonical, keywords } = Astro.props;
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="canonical" href={canonical} />
+		<!-- <link rel="canonical" href={canonicalURL} />
+		<meta property="og:image" content={socialImageURL} /> -->
 
 		<title>{title}</title>
 		<ClientRouter />
@@ -119,7 +139,7 @@ const { title, description, canonical, keywords } = Astro.props;
 	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
 		<!-- Modais -->
 		<LoginRegister />
-		<Header />
+		<Header user={user} isStaff={isStaff} />
 		<main>
 			<slot />
 		</main>
