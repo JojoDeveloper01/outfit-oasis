@@ -4,26 +4,27 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LoginRegister from "@components/LoginRegister.astro";
 import { getLangFromUrl } from "@i18n/utils";
-import { getUserLogin } from "@lib/dbFunctions";
+import { userExistsByID } from "@lib/dbFunctions";
 
 //canonical
 //const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 //const socialImageURL = new URL("/preview.png", Astro.url);
 
-if (Astro.cookies.has("sessionId")) {
-	const session = Astro.cookies.get("sessionId");
-	console.log("cookie", session);
-}
-
 const lang = getLangFromUrl(Astro.url);
 
-const user_id = 0;
-const email = ""; //register-form
-const pass = "";
-const user = await getUserLogin(email, pass);
+let user_id;
+let $user;
 
-const isStaff = user?.user_type === "staff" ? "block" : "hidden";
+if (Astro.cookies.has("user_id")) {
+	const getCookie = Astro.cookies.get("user_id");
+	user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+
+	$user = await userExistsByID(`${user_id}`);
+}
+console.log($user);
+
+const isStaff = $user?.user_type === "staff" ? "block" : "hidden";
 
 const { title, description, canonical, keywords } = Astro.props;
 ---
@@ -139,7 +140,7 @@ const { title, description, canonical, keywords } = Astro.props;
 	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
 		<!-- Modais -->
 		<LoginRegister />
-		<Header user={user} isStaff={isStaff} />
+		<Header user={$user} isStaff={isStaff} />
 		<main>
 			<slot />
 		</main>
@@ -147,3 +148,53 @@ const { title, description, canonical, keywords } = Astro.props;
 		<script src="node_modules/flowbite/dist/flowbite.min.js"></script>
 	</body>
 </html>
+
+<script is:inline define:vars={{ $user }}>
+	console.log($user);
+	async function verifyUserData() {
+		const userData = JSON.parse(sessionStorage.getItem("User") || "{}");
+
+		if (userData.user_id) {
+			try {
+				const response = await fetch("/api/get-user-by-id", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ user_id: userData.user_id }),
+				});
+
+				if (!response.ok) {
+					const result = await response.json();
+					sessionStorage.removeItem("User");
+					console.error(result.message || "This user doesn't exist.");
+					document.cookie =
+						"user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Remove o cookie
+					return false;
+				}
+
+				// Se o utilizador for válido, cria o cookie
+				document.cookie = `user_id=${userData.user_id}; path=/; max-age=1800;`; // 1 hora
+				return true;
+			} catch (error) {
+				console.error("Error verifying user:", error);
+				sessionStorage.removeItem("User");
+				document.cookie =
+					"user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Remove o cookie
+				alert("Server error.");
+				return false;
+			}
+		} else {
+			sessionStorage.removeItem("User");
+			document.cookie =
+				"user_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Remove o cookie
+			return false;
+		}
+	}
+
+	(async () => {
+		await verifyUserData();
+	})();
+</script>
+
+<script define:vars={{ $user }}>
+	alert($user);
+</script>

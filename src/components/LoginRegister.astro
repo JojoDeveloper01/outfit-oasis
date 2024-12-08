@@ -301,9 +301,9 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    alert("Login bem-sucedido!");
-                    console.log(result.user); // Dados do usuário logado
-                    // Redirecionar ou fechar o modal
+                    console.log(JSON.stringify(result.user));
+                    sessionStorage.setItem("User", JSON.stringify(result.user));
+                    location.reload();
                 } else {
                     alert(result.message || "Erro no login.");
                 }
@@ -340,10 +340,12 @@
                 });
 
                 const result = await response.json();
+                consol;
                 if (response.ok) {
+                    console.log(JSON.stringify(result.user));
+                    sessionStorage.setItem("user", JSON.stringify(result.user));
                     alert("Registro bem-sucedido!");
-                    console.log(result.user); // Dados do usuário registrado
-                    // Redirecionar ou fechar o modal
+                    location.reload();
                 } else {
                     alert(result.message || "Erro ao registrar.");
                 }
