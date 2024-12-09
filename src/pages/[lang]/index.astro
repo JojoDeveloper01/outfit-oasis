@@ -1,8 +1,12 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import InventoryTable from "@components/InventoryTable.astro";
 import { getInventory, getUserLogin } from "@lib/dbFunctions";
-import { turso } from "@turso";
+
+import Hero from "@components/LandingPage/Hero.astro";
+import Benefits from "@components/LandingPage/Benefits.astro";
+import Highlight from "@components/LandingPage/Highlight.astro";
+import RentNow from "@components/LandingPage/RentNow.astro";
+import Reviews from "@components/LandingPage/Reviews.astro";
 
 const email = "";
 const pass = "";
@@ -18,8 +22,11 @@ const items = await getInventory();
 	keywords="aluguer, roupa, "
 	canonical="https://outfit-oasis.com"
 >
-	<h1 class="text-2xl font-bold mb-4">asasa</h1>
-	<!-- {isStaff && <InventoryTable items={items} />} -->
-
-	<section class="container">sdsdds</section>
+	<Hero />
+	<Benefits />
+	<Highlight />
+	<!-- Your Dream Outfit Awaits -->
+	<RentNow />
+	<Reviews />
+	<RentNow />
 </Layout>
