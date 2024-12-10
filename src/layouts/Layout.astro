@@ -44,6 +44,10 @@ const { title, description, canonical, keywords } = Astro.props;
 		--gold: #e8b904;
 	}
 
+	::-webkit-scrollbar {
+		display: none;
+	}
+
 	html,
 	body {
 		background-color: var(--background);
@@ -75,7 +79,7 @@ const { title, description, canonical, keywords } = Astro.props;
 	}
 
 	h1 {
-		font-size: 8em;
+		font-size: 4em;
 	}
 
 	h2 {
