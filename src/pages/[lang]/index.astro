@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { getInventory, getUserLogin } from "@lib/dbFunctions";
+import { getItems, getUserLogin } from "@lib/dbFunctions";
 
 import Hero from "@components/LandingPage/Hero.astro";
 import Benefits from "@components/LandingPage/Benefits.astro";
@@ -13,7 +13,7 @@ const pass = "";
 const user = (await getUserLogin(email, pass)) || null;
 const isStaff = user?.user_type === "staff" ? "block" : "hidden";
 
-const items = await getInventory();
+const items = await getItems();
 ---
 
 <Layout

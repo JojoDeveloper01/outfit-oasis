@@ -304,7 +304,7 @@
                     const userData = result.user;
 
                     console.log(JSON.stringify(userData));
-                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=1800;`; // 30 min
+                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=3600;`; // 30 min
                     sessionStorage.setItem("User", JSON.stringify(userData));
 
                     location.reload();
@@ -359,7 +359,7 @@
 
                     console.log(userData);
                     sessionStorage.setItem("user", JSON.stringify(userData));
-                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=1800;`; // 30 min
+                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=3600;`; // 30 min
 
                     location.reload();
                 } else {

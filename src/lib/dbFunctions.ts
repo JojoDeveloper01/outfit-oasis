@@ -2,9 +2,104 @@ import { turso } from "@turso";
 
 export let sessions = {};
 
-export async function getInventory() {
-    const result = await turso.execute('SELECT * FROM articles');
-    return result.rows[0];
+export async function getItems() {
+    const result = await turso.execute('SELECT * FROM articles WHERE availability = 1');
+    console.log("result: ", result)
+    return result.rows;
+}
+
+export async function addItem(
+    name: string,
+    type: string,
+    size: string,
+    color: string,
+) {
+    const sql = `
+        INSERT INTO articles (articles_name, category, size, color) 
+        VALUES (?, ?, ?, ?)
+    `;
+    const result = await turso.execute({
+        sql,
+        args: [name, type, size, color],
+    });
+    console.log("Add result: ", result);
+    return result.rowsAffected; // Return number of rows affected
+}
+
+export async function editItem(
+    id: number,
+    name?: string,
+    type?: string,
+    category?: string,
+    size?: string,
+    color?: string,
+    brand?: string,
+    rental_price?: string,
+    condition?: string
+) {
+    const updates = [];
+    const args = [];
+
+    if (name) {
+        updates.push("articles_name = ?");
+        args.push(name);
+    }
+    if (type) {
+        updates.push("type = ?");
+        args.push(type);
+    }
+    if (category) {
+        updates.push("category = ?");
+        args.push(category);
+    }
+    if (size) {
+        updates.push("size = ?");
+        args.push(size);
+    }
+    if (color) {
+        updates.push("color = ?");
+        args.push(color);
+    }
+    if (brand) {
+        updates.push("brand = ?");
+        args.push(brand);
+    }
+    if (rental_price) {
+        updates.push("rental_price = ?");
+        args.push(rental_price);
+    }
+    if (condition) {
+        updates.push("condition = ?");
+        args.push(condition);
+    }
+
+    args.push(id); // Add id as the last parameter
+
+    const sql = `
+        UPDATE articles 
+        SET ${updates.join(", ")} 
+        WHERE id = ?
+    `;
+
+    const result = await turso.execute({
+        sql,
+        args,
+    });
+    console.log("Edit result: ", result);
+    return result.rowsAffected; // Return number of rows affected
+}
+
+export async function deleteItem(id: number) {
+    const sql = `
+        DELETE FROM articles 
+        WHERE id = ?
+    `;
+    const result = await turso.execute({
+        sql,
+        args: [id],
+    });
+    console.log("Delete result: ", result);
+    return result.rowsAffected; // Return number of rows affected
 }
 
 export async function registerUser(name: string, email: string, password: string) {
