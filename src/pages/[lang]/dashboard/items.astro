@@ -2,7 +2,12 @@
 import Dashboard from "@layouts/AsideDashboard.astro";
 import { getItems, addItem, editItem, deleteItem } from "@lib/dbFunctions";
 
-const errors = {};
+// Define the type for errors
+interface Errors {
+    global?: string; // Optional "global" error field
+}
+
+const errors: Errors = {}; // Initialize errors with the defined type
 let items = await getItems();
 
 console.log(items);
@@ -15,19 +20,45 @@ if (Astro.request.method === "POST") {
 
         // Common fields
         const name = data.get("name")?.toString().trim();
+        const type = data.get("type")?.toString().trim();
+        const category = data.get("brand")?.toString().trim();
         const size = data.get("size")?.toString().trim();
-        const brand = data.get("brand")?.toString().trim();
         const color = data.get("color")?.toString().trim();
+        const brand = data.get("brand")?.toString().trim();
+        const rental_price = data.get("rental_price")?.toString().trim();
+        const condition = data.get("condition")?.toString().trim();
 
         // Validation
-        if (!name || !size || !brand || !color) {
+
+        if (
+            !name ||
+            !type ||
+            !category ||
+            !size ||
+            !color ||
+            !brand ||
+            !rental_price ||
+            !condition
+        ) {
             errors.global = "All fields are required!";
         } else if (action === "add") {
-            await addItem(name, size, brand, color);
+            await addItem(
+                name,
+                type,
+                category,
+                size,
+                color,
+                brand,
+                rental_price,
+                condition,
+            );
         } else if (action === "edit") {
             const id = data.get("id");
+            const field = "";
+
             if (!id) throw new Error("Missing item ID for editing.");
-            await editItem(Number(id), name, size, brand, color);
+
+            await editItem(Number(id), field);
         } else if (action === "delete") {
             const id = data.get("id");
             if (!id) throw new Error("Missing item ID for deletion.");
@@ -37,10 +68,25 @@ if (Astro.request.method === "POST") {
         // Refresh items after any action
         items = await getItems();
     } catch (error) {
-        errors.global = error.message;
+        if (error instanceof Error) {
+            errors.global = error.message; // Assign the error message to the global field
+        } else {
+            errors.global = "An unexpected error occurred.";
+        }
     }
 }
 ---
+
+<style>
+    button {
+        background-color: var(--color-white);
+        color: unset;
+
+        &:hover {
+            color: unset;
+        }
+    }
+</style>
 
 <Dashboard>
     <h1>Inventory</h1>
@@ -49,13 +95,13 @@ if (Astro.request.method === "POST") {
     {errors.global && <p class="text-red-600">{errors.global}</p>}
 
     <!-- Add New Item Form -->
-    <div id="accordion-collapse" data-accordion="collapse">
+    <div id="accordion-collapse" class="my-16" data-accordion="collapse">
         <h2 id="accordion-collapse-heading-1">
             <button
                 type="button"
-                class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 gap-3"
+                class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 gap-3"
                 data-accordion-target="#accordion-collapse-body-1"
-                aria-expanded="true"
+                aria-expanded="false"
                 aria-controls="accordion-collapse-body-1"
             >
                 <span>Add New Item</span>
@@ -149,6 +195,56 @@ if (Astro.request.method === "POST") {
                             required
                         />
                     </div>
+                    <div>
+                        <label
+                            for="brand"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            brand
+                        </label>
+                        <input
+                            type="text"
+                            id="brand"
+                            name="brand"
+                            placeholder="Enter the item's brand"
+                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label
+                            for="rental_price"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            rental price
+                        </label>
+                        <input
+                            type="number"
+                            id="rental_price"
+                            name="rental_price"
+                            placeholder="Enter the item's rental_price"
+                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label
+                            for="size"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            Size
+                        </label>
+                        <select
+                            id="size"
+                            name="size"
+                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                            required
+                        >
+                            <option value="">Select a condition</option>
+                            <option value="Used">Used</option>
+                            <option value="New">New</option>
+                        </select>
+                    </div>
                     <div class="flex justify-end">
                         <button
                             type="submit"
@@ -163,16 +259,29 @@ if (Astro.request.method === "POST") {
     </div>
 
     <!-- Inventory List -->
-    <ul class="mt-4 space-y-4">
+
+    <ul class="mt-6 space-y-6">
         {
-            items.map((item) => (
-                <li class="p-4 bg-[--background] rounded-lg flex justify-between">
-                    <span>
-                        <strong>{item.name}</strong> - {item.size} -{" "}
-                        {item.brand} - {item.color}
-                    </span>
-                    <div class="space-x-2">
-                        <form method="POST" class="inline">
+            items.map((item: any) => (
+                <li class="w-60 p-6 bg-white shadow-lg rounded-lg border-2 border-gray-300 flex flex-col space-y-4">
+                    <div class="flex flex-col space-y-2">
+                        <h3 class="text-2xl font-bold text-gray-800">
+                            {item.name}
+                        </h3>
+                        <div class="grid gap-2 text-base text-gray-600">
+                            <p class="font-medium">
+                                Size: <span>{item.size}</span>
+                            </p>
+                            <p class="font-medium">
+                                Brand: <span>{item.brand}</span>
+                            </p>
+                            <p class="font-medium">
+                                Color: <span>{item.color}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <form method="POST">
                             <input type="hidden" name="action" value="edit" />
                             <input type="hidden" name="id" value={item.id} />
                             <input
@@ -195,14 +304,14 @@ if (Astro.request.method === "POST") {
                                 name="color"
                                 value={item.color}
                             />
-                            <button class="px-3 py-1 bg-[--teal] text-[--color-white] rounded">
+                            <button class="px-4 py-2 text-white rounded-full shadow-md hover:bg-[--color2] focus:outline-none">
                                 Edit
                             </button>
                         </form>
-                        <form method="POST" class="inline">
+                        <form method="POST">
                             <input type="hidden" name="action" value="delete" />
                             <input type="hidden" name="id" value={item.id} />
-                            <button class="px-3 py-1 bg-[--blush] text-[--color-white] rounded">
+                            <button class="px-4 py-2 text-white rounded-full shadow-md hover:bg-[--color2] focus:outline-none">
                                 Delete
                             </button>
                         </form>

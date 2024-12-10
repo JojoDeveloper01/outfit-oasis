@@ -11,16 +11,20 @@ export async function getItems() {
 export async function addItem(
     name: string,
     type: string,
+    category: string,
     size: string,
     color: string,
+    brand: string,
+    rental_price: string,
+    condition: string,
 ) {
     const sql = `
-        INSERT INTO articles (articles_name, category, size, color) 
-        VALUES (?, ?, ?, ?)
+        INSERT INTO articles (articles_name, category, size, type, color, brand, rental_price, condition) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result = await turso.execute({
         sql,
-        args: [name, type, size, color],
+        args: [name, category, size, type, color, brand, rental_price, condition],
     });
     console.log("Add result: ", result);
     return result.rowsAffected; // Return number of rows affected
