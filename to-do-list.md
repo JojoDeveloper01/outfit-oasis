@@ -33,3 +33,9 @@
   - Reserva
   - Alugueres
   - Pagamentos
+
+Coisas para corregir:
+
+pôr dropdown quando se edita os items type, size, condition
+
+Deixar os erros de formulário mais bonitos

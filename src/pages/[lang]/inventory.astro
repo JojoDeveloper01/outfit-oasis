@@ -1,5 +1,13 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import Items from "@components/Items.astro";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+import { getItems } from "@lib/dbFunctions";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+let items = await getItems();
 ---
 
 <Layout
@@ -8,5 +16,8 @@ import Layout from "@layouts/Layout.astro";
     keywords="aluguer, roupa, "
     canonical="https://outfit-oasis.com"
 >
-    <h1>inventory</h1>
+    <section class="container m-auto py-8">
+        <h1 class="mb-12">inventory</h1>
+        <Items items={items} />
+    </section>
 </Layout>

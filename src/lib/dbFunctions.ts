@@ -4,7 +4,6 @@ export let sessions = {};
 
 export async function getItems() {
     const result = await turso.execute('SELECT * FROM articles WHERE availability = 1');
-    console.log("result: ", result)
     return result.rows;
 }
 
@@ -19,7 +18,7 @@ export async function addItem(
     condition: string,
 ) {
     const sql = `
-        INSERT INTO articles (articles_name, category, size, type, color, brand, rental_price, condition) 
+        INSERT INTO articles (article_name, category, size, type, color, brand, rental_price, condition) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const result = await turso.execute({
@@ -40,12 +39,15 @@ export async function editItem(
     brand?: string,
     rental_price?: string,
     condition?: string
-) {
-    const updates = [];
-    const args = [];
+): Promise<number> {
+    // Collect fields to update
+    const updates: string[] = [];
+    const args: (string | number)[] = [];
+
+    console.log(id, name, type, category, size, color, brand, rental_price, condition)
 
     if (name) {
-        updates.push("articles_name = ?");
+        updates.push("article_name = ?");
         args.push(name);
     }
     if (type) {
@@ -77,26 +79,38 @@ export async function editItem(
         args.push(condition);
     }
 
-    args.push(id); // Add id as the last parameter
+    // Ensure there are fields to update
+    if (updates.length === 0) {
+        throw new Error("No fields provided to update.");
+    }
 
+    // Add the ID at the end of the arguments array
+    args.push(id);
+
+    // Build the SQL query
     const sql = `
         UPDATE articles 
-        SET ${updates.join(", ")} 
-        WHERE id = ?
+        SET ${updates.join(", ")}
+        WHERE article_id = ?
     `;
 
-    const result = await turso.execute({
-        sql,
-        args,
-    });
-    console.log("Edit result: ", result);
-    return result.rowsAffected; // Return number of rows affected
+    try {
+        const result = await turso.execute({
+            sql,
+            args,
+        });
+        //console.log("Edit result:", result);
+        return result.rowsAffected; // Return the number of rows affected
+    } catch (error) {
+        console.error("Error executing editItem:", error);
+        throw new Error("Failed to update the item. Please try again.");
+    }
 }
 
 export async function deleteItem(id: number) {
     const sql = `
         DELETE FROM articles 
-        WHERE id = ?
+        WHERE article_id = ?
     `;
     const result = await turso.execute({
         sql,
@@ -111,7 +125,6 @@ export async function registerUser(name: string, email: string, password: string
         sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING user_id;",
         args: [name, email, password]
     });
-    console.log("result: ", result);
     const userId = result.rows[0]?.user_id; // Obtém o ID da resposta
     return { user_id: userId, email, name };
 }

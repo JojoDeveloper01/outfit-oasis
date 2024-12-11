@@ -1,6 +1,11 @@
 ---
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import { getItems, addItem, editItem, deleteItem } from "@lib/dbFunctions";
+import Items from "@components/Items.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Define the type for errors
 interface Errors {
@@ -10,8 +15,6 @@ interface Errors {
 const errors: Errors = {}; // Initialize errors with the defined type
 let items = await getItems();
 
-console.log(items);
-
 // Handle form submission
 if (Astro.request.method === "POST") {
     try {
@@ -19,30 +22,72 @@ if (Astro.request.method === "POST") {
         const action = data.get("action");
 
         // Common fields
+        const id = data.get("id")?.toString().trim();
         const name = data.get("name")?.toString().trim();
         const type = data.get("type")?.toString().trim();
-        const category = data.get("brand")?.toString().trim();
+        const category = data.get("category")?.toString().trim();
         const size = data.get("size")?.toString().trim();
         const color = data.get("color")?.toString().trim();
         const brand = data.get("brand")?.toString().trim();
         const rental_price = data.get("rental_price")?.toString().trim();
         const condition = data.get("condition")?.toString().trim();
+        console.log("category:", category);
+        // Validation and Actions
+        if (action === "add") {
+            // Ensure all fields are provided for adding a new item
 
-        // Validation
+            if (
+                !name ||
+                !type ||
+                !category ||
+                !size ||
+                !color ||
+                !brand ||
+                !rental_price ||
+                !condition
+            ) {
+                throw new Error("All fields must be filled in.");
+            }
 
-        if (
-            !name ||
-            !type ||
-            !category ||
-            !size ||
-            !color ||
-            !brand ||
-            !rental_price ||
-            !condition
-        ) {
-            errors.global = "All fields are required!";
-        } else if (action === "add") {
-            await addItem(
+            try {
+                await addItem(
+                    name,
+                    type,
+                    category,
+                    size,
+                    color,
+                    brand,
+                    rental_price,
+                    condition,
+                );
+            } catch (error) {
+                errors.global = "Failed to add item. Please try again.";
+            }
+        } else if (action === "edit") {
+            // Ensure at least an `id` is provided for editing
+            if (!id) {
+                throw new Error("Missing item ID for editing.");
+            }
+
+            // Ensure at least one field is being updated
+            if (
+                !name ||
+                !type ||
+                !category ||
+                !size ||
+                !color ||
+                !brand ||
+                !rental_price ||
+                !condition
+            ) {
+                throw new Error(
+                    "At least one field must be provided for editing.",
+                );
+            }
+
+            // Call editItem with individual fields
+            await editItem(
+                Number(id),
                 name,
                 type,
                 category,
@@ -52,16 +97,12 @@ if (Astro.request.method === "POST") {
                 rental_price,
                 condition,
             );
-        } else if (action === "edit") {
-            const id = data.get("id");
-            const field = "";
-
-            if (!id) throw new Error("Missing item ID for editing.");
-
-            await editItem(Number(id), field);
         } else if (action === "delete") {
-            const id = data.get("id");
-            if (!id) throw new Error("Missing item ID for deletion.");
+            // Ensure an `id` is provided for deletion
+            if (!id) {
+                throw new Error("Missing item ID for deletion.");
+            }
+
             await deleteItem(Number(id));
         }
 
@@ -78,6 +119,14 @@ if (Astro.request.method === "POST") {
 ---
 
 <style>
+    .col-wrap {
+        display: flex;
+        gap: 1rem;
+
+        & > * {
+            flex: 1;
+        }
+    }
     button {
         background-color: var(--color-white);
         color: unset;
@@ -86,19 +135,35 @@ if (Astro.request.method === "POST") {
             color: unset;
         }
     }
+
+    @media screen and (max-width: 900px) {
+        .col-wrap {
+            display: grid;
+
+            & > * {
+                width: 10 0%;
+            }
+        }
+    }
 </style>
 
 <Dashboard>
-    <h1>Inventory</h1>
+    <h1>Items</h1>
 
     <!-- Global error message -->
     {errors.global && <p class="text-red-600">{errors.global}</p>}
 
     <!-- Add New Item Form -->
-    <div id="accordion-collapse" class="my-16" data-accordion="collapse">
+    <div
+        transition:persist="add-new-item"
+        id="accordion-collapse"
+        class="max-w-screen-desktop my-16"
+        data-accordion="collapse"
+    >
         <h2 id="accordion-collapse-heading-1">
             <button
                 type="button"
+                id="accordion-new-item"
                 class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 gap-3"
                 data-accordion-target="#accordion-collapse-body-1"
                 aria-expanded="false"
@@ -126,125 +191,155 @@ if (Astro.request.method === "POST") {
             <div class="p-5 border border-b-0 border-gray-200 bg-[--color5]">
                 <form method="POST" class="space-y-4">
                     <input type="hidden" name="action" value="add" />
-                    <div>
-                        <label
-                            for="name"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Name
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Enter the item's name"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
+                    <div class="col-wrap">
+                        <div>
+                            <label
+                                for="name"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Name
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Enter the item's name"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="type"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                type
+                            </label>
+                            <select
+                                id="type"
+                                name="type"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            >
+                                <option value="">Select a Type</option>
+                                <option value="clothing">clothing</option>
+                                <option value="footwear">footwear</option>
+                                <option value="other">other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                for="category"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Category
+                            </label>
+                            <input
+                                type="text"
+                                id="category"
+                                name="category"
+                                placeholder="Enter the item's category"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label
-                            for="size"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Size
-                        </label>
-                        <select
-                            id="size"
-                            name="size"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        >
-                            <option value="">Select a size</option>
-                            <option value="PP">PP</option>
-                            <option value="P">P</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                        </select>
+
+                    <div class="col-wrap">
+                        <div>
+                            <label
+                                for="size"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Size
+                            </label>
+                            <select
+                                id="size"
+                                name="size"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            >
+                                <option value="">Select a size</option>
+                                <option value="PP">PP</option>
+                                <option value="P">P</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label
+                                for="color"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Color
+                            </label>
+                            <input
+                                type="text"
+                                id="color"
+                                name="color"
+                                placeholder="Enter the item's color"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="brand"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                brand
+                            </label>
+                            <input
+                                type="text"
+                                id="brand"
+                                name="brand"
+                                placeholder="Enter the item's brand"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label
-                            for="brand"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Brand
-                        </label>
-                        <input
-                            type="text"
-                            id="brand"
-                            name="brand"
-                            placeholder="Enter the item's brand"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
+
+                    <div class="col-wrap">
+                        <div>
+                            <label
+                                for="rental_price"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                rental price
+                            </label>
+                            <input
+                                type="number"
+                                id="rental_price"
+                                name="rental_price"
+                                placeholder="Enter the item's rental_price"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label
+                                for="condition"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Condition
+                            </label>
+                            <select
+                                id="condition"
+                                name="condition"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            >
+                                <option value="">Select a condition</option>
+                                <option value="new">New</option>
+                                <option value="used">Used</option>
+                                <option value="worn">Worn</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label
-                            for="color"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Color
-                        </label>
-                        <input
-                            type="text"
-                            id="color"
-                            name="color"
-                            placeholder="Enter the item's color"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="brand"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            brand
-                        </label>
-                        <input
-                            type="text"
-                            id="brand"
-                            name="brand"
-                            placeholder="Enter the item's brand"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="rental_price"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            rental price
-                        </label>
-                        <input
-                            type="number"
-                            id="rental_price"
-                            name="rental_price"
-                            placeholder="Enter the item's rental_price"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="size"
-                            class="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Size
-                        </label>
-                        <select
-                            id="size"
-                            name="size"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        >
-                            <option value="">Select a condition</option>
-                            <option value="Used">Used</option>
-                            <option value="New">New</option>
-                        </select>
-                    </div>
+
                     <div class="flex justify-end">
                         <button
                             type="submit"
@@ -258,246 +353,82 @@ if (Astro.request.method === "POST") {
         </div>
     </div>
 
-    <!-- Inventory List -->
+    <!-- Items List -->
 
-    <ul class="mt-6 space-y-6">
-        {
-            items.map((item: any) => (
-                <li class="w-60 p-6 bg-white shadow-lg rounded-lg border-2 border-gray-300 flex flex-col space-y-4">
-                    <div class="flex flex-col space-y-2">
-                        <h3 class="text-2xl font-bold text-gray-800">
-                            {item.name}
-                        </h3>
-                        <div class="grid gap-2 text-base text-gray-600">
-                            <p class="font-medium">
-                                Size: <span>{item.size}</span>
-                            </p>
-                            <p class="font-medium">
-                                Brand: <span>{item.brand}</span>
-                            </p>
-                            <p class="font-medium">
-                                Color: <span>{item.color}</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-4">
-                        <form method="POST">
-                            <input type="hidden" name="action" value="edit" />
-                            <input type="hidden" name="id" value={item.id} />
-                            <input
-                                type="hidden"
-                                name="name"
-                                value={item.name}
-                            />
-                            <input
-                                type="hidden"
-                                name="size"
-                                value={item.size}
-                            />
-                            <input
-                                type="hidden"
-                                name="brand"
-                                value={item.brand}
-                            />
-                            <input
-                                type="hidden"
-                                name="color"
-                                value={item.color}
-                            />
-                            <button class="px-4 py-2 text-white rounded-full shadow-md hover:bg-[--color2] focus:outline-none">
-                                Edit
-                            </button>
-                        </form>
-                        <form method="POST">
-                            <input type="hidden" name="action" value="delete" />
-                            <input type="hidden" name="id" value={item.id} />
-                            <button class="px-4 py-2 text-white rounded-full shadow-md hover:bg-[--color2] focus:outline-none">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                </li>
-            ))
-        }
-    </ul>
+    <Items items={items} />
 </Dashboard>
 
-<!-- 
-<script is:inline define:vars={{ items }}>
+<script>
     document.addEventListener("astro:page-load", () => {
-        let inventory = [];
+        const accordion = document.getElementById("accordion-collapse-body-1");
+        const buttonNewItem = document.getElementById("accordion-new-item");
 
-        const form = document.querySelector<HTMLFormElement>("form");
-        const nameInput = document.getElementById("name");
-        const sizeInput = document.getElementById("size");
-        const branchInput = document.getElementById("brand");
-        const colorInput = document.getElementById("color");
-        const inventoryList = document.createElement("ul");
-
-        if (!form || !nameInput || !sizeInput || !branchInput || !colorInput) {
-            console.error("Form elements not found in the DOM.");
-            return;
-        }
-
-        inventoryList.classList.add("mt-4", "space-y-2");
-        form.parentElement?.appendChild(inventoryList);
-
-        // Fetch the initial inventory from the server
-        const fetchInventory = async () => {
-            try {
-                const response = await fetch("/api/inventory");
-                if (!response.ok) throw new Error("Failed to fetch inventory");
-                inventory = await response.json();
-                renderInventory();
-            } catch (error) {
-                console.error("Error fetching inventory:", error);
-            }
-        };
-
-        // Add a new item to the inventory
-        const addItem = async (item) => {
-            try {
-                const response = await fetch("/api/inventory", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(item),
-                });
-                if (!response.ok) throw new Error("Failed to add item");
-                await fetchInventory();
-            } catch (error) {
-                console.error("Error adding item:", error);
-            }
-        };
-
-        // Edit an existing item in the inventory
-        const editItem = async (id, updatedItem) => {
-            try {
-                const response = await fetch(`/api/inventory/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(updatedItem),
-                });
-                if (!response.ok) throw new Error("Failed to edit item");
-                await fetchInventory();
-            } catch (error) {
-                console.error("Error editing item:", error);
-            }
-        };
-
-        // Delete an item from the inventory
-        const deleteItem = async (id) => {
-            try {
-                const response = await fetch(`/api/inventory/${id}`, {
-                    method: "DELETE",
-                });
-                if (!response.ok) throw new Error("Failed to delete item");
-                await fetchInventory();
-            } catch (error) {
-                console.error("Error deleting item:", error);
-            }
-        };
-
-        // Render the inventory on the page
-        const renderInventory = () => {
-            inventoryList.innerHTML = ""; // Clear the list
-
-            inventory.forEach((item, index) => {
-                const li = document.createElement("li");
-                li.classList.add(
-                    "p-3",
-                    "rounded-lg",
-                    "bg-[--background]",
-                    "flex",
-                    "justify-between",
-                    "items-center",
-                );
-
-                li.innerHTML = `
-                <span>
-                    <strong>${item.name}</strong> - ${item.size} - ${item.branch} - ${item.color}
-                </span>
-                <div class="space-x-2">
-                    <button class="px-3 py-1 bg-[--teal] text-[--color-white] rounded" data-edit="${index}">Edit</button>
-                    <button class="px-3 py-1 bg-[--blush] text-[--color-white] rounded" data-delete="${index}">Delete</button>
-                </div>
-            `;
-
-                inventoryList.appendChild(li);
-            });
-
-            // Add edit and delete event listeners
-            inventoryList
-                .querySelectorAll<HTMLButtonElement>("[data-edit]")
-                .forEach((btn) => btn.addEventListener("click", handleEdit));
-            inventoryList
-                .querySelectorAll<HTMLButtonElement>("[data-delete]")
-                .forEach((btn) => btn.addEventListener("click", handleDelete));
-        };
-
-        // Handle editing an item
-        const handleEdit = (event) => {
-            const target = event.target;
-            const index = Number(target.dataset.edit);
-            const item = inventory[index];
-
-            if (item) {
-                // Fill the form with the item's details
-                nameInput.value = item.name;
-                sizeInput.value = item.size;
-                branchInput.value = item.branch;
-                colorInput.value = item.color;
-
-                // Update the inventory after editing
-                form.onsubmit = async (e) => {
-                    e.preventDefault();
-                    const updatedItem = {
-                        name: nameInput.value.trim(),
-                        size: sizeInput.value,
-                        branch: branchInput.value.trim(),
-                        color: colorInput.value.trim(),
-                    };
-
-                    await editItem(index, updatedItem);
-                    form.onsubmit = null; // Reset form behavior
-                    form.reset();
-                };
-            }
-        };
-
-        // Handle deleting an item
-        const handleDelete = async (event) => {
-            const target = event.target;
-            const index = Number(target.dataset.delete);
-            await deleteItem(index);
-        };
-
-        // Handle form submission for new items
-        form.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const newItem = {
-                name: nameInput.value.trim(),
-                size: sizeInput.value,
-                branch: branchInput.value.trim(),
-                color: colorInput.value.trim(),
-            };
-
-            if (
-                !newItem.name ||
-                !newItem.size ||
-                !newItem.branch ||
-                !newItem.color
-            ) {
-                alert("All fields are required!");
-                return;
-            }
-
-            await addItem(newItem);
-            form.reset();
+        buttonNewItem?.addEventListener("click", () => {
+            accordion?.classList.toggle("hidden");
         });
 
-        // Fetch the inventory on page load
-        fetchInventory();
+        document.querySelectorAll(".edit-item").forEach((button) => {
+            button.addEventListener("click", (event: any) => {
+                const listItem = event.target.closest("li"); // Get the parent <li>
+                const fieldsContainer = listItem.querySelector(".item-fields"); // Get the fields container
+
+                if (!fieldsContainer) return;
+
+                const fields = Array.from(fieldsContainer.children); // Get all the <p> elements
+                const itemId = listItem.getAttribute("data-item-id"); // Get the item ID
+
+                // Replace fields with inputs
+                fieldsContainer.innerHTML = `
+            <form method="POST" class="space-y-2">
+                <input type="hidden" name="action" value="edit" />
+                <input type="hidden" name="id" value="${itemId}" />
+                ${fields
+                    .map((field: any) => {
+                        const labelElement = field.querySelector(".font-bold"); // Get the label
+                        const valueElement =
+                            field.querySelector(".value-field"); // Get the value
+
+                        if (!labelElement || !valueElement) return ""; // Skip if elements are missing
+
+                        const label = labelElement.textContent?.trim() || ""; // Extract the label
+                        const value = valueElement.textContent?.trim() || ""; // Extract the value
+                        const name = label.toLowerCase().replace(/ /g, "_"); // Convert label to a valid input name
+
+                        return `
+                            <label class="block">
+                                ${label}
+                                <input
+                                    type="text"
+                                    name="${name}"
+                                    value="${value}"
+                                    class="block w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-[--teal] focus:border-[--teal]"
+                                />
+                            </label>
+                        `;
+                    })
+                    .join("")}
+                <div class="flex space-x-2">
+                    <button
+                        type="submit"
+                        class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none"
+                    >
+                        Save
+                    </button>
+                    <button
+                        type="button"
+                        class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none cancel-edit"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        `;
+                // Add Cancel functionality
+                const cancelButton = listItem.querySelector(".cancel-edit");
+                cancelButton.addEventListener("click", () => {
+                    location.reload(); // Reload the page to reset the fields
+                });
+            });
+        });
     });
 </script>
- -->
