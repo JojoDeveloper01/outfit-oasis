@@ -1,5 +1,16 @@
 ---
 const { items } = Astro.props;
+
+// Handle form submission
+if (Astro.request.method === "POST") {
+    try {
+        const data = await Astro.request.formData();
+        console.log("data: ", data);
+        const action = data.get("action");
+
+        console.log(action);
+    } catch (error) {}
+}
 ---
 
 <div class="grid gap-4">
@@ -63,7 +74,7 @@ const { items } = Astro.props;
         <!-- Botão de filtro -->
         <button
             type="submit"
-            class="px-4 mb-4 py-2 text-sm font-medium text-[--color-white] bg-[--teal] rounded-lg hover:bg-[--color3] focus:ring-4 focus:outline-none focus:ring-[--gold]"
+            class="w-1/2 px-4 mb-4 py-2 text-sm font-medium text-[--color-white] bg-[--teal] rounded-lg hover:bg-[--color3] focus:ring-4 focus:outline-none focus:ring-[--gold]"
         >
             Filtrar
         </button>
@@ -72,8 +83,8 @@ const { items } = Astro.props;
     </form>
 
     <ul
-        style=""
-        class="grid gap-4 grid-cols-[repeat(auto-fit,minmax(292px,1fr)]"
+        style="grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), .29fr));"
+        class="grid gap-4"
     >
         {
             items.map((item: any) => (

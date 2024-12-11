@@ -31,7 +31,7 @@ if (Astro.request.method === "POST") {
         const brand = data.get("brand")?.toString().trim();
         const rental_price = data.get("rental_price")?.toString().trim();
         const condition = data.get("condition")?.toString().trim();
-        console.log("category:", category);
+
         // Validation and Actions
         if (action === "add") {
             // Ensure all fields are provided for adding a new item

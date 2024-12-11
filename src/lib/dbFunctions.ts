@@ -7,6 +7,14 @@ export async function getItems() {
     return result.rows;
 }
 
+export async function filterItems(fields: any) {
+    const result = await turso.execute({
+        sql: 'UPDATE  FROM articles WHERE ? = ?',
+        args: [fields]
+    });
+    return result.rows;
+}
+
 export async function addItem(
     name: string,
     type: string,
@@ -25,7 +33,6 @@ export async function addItem(
         sql,
         args: [name, category, size, type, color, brand, rental_price, condition],
     });
-    console.log("Add result: ", result);
     return result.rowsAffected; // Return number of rows affected
 }
 
@@ -43,8 +50,6 @@ export async function editItem(
     // Collect fields to update
     const updates: string[] = [];
     const args: (string | number)[] = [];
-
-    console.log(id, name, type, category, size, color, brand, rental_price, condition)
 
     if (name) {
         updates.push("article_name = ?");
