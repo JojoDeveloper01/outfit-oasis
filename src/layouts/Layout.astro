@@ -25,8 +25,9 @@ if (Astro.cookies.has("user_id")) {
 
 const user = $user;
 const isStaff = user?.user_type === "staff" ? "block" : "hidden";
-
 const { title, description, canonical, keywords, hideFooter } = Astro.props;
+
+const overflowToggle = Astro.url.pathname.includes("/dashboard");
 ---
 
 <style is:global>
@@ -150,7 +151,7 @@ const { title, description, canonical, keywords, hideFooter } = Astro.props;
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />
-		<main>
+		<main class=`${overflowToggle ? 'overflow-y-hidden' : ''}`>
 			<slot />
 		</main>
 		{!hideFooter && <Footer user={user} isStaff={isStaff} />}
