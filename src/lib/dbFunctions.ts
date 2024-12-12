@@ -7,12 +7,33 @@ export async function getItems() {
     return result.rows;
 }
 
-export async function filterItems(fields: any) {
-    const result = await turso.execute({
-        sql: 'UPDATE  FROM articles WHERE ? = ?',
-        args: [fields]
-    });
-    return result.rows;
+export async function filterItems(fields: Record<string, string>) {
+    const conditions: string[] = [];
+    const args: any[] = [];
+
+    // Build SQL conditions based on non-empty fields
+    for (const [key, value] of Object.entries(fields)) {
+        if (value) {
+            conditions.push(`${key} = ?`);
+            args.push(value);
+        }
+    }
+
+    // Construct the query
+    const sql = conditions.length
+        ? `SELECT * FROM articles WHERE ${conditions.join(" AND ")}`
+        : `SELECT * FROM articles WHERE availability = 1`;
+
+    try {
+        const result = await turso.execute({
+            sql,
+            args,
+        });
+        return result.rows;
+    } catch (error) {
+        console.error("Error executing filterItems:", error);
+        throw new Error("Failed to fetch items.");
+    }
 }
 
 export async function addItem(

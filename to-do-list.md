@@ -12,7 +12,7 @@
   - Consulta
     - Procurar por categoria, tamanho, cor ou marca
   - Atualização
-    - eidtar informações já criadas
+    - editar informações já criadas
   - Eliminação
     - Remover registos já não estejam disponíveis para alugar
 
