@@ -3,10 +3,7 @@ let { items } = Astro.props;
 ---
 
 <div class="grid gap-4">
-    <form
-        id="filter-form"
-        class="w-full grid gap-4 bg-[--color-white] p-4 rounded-lg shadow-md"
-    >
+    <form id="filter-form" class="w-full grid gap-4 bg-[--color-white] p-4 rounded-lg shadow-md">
         <div class="flex flex-wrap gap-2">
             <!-- Type Dropdown -->
             <div class="flex-1 min-w-[150px]">
@@ -179,7 +176,7 @@ let { items } = Astro.props;
 
                     // Atualiza a lista de resultados
                     const resultsContainer: any =
-                        document.querySelector(".items"); // Referência ao container da `ul`
+                        document.querySelector(".articles"); // Referência ao container da `ul`
                     resultsContainer.innerHTML = ""; // Limpa os resultados anteriores
 
                     // Renderiza cada item dinamicamente

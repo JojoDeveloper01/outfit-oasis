@@ -17,6 +17,7 @@ let items = await getItems();
 
 // Handle form submission
 if (Astro.request.method === "POST") {
+    console.log("ssd")
     try {
         const data = await Astro.request.formData();
         const action = data.get("action");
