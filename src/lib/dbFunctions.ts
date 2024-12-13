@@ -1,9 +1,7 @@
 import { turso } from "@turso";
 
-export let sessions = {};
-
 export async function getItems() {
-    const result = await turso.execute('SELECT * FROM articles WHERE availability = 1');
+    const result = await turso.execute('SELECT * FROM articles WHERE availability = 1 ORDER BY added_date DESC');
     return result.rows;
 }
 
@@ -142,7 +140,7 @@ export async function deleteItem(id: number) {
         sql,
         args: [id],
     });
-    console.log("Delete result: ", result);
+    //console.log("Delete result: ", result);
     return result.rowsAffected; // Return number of rows affected
 }
 

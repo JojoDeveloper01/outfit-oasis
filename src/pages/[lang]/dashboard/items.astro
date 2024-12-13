@@ -17,7 +17,6 @@ let items = await getItems();
 
 // Handle form submission
 if (Astro.request.method === "POST") {
-    console.log("ssd")
     try {
         const data = await Astro.request.formData();
         const action = data.get("action");
@@ -368,8 +367,19 @@ if (Astro.request.method === "POST") {
             accordion?.classList.toggle("hidden");
         });
 
+        //the button is in the item component
         document.querySelectorAll(".edit-item").forEach((button) => {
             button.addEventListener("click", (event: any) => {
+                // Obtém o contêiner pai do botão clicado
+                const parentContainer = button.closest(
+                    ".item-container",
+                ) as HTMLElement;
+
+                // Esconde os botões "Edit" e "Delete" apenas no contêiner pai
+                parentContainer
+                    .querySelector("#edit-delete")
+                    ?.classList.add("hidden");
+
                 const listItem = event.target.closest("li"); // Get the parent <li>
                 const fieldsContainer = listItem.querySelector(".item-fields"); // Get the fields container
 
@@ -408,22 +418,22 @@ if (Astro.request.method === "POST") {
                         `;
                     })
                     .join("")}
-                <div class="flex space-x-2">
-                    <button
-                        type="submit"
-                        class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none"
-                    >
-                        Save
-                    </button>
-                    <button
-                        type="button"
-                        class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none cancel-edit"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        `;
+                        <div class="flex space-x-2">
+                            <button
+                                type="submit"
+                                class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none"
+                            >
+                                Save
+                            </button>
+                            <button
+                                type="button"
+                                class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none cancel-edit"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                `;
                 // Add Cancel functionality
                 const cancelButton = listItem.querySelector(".cancel-edit");
                 cancelButton.addEventListener("click", () => {
