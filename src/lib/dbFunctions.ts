@@ -5,6 +5,11 @@ export async function getItems() {
     return result.rows;
 }
 
+export async function getUsers() {
+    const result = await turso.execute('SELECT * FROM users ORDER BY registration_date DESC');
+    return result.rows;
+}
+
 export async function filterItems(fields: Record<string, string>) {
     const conditions: string[] = [];
     const args: any[] = [];
