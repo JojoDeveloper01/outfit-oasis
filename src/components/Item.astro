@@ -4,8 +4,8 @@ import Alert from "./alert.astro";
 
 const { items } = Astro.props;
 
-let user_id;
-let $user;
+let user_id: number;
+let $user: any;
 
 if (Astro.cookies.has("user_id")) {
     const getCookie = Astro.cookies.get("user_id");
@@ -27,11 +27,7 @@ const isStaff = user?.user_type || null;
         <div class="flex flex-wrap gap-2 *:min-w-36 *:flex-1">
             <!-- Type Dropdown -->
             <div>
-                <select
-                    id="type"
-                    name="type"
-                    class="block w-full p-1.5 text-sm text-[--color-black] bg-[--color-white] rounded-lg border focus:ring-[--color-black] focus:border-[--color-black]"
-                >
+                <select id="type" name="type" >
                     <option value="">Todos</option>
                     <option value="footwear">Footwear</option>
                     <option value="t-shirt">T-shirt</option>
@@ -44,18 +40,13 @@ const isStaff = user?.user_type || null;
                     type="text"
                     id="color"
                     name="color"
-                    class="block w-full p-1.5 text-sm text-[--color-black] bg-[--color-white] rounded-lg border focus:ring-[--color-black] focus:border-[--color-black]"
                     placeholder="Digite a cor..."
                 />
             </div>
 
             <!-- Size Dropdown -->
             <div>
-                <select
-                    id="size"
-                    name="size"
-                    class="block w-full p-1.5 text-sm text-[--color-black] bg-[--color-white] rounded-lg border focus:ring-[--color-black] focus:border-[--color-black]"
-                >
+                <select id="size" name="size">
                     <option value="">Todos</option>
                     <option value="P">P</option>
                     <option value="M">M</option>
@@ -70,7 +61,6 @@ const isStaff = user?.user_type || null;
                     type="text"
                     id="brand"
                     name="brand"
-                    class="block w-full p-1.5 text-sm text-[--color-black] bg-[--color-white] rounded-lg border focus:ring-[--color-black] focus:border-[--color-black]"
                     placeholder="Digite a marca..."
                 />
             </div>

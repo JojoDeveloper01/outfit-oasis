@@ -1,39 +1,115 @@
 ---
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import { getUsers } from "@lib/dbFunctions";
 
-const users = await getUsers(); // Obtém a lista de usuários do banco de dados
-const initialUsers = JSON.stringify(users); // Serializa a lista inicial para filtragem
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Define the type for errors
+interface Errors {
+    global?: string; // Optional "global" error field
+}
+
+const errors: Errors = {}; // Initialize errors with the defined type
+
+const users = await getUsers();
+
+if (Astro.request.method === "POST") {
+    try {
+        const data = await Astro.request.formData();
+        const action = data.get("action");
+
+        // Campos comuns
+        const id = data.get("id")?.toString().trim();
+        const name = data.get("name")?.toString().trim();
+        const email = data.get("email")?.toString().trim();
+        const user_type = data.get("user_type")?.toString().trim();
+        const phone = data.get("phone")?.toString().trim();
+        const profile_pic = data.get("profile_pic")?.toString().trim();
+
+        // Validação e Ações
+        if (action === "add") {
+            // Garantir que todos os campos obrigatórios estão preenchidos
+            if (!name || !email || !user_type) {
+                throw new Error("Name, email, and user type are required.");
+            }
+
+            try {
+                await addUser({
+                    name,
+                    email,
+                    user_type,
+                    phone: phone || null, // Permitir telefone opcional
+                    profile_pic: profile_pic || "https://via.placeholder.com/40", // Foto padrão
+                });
+            } catch (error) {
+                errors.global = "Failed to add user. Please try again.";
+            }
+        } else if (action === "edit") {
+            // Garantir que o ID está presente para edição
+            if (!id) {
+                throw new Error("Missing user ID for editing.");
+            }
+
+            // Garantir pelo menos um campo para atualizar
+            if (!name && !email && !user_type && !phone && !profile_pic) {
+                throw new Error("At least one field must be provided for editing.");
+            }
+
+            // Chamar função editUser com os campos disponíveis
+            await editUser(Number(id), {
+                name,
+                email,
+                user_type,
+                phone: phone || null,
+                profile_pic,
+            });
+        } else if (action === "delete") {
+            // Garantir que o ID está presente para exclusão
+            if (!id) {
+                throw new Error("Missing user ID for deletion.");
+            }
+
+            await deleteUser(Number(id));
+        }
+
+        // Atualizar a lista de utilizadores após qualquer ação
+        users = await getUsers();
+    } catch (error) {
+        if (error instanceof Error) {
+            errors.global = error.message; // Atribuir a mensagem do erro ao campo global
+        } else {
+            errors.global = "An unexpected error occurred.";
+        }
+    }
+}
+
 ---
+
+<style></style>
 
 <Dashboard>
     <h1>Users</h1>
-    <div class="flex gap-4 *:flex-1">
+    <div class="flex gap-4 mt-16 *:flex-1">
         <div class="mb-4">
-            <label
-                for="name-filter"
-                class="block text-sm font-medium text-gray-700"
-                >Filter by Name:</label
-            >
+            <label for="name-filter" class="block text-sm font-medium text-gray-700">
+                Search (Name, Email, Phone)
+            </label>
             <input
                 id="name-filter"
                 type="text"
-                placeholder="Search by name"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Search by name, email, or phone"
                 oninput="filterUsers()"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
             />
         </div>
+        
         <div class="mb-4">
-            <label
-                for="type-filter"
-                class="block text-sm font-medium text-gray-700"
-                >Filter by Type:</label
-            >
-            <select
-                id="type-filter"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                onchange="filterUsers()"
-            >
+            <label for="type-filter" class="block text-sm font-medium text-gray-700">
+                Filter by Type:
+            </label>
+            <select id="type-filter" onchange="filterUsers()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 <option value="">All</option>
                 <option value="client">Client</option>
                 <option value="staff">Staff</option>
@@ -41,57 +117,156 @@ const initialUsers = JSON.stringify(users); // Serializa a lista inicial para fi
         </div>
     </div>
 
-    <ul id="user-list" class="divide-y divide-gray-200">
-        {
-            users.map((user) => (
-                <li class="py-4 flex">
-                    <div>
-                        <p class="text-sm font-medium text-gray-900">
-                            {user.name}
-                        </p>
-                        <p class="text-sm text-gray-500">
-                            {user.email} - {user.user_type}
-                        </p>
-                        <p class="text-sm text-gray-400">{user.phone}</p>
-                    </div>
-                </li>
-            ))
-        }
-    </ul>
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-700">User Management</h2>
+        <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+            Add User
+        </button>
+    </div>
+    
+    <div class="overflow-x-auto mt-4">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        Profile Picture
+                    </th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        Name
+                    </th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        Email
+                    </th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        User Type
+                    </th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        Phone
+                    </th>
+                    <th class="py-2 px-4 text-left text-sm font-semibold text-gray-600 border-b">
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="user-list" class="divide-y divide-gray-200">
+            {users.map((user: any) => (
+                <tr class="hover:bg-gray-100">
+                    <!-- Foto de Perfil -->
+                    <td class="py-3 px-4">
+                        <img
+                            src={user.profile_pic || "https://via.placeholder.com/40"}
+                            alt="Profile"
+                            class="h-10 w-10 rounded-full object-cover"
+                        />
+                    </td>
+
+                    <!-- Informações do Usuário -->
+                    <td class="py-3 px-4 text-sm text-gray-900">{user.name}</td>
+                    <td class="py-3 px-4 text-sm text-gray-600">{user.email}</td>
+                    <td class="py-3 px-4 text-sm text-gray-600">{user.user_type}</td>
+                    <td class="py-3 px-4 text-sm text-gray-600">
+                        {user.phone ? user.phone : "N/A"}
+                    </td>
+
+                    <!-- Botões de Ações -->
+                    <td class="py-3 px-4 flex gap-2">
+                        <form action="edit" method="post">
+                            <input type="hidden" name="action" value="edit" />
+                            <input type="hidden" name="id" value={user.user_id} />
+                            <button
+                                type="submit"
+                                class="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600"
+                            >
+                                Edit
+                            </button>
+                        </form>
+                        <form action="delete" method="post">
+                            <input type="hidden" name="action" value="delete" />
+                            <input type="hidden" name="id" value={user.user_id} />
+                            <button
+                                type="submit"
+                                class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            ))}
+</tbody>
+
+        </table>
+    </div>
+    
 </Dashboard>
 
-<script define:vars={{ initialUsers }}>
+<script is:inline define:vars={{ users }}>
     // Lista inicial de usuários (serializada)
-    console.log(initialUsers);
 
     function filterUsers() {
-        const nameFilter = document
-            .getElementById("name-filter")
-            .value.toLowerCase();
-        const typeFilter = document.getElementById("type-filter").value;
+    // Obter os valores dos filtros
+    const searchFilter = document
+        .getElementById("name-filter")
+        .value.toLowerCase();
+    const typeFilter = document.getElementById("type-filter").value;
 
-        const filteredUsers = initialUsers.filter((user) => {
-            const matchesName = user.name.toLowerCase().includes(nameFilter);
-            const matchesType = typeFilter
-                ? user.user_type === typeFilter
-                : true;
-            return matchesName && matchesType;
-        });
+    // Filtragem
+    const filteredUsers = users.filter((user) => {
+        const matchesSearch =
+            user.name.toLowerCase().includes(searchFilter) ||
+            user.email.toLowerCase().includes(searchFilter) ||
+            (user.phone && user.phone.toString().includes(searchFilter));
 
-        // Atualiza a lista no DOM
-        const userList = document.getElementById("user-list");
-        userList.innerHTML = filteredUsers
-            .map(
-                (user) => `
-            <li key=${user.user_id} class="py-4 flex">
-                <div>
-                    <p class="text-sm font-medium text-gray-900">${user.name}</p>
-                    <p class="text-sm text-gray-500">${user.email} - ${user.user_type}</p>
-                    <p class="text-sm text-gray-400">${user.phone}</p>
-                </div>
-            </li>
-        `,
-            )
-            .join("");
-    }
+
+        const matchesType = typeFilter ? user.user_type === typeFilter : true;
+
+        return matchesSearch && matchesType;
+    });
+
+    // Atualiza a tabela no DOM
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = filteredUsers
+        .map(
+            (user) => `
+            <tr class="hover:bg-gray-100">
+                <!-- Foto de Perfil -->
+                <td class="py-3 px-4">
+                    <img
+                        src="${user.profile_pic || 'https://via.placeholder.com/40'}"
+                        alt="Profile"
+                        class="h-10 w-10 rounded-full object-cover"
+                    />
+                </td>
+
+                <!-- Informações do Usuário -->
+                <td class="py-3 px-4 text-sm text-gray-900">${user.name}</td>
+                <td class="py-3 px-4 text-sm text-gray-600">${user.email}</td>
+                <td class="py-3 px-4 text-sm text-gray-600">${user.user_type}</td>
+                <td class="py-3 px-4 text-sm text-gray-600">${user.phone}</td>
+
+                <!-- Botões de Ações -->
+                <td class="py-3 px-4 flex gap-2">
+                    <button
+                        class="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600"
+                        onclick="editUser(${user.user_id})"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
+                        onclick="deleteUser(${user.user_id})"
+                    >
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `
+        )
+        .join("");
+}
+
+// Expor a função globalmente
+window.filterUsers = filterUsers;
+
+    window.filterUsers = filterUsers;
 </script>
