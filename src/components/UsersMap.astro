@@ -1,4 +1,6 @@
 ---
+import PreviewImage from "./Modal/previewImage.astro";
+
 const { users } = Astro.props;
 ---
 
@@ -82,13 +84,16 @@ const { users } = Astro.props;
             </thead>
             <tbody id="user-list" class="divide-y divide-gray-200">
             {users.map((user: any) => (
+                
                 <tr class="hover:bg-gray-100">
                     <!-- Foto de Perfil -->
+                    <PreviewImage src={user.profile_pic || "https://via.placeholder.com/40"} />        
                     <td class="py-3 px-4">
                         <img
+                            onclick={`document.getElementById('preview-profile-image-${user.profile_pic || "https://via.placeholder.com/40"}').showModal()`}
                             src={user.profile_pic || "https://via.placeholder.com/40"}
                             alt="Profile"
-                            class="h-10 w-10 rounded-full object-cover"
+                            class="h-10 w-10 rounded-full object-cover cursor-pointer"
                         />
                     </td>
 

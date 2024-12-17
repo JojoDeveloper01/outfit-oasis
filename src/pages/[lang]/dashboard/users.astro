@@ -2,7 +2,14 @@
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import UsersMap from "@components/UsersMap.astro";
-import { getUsers, addUser, editUser, deleteUser } from "@lib/dbFunctions";
+import {
+    getUsers,
+    addUser,
+    editUser,
+    deleteUser,
+    userExistsByID,
+} from "@lib/dbFunctions";
+import { saveFileToPublic } from "@lib/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -24,30 +31,40 @@ if (Astro.request.method === "POST") {
         // Campos comuns
         const id = data.get("id")?.toString().trim();
         const name = data.get("name")?.toString().trim();
+        const password = data.get("password")?.toString().trim();
         const email = data.get("email")?.toString().trim();
         const user_type = data.get("user_type")?.toString().trim();
-        const phone = data.get("phone")?.toString().trim();
-        const profile_pic = data.get("profile_pic")?.toString().trim();
+        const phone = data.get("phone")?.toString().trim() || null;
+        const profile_pic = (data.get("profile_pic") as File) || null;
 
-        console.log("data:", data);
+        if (!profile_pic || profile_pic.size === 0 || !profile_pic.name) {
+            throw new Error("Invalid file. Please upload a valid image.");
+        }
+
+        let profilePicPath = "/profile_users/default.png";
 
         // Validação e Ações
         if (action === "add") {
-            console.log("data:", name, email, user_type);
-
             // Garantir que todos os campos obrigatórios estão preenchidos
-            if (!name || !email || !user_type) {
-                throw new Error("Name, email, and user type are required.");
+            if (!name || !email || !password || !user_type) {
+                throw new Error(
+                    "Name, email, password and user type are required.",
+                );
+            }
+
+            if (profile_pic && profile_pic.size > 0) {
+                profilePicPath = await saveFileToPublic(profile_pic, name);
+                //console.log("Image uploaded:", profilePicPath);
             }
 
             try {
                 await addUser({
                     name,
                     email,
+                    password,
                     user_type,
                     phone: phone ? Number(phone) : null,
-                    profile_pic:
-                        profile_pic || "https://via.placeholder.com/40", // Foto padrão
+                    profile_pic: profilePicPath,
                 });
             } catch (error) {
                 errors.global = "Failed to add user. Please try again.";
@@ -59,19 +76,37 @@ if (Astro.request.method === "POST") {
             }
 
             // Garantir pelo menos um campo para atualizar
-            if (!name && !email && !user_type && !phone && !profile_pic) {
+            if (
+                !name &&
+                !email &&
+                !password &&
+                !user_type &&
+                !phone &&
+                !profile_pic
+            ) {
                 throw new Error(
                     "At least one field must be provided for editing.",
                 );
+            }
+
+            if (profile_pic && profile_pic.size > 0) {
+                const user_name = await userExistsByID(id);
+                console.log(user_name);
+                profilePicPath = await saveFileToPublic(
+                    profile_pic,
+                    user_name.name,
+                );
+                //console.log("Image uploaded:", profilePicPath);
             }
 
             // Chamar função editUser com os campos disponíveis
             await editUser(Number(id), {
                 name,
                 email,
+                password,
                 user_type,
                 phone: phone ? Number(phone) : null,
-                profile_pic,
+                profile_pic: profilePicPath,
             });
         } else if (action === "delete") {
             // Garantir que o ID está presente para exclusão
@@ -104,7 +139,6 @@ if (Astro.request.method === "POST") {
 
     <!-- Add New User Form -->
     <div
-        transition:persist="add-new-item"
         id="accordion-collapse"
         class="max-w-screen-desktop my-16"
         data-accordion="collapse"
@@ -185,6 +219,24 @@ if (Astro.request.method === "POST") {
                             />
                         </div>
 
+                        <!-- Password Field -->
+                        <div>
+                            <label
+                                for="password"
+                                class="block text-sm font-medium text-white mb-1"
+                            >
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="******"
+                                class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                                required
+                            />
+                        </div>
+
                         <!-- User Type Field -->
                         <div>
                             <label
@@ -231,7 +283,7 @@ if (Astro.request.method === "POST") {
                             </label>
                             <input
                                 type="file"
-                                id="profile-pic"
+                                id="profile_pic"
                                 name="profile_pic"
                                 accept="image/*"
                                 class="block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[--gold] file:text-white"
@@ -289,7 +341,7 @@ if (Astro.request.method === "POST") {
                 <!-- Foto de Perfil -->
                 <td class="py-3 px-4">
                     <img
-                        src="${user.profile_pic || "https://via.placeholder.com/40"}"
+                        src="${user.profile_pic}"
                         alt="Profile"
                         class="h-10 w-10 rounded-full object-cover"
                     />
@@ -323,7 +375,5 @@ if (Astro.request.method === "POST") {
     }
 
     // Expor a função globalmente
-    window.filterUsers = filterUsers;
-
     window.filterUsers = filterUsers;
 </script>

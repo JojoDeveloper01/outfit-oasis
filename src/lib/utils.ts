@@ -1,21 +1,26 @@
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
-export async function saveFileToPublic(file: File, folder: string = "images"): Promise<string> {
-    // Caminho onde a imagem será guardada
-    const filePath = path.join(import.meta.dir, `../public/${folder}/${file.name}`);
+export async function saveFileToPublic(file: File, username: string): Promise<string> {
+    if (!file || file.size === 0 || !file.name) {
+        throw new Error("Invalid file. Please upload a valid image.");
+    }
 
-    // Converte o ficheiro para um Buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    // Garante que a pasta public/profile_users existe
+    const uploadDir = path.join(process.cwd(), "public/profile_users");
+    await mkdir(uploadDir, { recursive: true });
 
-    // Guarda o ficheiro no diretório
-    await writeFile(filePath, buffer);
+    // Gera o nome do ficheiro: "profile_nome-do-user.extensão"
+    const fileExtension = path.extname(file.name);
+    const fileName = `profile_${username.replace(/\s+/g, "-").toLowerCase()}${fileExtension}`;
+    const filePath = path.join(uploadDir, fileName);
 
-    // Retorna o caminho relativo para ser usado como URL
-    return `/${folder}/${file.name}`;
+    // Salva o ficheiro no diretório
+    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+
+    // Retorna o caminho relativo
+    return `/profile_users/${fileName}`;
 }
-
 
 export async function fetchCountryFlag(countryName: string): Promise<string | null> {
     try {

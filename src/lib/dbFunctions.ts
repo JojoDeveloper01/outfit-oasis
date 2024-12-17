@@ -1,11 +1,12 @@
 import { turso } from "@turso";
 
 interface User {
-    name: string;
-    email: string;
-    user_type: string;
-    phone: number | null;
-    profile_pic: string;
+    name: string,
+    email: string,
+    password: string,
+    user_type: string,
+    phone: number | null,
+    profile_pic: string,
 }
 
 /* Users */
@@ -20,8 +21,8 @@ export async function getUsers(): Promise<User[]> {
 export async function addUser(user: User) {
     console.log("sdd:", user)
     const result = await turso.execute({
-        sql: 'INSERT INTO users (name, email, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?)',
-        args: [user.name, user.email, user.user_type, user.phone, user.profile_pic],
+        sql: 'INSERT INTO users (name, email, password, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?, ?)',
+        args: [user.name, user.email, user.password, user.user_type, user.phone, user.profile_pic],
     });
     console.log("vresult: ", result)
     return result.rowsAffected;
@@ -36,6 +37,8 @@ export async function editUser(id: number, updates: Partial<User>): Promise<bool
             .join(", ");
 
         const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
+
+        console.log("values: ", values)
 
         // Verificar se há campos para atualizar
         if (fields.length === 0) {
