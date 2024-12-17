@@ -1,42 +1,75 @@
 import { turso } from "@turso";
 
+interface User {
+    name: string;
+    email: string;
+    user_type: string;
+    phone: number | null;
+    profile_pic: string;
+}
+
+/* Users */
+
+export async function getUsers(): Promise<User[]> {
+    const result = await turso.execute(
+        'SELECT user_id, name, email, user_type, phone, profile_pic FROM users ORDER BY registration_date DESC'
+    );
+    return result.rows as unknown as User[];
+}
+
+export async function addUser(user: User) {
+    const result = await turso.execute({
+        sql: 'INSERT INTO users (name, email, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?)',
+        args: [user.name, user.email, user.user_type, user.phone, user.profile_pic],
+    });
+    return result.rowsAffected;
+}
+
+export async function editUser(id: number, updates: Partial<User>): Promise<boolean> {
+    try {
+        // Criar os campos dinâmicos para a query
+        const fields = Object.entries(updates)
+            .filter(([_, value]) => value !== undefined && value !== null) // Ignorar valores indefinidos ou nulos
+            .map(([key, _]) => `${key} = ?`) // Mapear os campos para 'key = ?'
+            .join(", ");
+
+        const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
+
+        // Verificar se há campos para atualizar
+        if (fields.length === 0) {
+            throw new Error("No valid fields provided to update.");
+        }
+
+        // Adicionar o ID no final dos valores
+        values.push(id);
+
+        // Executar a query de atualização
+        await turso.execute({
+            sql: `UPDATE users SET ${fields} WHERE user_id = ?`,
+            args: values
+        });
+
+        return true; // Operação bem-sucedida
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false; // Operação falhou
+    }
+}
+
+export async function deleteUser(id: number) {
+    const result = await turso.execute({
+        sql: 'DELETE FROM users WHERE user_id = ?',
+        args: [id],
+    });
+    //console.log("Delete result: ", result);
+    return result.rowsAffected;
+}
+
+/* Items */
+
 export async function getItems() {
     const result = await turso.execute('SELECT * FROM articles WHERE availability = 1 ORDER BY added_date DESC');
     return result.rows;
-}
-
-export async function getUsers() {
-    const result = await turso.execute('SELECT * FROM users ORDER BY registration_date DESC');
-    return result.rows;
-}
-
-export async function filterItems(fields: Record<string, string>) {
-    const conditions: string[] = [];
-    const args: any[] = [];
-
-    // Build SQL conditions based on non-empty fields
-    for (const [key, value] of Object.entries(fields)) {
-        if (value) {
-            conditions.push(`${key} = ?`);
-            args.push(value);
-        }
-    }
-
-    // Construct the query
-    const sql = conditions.length
-        ? `SELECT * FROM articles WHERE ${conditions.join(" AND ")}`
-        : `SELECT * FROM articles WHERE availability = 1`;
-
-    try {
-        const result = await turso.execute({
-            sql,
-            args,
-        });
-        return result.rows;
-    } catch (error) {
-        console.error("Error executing filterItems:", error);
-        throw new Error("Failed to fetch items.");
-    }
 }
 
 export async function addItem(
@@ -57,7 +90,7 @@ export async function addItem(
         sql,
         args: [name, category, size, type, color, brand, rental_price, condition],
     });
-    return result.rowsAffected; // Return number of rows affected
+    return result.rowsAffected;
 }
 
 export async function editItem(
@@ -137,18 +170,44 @@ export async function editItem(
 }
 
 export async function deleteItem(id: number) {
-    const sql = `
-        DELETE FROM articles 
-        WHERE article_id = ?
-    `;
     const result = await turso.execute({
-        sql,
+        sql: 'DELETE FROM articles WHERE article_id = ?',
         args: [id],
     });
     //console.log("Delete result: ", result);
     return result.rowsAffected; // Return number of rows affected
 }
 
+export async function filterItems(fields: Record<string, string>) {
+    const conditions: string[] = [];
+    const args: any[] = [];
+
+    // Build SQL conditions based on non-empty fields
+    for (const [key, value] of Object.entries(fields)) {
+        if (value) {
+            conditions.push(`${key} = ?`);
+            args.push(value);
+        }
+    }
+
+    // Construct the query
+    const sql = conditions.length
+        ? `SELECT * FROM articles WHERE ${conditions.join(" AND ")}`
+        : `SELECT * FROM articles WHERE availability = 1`;
+
+    try {
+        const result = await turso.execute({
+            sql,
+            args,
+        });
+        return result.rows;
+    } catch (error) {
+        console.error("Error executing filterItems:", error);
+        throw new Error("Failed to fetch items.");
+    }
+}
+
+// Login and Regisyer
 export async function registerUser(name: string, email: string, password: string) {
     const result = await turso.execute({
         sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING user_id;",
@@ -168,7 +227,7 @@ export async function getUserLogin(email: string, password: string) {
     return result.rows[0];
 }
 
-// Verifica se um email já está registrado
+//Verify Users
 export async function getUserByEmail(email: string) {
     const result = await turso.execute({
         sql: `SELECT * FROM users WHERE email = ?`,
