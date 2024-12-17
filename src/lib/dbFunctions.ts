@@ -18,10 +18,12 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function addUser(user: User) {
+    console.log("sdd:", user)
     const result = await turso.execute({
         sql: 'INSERT INTO users (name, email, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?)',
         args: [user.name, user.email, user.user_type, user.phone, user.profile_pic],
     });
+    console.log("vresult: ", result)
     return result.rowsAffected;
 }
 

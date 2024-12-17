@@ -1,3 +1,22 @@
+import { writeFile } from "fs/promises";
+import path from "path";
+
+export async function saveFileToPublic(file: File, folder: string = "images"): Promise<string> {
+    // Caminho onde a imagem será guardada
+    const filePath = path.join(import.meta.dir, `../public/${folder}/${file.name}`);
+
+    // Converte o ficheiro para um Buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Guarda o ficheiro no diretório
+    await writeFile(filePath, buffer);
+
+    // Retorna o caminho relativo para ser usado como URL
+    return `/${folder}/${file.name}`;
+}
+
+
 export async function fetchCountryFlag(countryName: string): Promise<string | null> {
     try {
         const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
