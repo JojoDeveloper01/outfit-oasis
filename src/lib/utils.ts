@@ -2,10 +2,6 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 export async function saveFileToPublic(file: File, username: string): Promise<string> {
-    if (!file || file.size === 0 || !file.name) {
-        throw new Error("Invalid file. Please upload a valid image.");
-    }
-
     // Garante que a pasta public/profile_users existe
     const uploadDir = path.join(process.cwd(), "public/profile_users");
     await mkdir(uploadDir, { recursive: true });

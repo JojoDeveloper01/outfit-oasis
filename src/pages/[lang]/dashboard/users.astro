@@ -10,6 +10,7 @@ import {
     userExistsByID,
 } from "@lib/dbFunctions";
 import { saveFileToPublic } from "@lib/utils";
+import Errors from "@components/Modal/Errors.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -36,10 +37,6 @@ if (Astro.request.method === "POST") {
         const user_type = data.get("user_type")?.toString().trim();
         const phone = data.get("phone")?.toString().trim() || null;
         const profile_pic = (data.get("profile_pic") as File) || null;
-
-        if (!profile_pic || profile_pic.size === 0 || !profile_pic.name) {
-            throw new Error("Invalid file. Please upload a valid image.");
-        }
 
         let profilePicPath = "/profile_users/default.png";
 
@@ -135,7 +132,7 @@ if (Astro.request.method === "POST") {
     <h1>Users</h1>
 
     <!-- Global error message -->
-    {errors.global && <p class="text-red-600">{errors.global}</p>}
+    <Errors errors={errors} />
 
     <!-- Add New User Form -->
     <div
