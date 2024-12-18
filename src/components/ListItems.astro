@@ -1,6 +1,6 @@
 ---
 import { userExistsByID } from "@lib/dbFunctions";
-import Alert from "./alert.astro";
+import Delete from "@components/Modal/Delete.astro";
 
 const { items } = Astro.props;
 
@@ -97,7 +97,7 @@ const isStaff = user?.user_type || null;
         {
             items.map((item: any) =>
                 isStaff === "staff" ? (
-                    <Alert article_id={item.article_id} />
+                    <Delete id={item.article_id} name={item.article_name} deleteAction={null} />
                     <li
                             class="max-w-96 p-6 bg-white shadow-lg rounded-lg border-2 border-gray-300 flex flex-col"
                             data-item-id={item.article_id}
@@ -169,8 +169,8 @@ const isStaff = user?.user_type || null;
                                     </button>
 
                                     <button
-                                        onclick={`document.getElementById('delete-item-${item.article_id}').showModal()`}
-                                        id={`delete-btn-${item.article_id}`}
+                                        onclick={`document.getElementById('delete-${item.article_name}-${item.article_id}').showModal()`}
+                                        id={`delete-${item.article_name}-${item.article_id}`}
                                         class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none"
                                     >
                                         Delete

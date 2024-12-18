@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import Items from "@components/Item.astro";
+import ListItems from "@components/ListItems.astro";
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import { getItems } from "@lib/dbFunctions";
 
@@ -18,6 +18,6 @@ let items = await getItems();
 >
     <section class="container m-auto py-8">
         <h1 class="mb-12">inventory</h1>
-        <Items items={items} />
+        <ListItems items={items} />
     </section>
 </Layout>

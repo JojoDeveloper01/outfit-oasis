@@ -1,74 +1,5 @@
 import { turso } from "@turso";
 
-interface User {
-    name: string,
-    email: string,
-    password: string,
-    user_type: string,
-    phone: number | null,
-    profile_pic: string,
-}
-
-/* Users */
-
-export async function getUsers(): Promise<User[]> {
-    const result = await turso.execute(
-        'SELECT user_id, name, email, user_type, phone, profile_pic FROM users ORDER BY registration_date DESC'
-    );
-    return result.rows as unknown as User[];
-}
-
-export async function addUser(user: User) {
-    const result = await turso.execute({
-        sql: 'INSERT INTO users (name, email, password, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?, ?)',
-        args: [user.name, user.email, user.password, user.user_type, user.phone, user.profile_pic],
-    });
-    console.log("vresult: ", result)
-    return result.rowsAffected;
-}
-
-export async function editUser(id: number, updates: Partial<User>): Promise<boolean> {
-    try {
-        // Criar os campos dinâmicos para a query
-        const fields = Object.entries(updates)
-            .filter(([_, value]) => value !== undefined && value !== null) // Ignorar valores indefinidos ou nulos
-            .map(([key, _]) => `${key} = ?`) // Mapear os campos para 'key = ?'
-            .join(", ");
-
-        const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
-
-        console.log("values: ", values)
-
-        // Verificar se há campos para atualizar
-        if (fields.length === 0) {
-            throw new Error("No valid fields provided to update.");
-        }
-
-        // Adicionar o ID no final dos valores
-        values.push(id);
-
-        // Executar a query de atualização
-        await turso.execute({
-            sql: `UPDATE users SET ${fields} WHERE user_id = ?`,
-            args: values
-        });
-
-        return true; // Operação bem-sucedida
-    } catch (error) {
-        console.error("Error updating user:", error);
-        return false; // Operação falhou
-    }
-}
-
-export async function deleteUser(id: number) {
-    const result = await turso.execute({
-        sql: 'DELETE FROM users WHERE user_id = ?',
-        args: [id],
-    });
-    //console.log("Delete result: ", result);
-    return result.rowsAffected;
-}
-
 /* Items */
 
 export async function getItems() {
@@ -212,6 +143,7 @@ export async function filterItems(fields: Record<string, string>) {
 }
 
 // Login and Regisyer
+
 export async function registerUser(name: string, email: string, password: string) {
     const result = await turso.execute({
         sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING user_id;",
@@ -229,6 +161,74 @@ export async function getUserLogin(email: string, password: string) {
     );
 
     return result.rows[0];
+}
+
+// Users
+
+interface User {
+    name: string,
+    email: string,
+    password: string,
+    user_type: string,
+    phone: number | null,
+    profile_pic: string,
+}
+
+export async function getUsers(): Promise<User[]> {
+    const result = await turso.execute(
+        'SELECT user_id, name, email, user_type, phone, profile_pic FROM users ORDER BY registration_date DESC'
+    );
+    return result.rows as unknown as User[];
+}
+
+export async function addUser(user: User) {
+    const result = await turso.execute({
+        sql: 'INSERT INTO users (name, email, password, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?, ?)',
+        args: [user.name, user.email, user.password, user.user_type, user.phone, user.profile_pic],
+    });
+    return result.rowsAffected;
+}
+
+export async function editUser(id: number, updates: Partial<User>): Promise<boolean> {
+    try {
+        // Criar os campos dinâmicos para a query
+        const fields = Object.entries(updates)
+            .filter(([_, value]) => value !== undefined && value !== null) // Ignorar valores indefinidos ou nulos
+            .map(([key, _]) => `${key} = ?`) // Mapear os campos para 'key = ?'
+            .join(", ");
+
+        const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
+
+        console.log("values: ", values)
+
+        // Verificar se há campos para atualizar
+        if (fields.length === 0) {
+            throw new Error("No valid fields provided to update.");
+        }
+
+        // Adicionar o ID no final dos valores
+        values.push(id);
+
+        // Executar a query de atualização
+        await turso.execute({
+            sql: `UPDATE users SET ${fields} WHERE user_id = ?`,
+            args: values
+        });
+
+        return true; // Operação bem-sucedida
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return false; // Operação falhou
+    }
+}
+
+export async function deleteUser(id: number) {
+    const result = await turso.execute({
+        sql: 'DELETE FROM users WHERE user_id = ?',
+        args: [id],
+    });
+    console.log("Delete result: ", result);
+    return result.rowsAffected;
 }
 
 //Verify Users

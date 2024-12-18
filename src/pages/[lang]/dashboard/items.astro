@@ -1,7 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
-import Item from "@components/Item.astro";
+import ListItems from "@components/ListItems.astro";
 import { getItems, addItem, editItem, deleteItem } from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
@@ -353,7 +353,7 @@ if (Astro.request.method === "POST") {
     </div>
 
     <!-- Items List -->
-    <Item items={items} />
+    <ListItems items={items} />
 </Dashboard>
 
 <script>
