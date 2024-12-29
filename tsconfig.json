@@ -17,6 +17,9 @@
       "@api/*": [
         "src/pages/api/*"
       ],
+      "@actions": [
+        "src/actions/index.ts"
+      ],
       "@lib/*": [
         "src/lib/*"
       ],
@@ -31,7 +34,9 @@
       ],
       "@i18n/*": [
         "src/i18n/*"
-      ],
+      ]
     },
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   }
 }

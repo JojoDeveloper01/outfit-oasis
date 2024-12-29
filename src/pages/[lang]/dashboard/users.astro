@@ -1,17 +1,15 @@
 ---
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
-import ListUsers from "@components/ListUsers.astro";
 import { actions, isInputError } from "astro:actions";
-import { deleteItem, getUsers } from "@lib/dbFunctions";
+import { getUsers } from "@lib/dbFunctions";
 import Alerts from "@components/Modal/Alerts.astro";
+import UsersList from "@components/Users/UserList";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const addUserResult = Astro.getActionResult(actions.addUser);
-const editUserResult = Astro.getActionResult(actions.editUser);
-const deleteUserResult = Astro.getActionResult(actions.deleteUser);
 
 let users = await getUsers();
 
@@ -32,20 +30,6 @@ if (addUserResult?.error) {
     alertType = "error";
 } else if (addUserResult?.data) {
     alertMessage = "User added successfully!";
-}
-
-if (editUserResult?.error) {
-    alertMessage = editUserResult.error.message;
-    alertType = "error";
-} else if (editUserResult?.data) {
-    alertMessage = "User edited successfully!";
-}
-
-if (deleteUserResult?.error) {
-    alertMessage = deleteUserResult.error.message;
-    alertType = "error";
-} else if (deleteUserResult?.data) {
-    alertMessage = "User deleted successfully!";
 }
 ---
 
@@ -107,6 +91,7 @@ if (deleteUserResult?.error) {
                                 type="text"
                                 id="name"
                                 name="name"
+                                oninput="sanitizeInput(this)"
                                 placeholder="Enter the user's name"
                                 class="block w-full p-2.5 border rounded-lg bg-white text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -175,7 +160,7 @@ if (deleteUserResult?.error) {
                                 Phone
                             </label>
                             <input
-                                type="number"
+                                type="tel"
                                 id="phone"
                                 name="phone"
                                 placeholder="Enter the user's phone"
@@ -215,96 +200,12 @@ if (deleteUserResult?.error) {
         </details>
     </div>
 
-    <ListUsers users={users} actions={actions} />
+    <UsersList client:load users={users} />
 </Dashboard>
 
-<script is:inline define:vars={{ users }}>
-    import { actions } from "astro:actions";
-    //import { navigate } from "astro:transitions/client";
-
-    console.log(users);
-
-    const form = document.getElementById(
-        `confirm-delete-${users.name}-${users.id}`,
-    );
-
-    document.getElementById(form).addEventListener("submit", async () => {
-        preventDefault();
-        // Cria o FormData e envia para a action
-        const formData = new FormData(form);
-        const { error } = await actions.deleteUser(formData);
-
-        if (!error) {
-            alert("User deleted successfully!");
-        } else {
-            alert(`Error: ${error.message}`);
-        }
-    });
-
-    // Lista inicial de usuários (serializada)
-    function filterUsers() {
-        // Obter os valores dos filtros
-        const searchFilter = document
-            .getElementById("name-filter")
-            .value.toLowerCase();
-        const typeFilter = document.getElementById("type-filter").value;
-
-        // Filtragem
-        const filteredUsers = users.filter((user) => {
-            const matchesSearch =
-                user.name.toLowerCase().includes(searchFilter) ||
-                user.email.toLowerCase().includes(searchFilter) ||
-                (user.phone && user.phone.toString().includes(searchFilter));
-
-            const matchesType = typeFilter
-                ? user.user_type === typeFilter
-                : true;
-
-            return matchesSearch && matchesType;
-        });
-
-        // Atualiza a tabela no DOM
-        const userList = document.getElementById("user-list");
-        userList.innerHTML = filteredUsers
-            .map(
-                (user) => `
-            <tr class="hover:bg-gray-100">
-                <!-- Foto de Perfil -->
-                <td class="py-3 px-4">
-                    <img
-                        src="${user.profile_pic}"
-                        alt="Profile"
-                        class="h-10 w-10 rounded-full object-cover"
-                    />
-                </td>
-
-                <!-- Informações do Usuário -->
-                <td class="py-3 px-4 text-sm text-gray-900">${user.name}</td>
-                <td class="py-3 px-4 text-sm text-gray-600">${user.email}</td>
-                <td class="py-3 px-4 text-sm text-gray-600">${user.user_type}</td>
-                <td class="py-3 px-4 text-sm text-gray-600">${user.phone}</td>
-
-                <!-- Botões de Ações -->
-                <td class="py-3 px-4 flex gap-2">
-                    <button
-                        class="bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-600"
-                        onclick="editUser(${user.user_id})"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
-                        onclick="deleteUser(${user.user_id})"
-                    >
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        `,
-            )
-            .join("");
+<script is:inline>
+    function sanitizeInput(input) {
+        // Remove caracteres que não sejam letras, números ou espaços
+        input.value = input.value.replace(/[^a-zA-Z0-9 ]/g, "");
     }
-
-    // Expor a função globalmente
-    window.filterUsers = filterUsers;
 </script>

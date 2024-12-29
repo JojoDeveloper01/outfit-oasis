@@ -227,7 +227,7 @@ export async function deleteUser(id: number) {
         sql: 'DELETE FROM users WHERE user_id = ?',
         args: [id],
     });
-    console.log("Delete result: ", result);
+    //console.log("Delete result: ", result);
     return result.rowsAffected;
 }
 
@@ -246,4 +246,22 @@ export async function userExistsByID(id: string): Promise<any | null> {
         args: [id],
     });
     return result.rows[0] || null;
+}
+
+export async function getFilteredUsers(search: string, type: string) {
+    let query = `SELECT * FROM users WHERE 1=1`;
+    const params: any[] = [];
+
+    if (search) {
+        query += ` AND (LOWER(name) LIKE ? OR LOWER(email) LIKE ? OR phone LIKE ?)`;
+        params.push(`%${search.toLowerCase()}%`, `%${search.toLowerCase()}%`, `%${search}%`);
+    }
+
+    if (type) {
+        query += ` AND user_type = ?`;
+        params.push(type);
+    }
+
+    const result = await turso.execute({ sql: query, args: params });
+    return result.rows;
 }

@@ -18,6 +18,14 @@ export async function saveFileToPublic(file: File, username: string): Promise<st
     return `/profile_users/${fileName}`;
 }
 
+export function sanitizeName(name: string | undefined): string {
+    if (!name) return "";
+    return name
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "")
+        .toLowerCase()
+}
+
 export async function fetchCountryFlag(countryName: string): Promise<string | null> {
     try {
         const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);

@@ -79,21 +79,16 @@ const { user, isStaff } = Astro.props;
                             t={t}
                         />
                     ) : (
-                        <div
-                            transition:persist="buttonRegisterLogin"
-                            class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl "
-                        >
+                        <div class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl ">
                             <button
                                 id="modalLogin"
-                                data-modal-target="login"
-                                data-modal-toggle="login"
+                                onclick="document.getElementById('modalLogin').showModal()"
                             >
                                 Login
                             </button>
                             <button
                                 id="modalRegister"
-                                data-modal-target="register"
-                                data-modal-toggle="register"
+                                onclick="document.getElementById('modalRegister').showModal()"
                             >
                                 Register
                             </button>
