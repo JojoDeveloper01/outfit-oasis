@@ -1,22 +1,23 @@
-- Login Register distinguir entre user e stuff
-- Só ser utilizada pelos funcionários e User
-- User
+- Login Register distinguir entre user e stuff ✅
+- Só ser utilizada pelos funcionários e User ✅
+- User 
   - Podem vizualizar e reservar items
 - Stuff
-  - Gerir o inventário (CRUD)
-  - Iserção:
+  - Gerir o inventário (CRUD) ✅
+  - Iserção: ✅
     -  roupa,
     -  tamanho
     -  marca
     -  cor
-  - Consulta
+  - Consulta ✅
     - Procurar por categoria, tamanho, cor ou marca
-  - Atualização
+  - Atualização ✅
     - editar informações já criadas
-  - Eliminação
+  - Eliminação ✅
     - Remover registos já não estejam disponíveis para alugar
 
-- Vizualizar estado de artigo (disponível, reservado)
+- Vizualizar estado de artigo (disponível, reservado) ✅
+
 - Sistema de reservas
   - clientes podem reservar, especificando as datas pretendidas do aluguer do artigo e confirmar por email a reserva
   - A reserva só é concluida quando a pessoa paga

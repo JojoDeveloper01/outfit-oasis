@@ -6,14 +6,14 @@ import { userExistsByID } from "@lib/dbFunctions";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-let user_id;
+let id;
 let $user;
 
-if (Astro.cookies.has("user_id")) {
-    const getCookie = Astro.cookies.get("user_id");
-    user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
 
-    $user = await userExistsByID(`${user_id}`);
+    $user = await userExistsByID(`${id}`);
     // console.log($user);
 }
 
@@ -195,8 +195,8 @@ const dashboard = `/${lang}/dashboard`;
             </div>
         </aside>
 
-        <section class="pl-[2vw] py-4 w-full overflow-y-auto">
-            <div class="w-10/12 m-auto">
+        <section class="pl-[2vw] w-full overflow-y-auto">
+            <div class="w-10/12 mt-4 mb-36 m-auto">
                 <slot />
             </div>
         </section>

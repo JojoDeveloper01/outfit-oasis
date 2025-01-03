@@ -1,21 +1,57 @@
 import { writeFile, mkdir } from "fs/promises";
+import fs from "fs/promises";
 import path from "path";
 
-export async function saveFileToPublic(file: File, username: string): Promise<string> {
-    // Garante que a pasta public/profile_users existe
-    const uploadDir = path.join(process.cwd(), "public/profile_users");
-    await mkdir(uploadDir, { recursive: true });
+export async function saveFileToPublic(file: File, name: string, type: string): Promise<string> {
+    try {
+        const pathType = (type === "profile") ? "/profile_users" : "/items_images";
 
-    // Gera o nome do ficheiro: "profile_nome-do-user.extensão"
-    const fileExtension = path.extname(file.name);
-    const fileName = `profile_${username.replace(/\s+/g, "-").toLowerCase()}${fileExtension}`;
-    const filePath = path.join(uploadDir, fileName);
+        // Garante que a pasta public/profile_users existe
+        const uploadDir = path.join(process.cwd(), `public/${pathType}`);
+        await mkdir(uploadDir, { recursive: true });
 
-    // Salva o ficheiro no diretório
-    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+        // Gera o nome do ficheiro: "profile_nome-do-user.extensão" ou "item_nome-do-item.extensão"
+        const fileExtension = path.extname(file.name);
+        const sanitizedFileName = sanitizeName(name);
+        const fileName = `${type}_${sanitizedFileName}${fileExtension}`;
+        const filePath = path.join(uploadDir, fileName);
 
-    // Retorna o caminho relativo
-    return `/profile_users/${fileName}`;
+        // Salva o ficheiro no diretório
+        await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+
+        // Retorna o caminho relativo
+        return `${pathType}/${fileName}`;
+    } catch (error: any) {
+        console.error("Erro ao salvar o ficheiro:", error);
+        throw new Error(`Falha ao salvar o ficheiro: ${error.message}`);
+    }
+}
+
+//delete the images when the item or user is deleted
+export async function deleteImage(imagePath: string): Promise<void> {
+    try {
+        // Construct the absolute path to the file
+        const filePath = path.join(process.cwd(), "public", imagePath.replace(/^\/+/, ""));
+
+        // Log the resolved path for debugging
+        //console.log(`Resolved file path: ${filePath}`);
+
+        // Check if the file exists
+        await fs.access(filePath);
+
+        // Delete the file
+        await fs.unlink(filePath);
+
+        //console.log(`Image successfully deleted: ${filePath}`);
+    } catch (error: any) {
+        if (error.code === "ENOENT") {
+            console.warn(`Image not found: ${imagePath}`);
+            return; // Do not throw an error if the file does not exist
+        }
+
+        console.error("Error deleting the image:", error);
+        throw new Error(`Failed to delete the image: ${error.message}`);
+    }
 }
 
 export function sanitizeName(name: string | undefined): string {

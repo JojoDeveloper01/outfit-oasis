@@ -1,24 +1,33 @@
 CREATE TABLE
   users (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     user_type TEXT CHECK (user_type IN ('client', 'staff')) NOT NULL,
-    phone TEXT,
+    phone INTEGER,
+    profile_pic TEXT DEFAULT '/profile_users/default.png',
     registration_date DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
+ALTER TABLE users 
+ADD COLUMN profile_pic TEXT DEFAULT '/profile_users/default.png';
+
+INSERT INTO users_new (id, name, email, password, user_type, phone, registration_date)
+SELECT user_id, name, email, password, user_type, phone, registration_date
+FROM users;
+
 CREATE TABLE
   articles (
-    article_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    article_name TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
     type TEXT CHECK (type IN ('clothing', 'footwear', 'other')) NOT NULL,
     category TEXT NOT NULL,
     size TEXT NOT NULL,
     color TEXT NOT NULL,
     brand TEXT NOT NULL,
     rental_price DECIMAL(5, 2) NOT NULL,
+   image TEXT NOT NULL,
     condition TEXT CHECK (condition IN ('new', 'used', 'worn')) NOT NULL,
     availability BOOLEAN DEFAULT 1,
     added_date DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -70,7 +79,9 @@ INSERT INTO
 VALUES
   ('asdsa', 'asdsadsa', 1234);
 
-ALTER TABLE users ALTER COLUMN phone TYPE INT USING phone::integer;
+ALTER TABLE articles ADD COLUMN  image TEXT;
+
+ALTER TABLE users_new RENAME TO users;
 
 SELECT
   user_id

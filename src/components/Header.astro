@@ -13,6 +13,8 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang as keyof typeof languages);
 
 const { user, isStaff } = Astro.props;
+
+//console.log(user);
 ---
 
 <style>
@@ -55,9 +57,9 @@ const { user, isStaff } = Astro.props;
                     </li>
                     <li>
                         <a
-                            href=`/${lang}/inventory/`
+                            href=`/${lang}/clothes/`
                             class="block py-2 px-3 rounded md:p-0"
-                            >{t("nav.inventory")}</a
+                            >{t("nav.clothes")}</a
                         >
                     </li>
                     <li class=`${isStaff}`>
@@ -74,6 +76,7 @@ const { user, isStaff } = Astro.props;
                         <UserMenu
                             isStaff={isStaff}
                             name={user.name}
+                            image={user.profile_pic}
                             email={user.email}
                             lang={lang}
                             t={t}

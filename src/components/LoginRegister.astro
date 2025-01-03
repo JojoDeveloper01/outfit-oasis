@@ -21,6 +21,7 @@
                 <input
                     type="email"
                     id="loginEmail"
+                    name="loginEmail"
                     placeholder="name@company.com"
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
@@ -35,6 +36,7 @@
                 <input
                     type="password"
                     id="loginPassword"
+                    name="loginPassword"
                     placeholder="••••••••"
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
@@ -43,6 +45,7 @@
             <div class="flex items-center">
                 <input
                     id="rememberLogin"
+                    name="rememberLogin"
                     type="checkbox"
                     class="w-4 h-4 text-blue-500 border-gray-300 rounded"
                 />
@@ -190,7 +193,7 @@
                 if (response.ok) {
                     const userData = result.user;
 
-                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=3600;`; // 30 min
+                    document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
                     sessionStorage.setItem("User", JSON.stringify(userData));
 
                     location.reload();
@@ -242,7 +245,7 @@
                     const userData = result.user;
 
                     sessionStorage.setItem("user", JSON.stringify(userData));
-                    document.cookie = `user_id=${userData.user_id}; path=/; max-age=3600;`; // 30 min
+                    document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
 
                     location.reload();
                 } else {

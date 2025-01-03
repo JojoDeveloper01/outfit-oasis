@@ -1,137 +1,3 @@
-/* 
- document
-            .getElementById("filter-form")
-            ?.addEventListener("submit", async (event: any) => {
-                event.preventDefault(); // Impede o envio padrão do formulário
-
-                // Captura os valores dos campos do formulário
-                const formData = new FormData(event.target);
-                const filters = {
-                    type: formData.get("type") || "",
-                    color: formData.get("color") || "",
-                    size: formData.get("size") || "",
-                    brand: formData.get("brand") || "",
-                };
-
-                // Faz a requisição ao servidor para buscar os itens filtrados
-                try {
-                    const response = await fetch("/api/filter-items", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(filters),
-                    });
-
-                    if (!response.ok)
-                        throw new Error("Erro ao buscar os itens.");
-
-                    const items = await response.json();
-
-                    // Atualiza a lista de resultados
-                    const resultsContainer: any =
-                        document.querySelector(".articles"); // Referência ao container da `ul`
-                    resultsContainer.innerHTML = ""; // Limpa os resultados anteriores
-
-                    // Renderiza cada item dinamicamente
-                    items.forEach((item: any) => {
-                        const listItem = document.createElement("li");
-                        listItem.className =
-                            "max-w-96 p-6 bg-white shadow-lg rounded-lg border-2 border-gray-300 flex flex-col";
-                        listItem.setAttribute("data-item-id", item.article_id);
-
-                        // Monta o HTML do item com destaque nos filtros aplicados
-                        listItem.innerHTML = `
-                    <div class="flex flex-col space-y-2">
-                        <div class="grid gap-2 text-base text-gray-600 item-fields">
-                            <p class="font-medium ${
-                                filters.type && item.type === filters.type
-                                    ? "w-fit bg-[--gray] rounded-xl pl-2 pr-4 py-1"
-                                    : ""
-                            }">
-                                <span class="font-bold">Type</span>: 
-                                <span class="value-field">${item.type}</span>
-                            </p>
-                            <p class="font-medium ${
-                                filters.color && item.color === filters.color
-                                    ? "w-fit bg-[--gray] rounded-xl pl-2 pr-4 py-1"
-                                    : ""
-                            }">
-                                <span class="font-bold">Color</span>: 
-                                <span class="value-field">${item.color}</span>
-                            </p>
-                            <p class="font-medium ${
-                                filters.size && item.size === filters.size
-                                    ? "w-fit bg-[--gray] rounded-xl pl-2 pr-4 py-1"
-                                    : ""
-                            }">
-                                <span class="font-bold">Size</span>: 
-                                <span class="value-field">${item.size}</span>
-                            </p>
-                            <p class="font-medium ${
-                                filters.brand && item.brand === filters.brand
-                                    ? "w-fit bg-[--gray] rounded-xl pl-2 pr-4 py-1"
-                                    : ""
-                            }">
-                                <span class="font-bold">Brand</span>: 
-                                <span class="value-field">${item.brand}</span>
-                            </p>
-                            <p class="font-medium">
-                                <span class="font-bold">Name</span>: 
-                                <span class="value-field">${item.article_name}</span>
-                            </p>
-                            <p class="font-medium">
-                                <span class="font-bold">Category</span>: 
-                                <span class="value-field">${item.category}</span>
-                            </p>
-                            <p class="font-medium">
-                                <span class="font-bold">Rental Price</span>: 
-                                <span class="value-field">${item.rental_price}</span> €
-                            </p>
-                            <p class="font-medium">
-                                <span class="font-bold">Condition</span>: 
-                                <span class="value-field">${item.condition}</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="item-container">
-                        <div
-                            id="edit-delete"
-                            class="flex justify-start space-x-4 mt-4"
-                        >
-                            <button class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none edit-item">
-                                Edit
-                            </button>
-
-                            <button
-                                onclick="document.getElementById('delete-item-${item.article_id}').showModal()"
-                                id="delete-btn-${item.article_id}"
-                                class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none"
-                            >
-                                Delete
-                            </button>
-                        </div>
-
-                        <div id="save-cancel" class="justify-start space-x-4 mt-4 hidden">
-                            <button class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none save-item">
-                                Save
-                            </button>
-                            <button class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none cancel-item">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                        resultsContainer.appendChild(listItem); // Adiciona o item na `ul`
-                    });
-                } catch (error) {
-                    console.error(error);
-                    alert("Erro ao filtrar os itens.");
-                }
-            });
-*/
-
 import { useState, useEffect } from "preact/hooks";
 
 const debounce = (func, delay) => {
@@ -142,121 +8,200 @@ const debounce = (func, delay) => {
     };
 };
 
-export default function ItemFilter({ items, setFilteredItems }) {
-    const [type, setType] = useState("");
-    const [color, setColor] = useState("");
-    const [size, setSize] = useState("");
-    const [brand, setBrand] = useState("");
-    const [rentalPrice, setRentalPrice] = useState("");
+export default function ItemFilter({ items, setFilteredItems, setFilters }) {
+    const [filters, setLocalFilters] = useState({
+        type: "",
+        color: "",
+        size: "",
+        brand: "",
+        condition: "",
+        rentalPrice: "",
+    });
 
     useEffect(() => {
         const handleFilter = debounce(() => {
-            const filtered = items.filter((product) => {
-                const matchesType = type ? product.type === type : true;
-                const matchesColor = color
-                    ? product.color.toLowerCase().includes(color.toLowerCase())
-                    : true;
-                const matchesSize = size ? product.size === size : true;
-                const matchesBrand = brand
-                    ? product.brand.toLowerCase().includes(brand.toLowerCase())
+            const filtered = items.filter((item) => {
+                const matchesSearch = filters.search
+                    ? item.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+                    item.category.toLowerCase().includes(filters.search.toLowerCase()) ||
+                    item.brand.toLowerCase().includes(filters.search.toLowerCase()) ||
+                    item.rental_price.toString().includes(filters.search)
                     : true;
 
-                const matchesRentalPrice = rentalPrice
-                    ? rentalPrice === "lowest"
-                        ? product.rental_price === Math.min(...items.map(p => p.rental_price))
-                        : product.rental_price === Math.max(...items.map(p => p.rental_price))
+                const matchesType = filters.type ? item.type === filters.type : true;
+                const matchesColor = filters.color
+                    ? item.color.toLowerCase().includes(filters.color.toLowerCase())
+                    : true;
+                const matchesSize = filters.size ? item.size === filters.size : true;
+                const matchesCondition = filters.condition
+                    ? item.condition.toLowerCase().includes(filters.condition.toLowerCase())
+                    : true;
+                const matchesRentalPrice = filters.rentalPrice
+                    ? filters.rentalPrice === "lowest"
+                        ? item.rental_price === Math.min(...items.map((p) => p.rental_price))
+                        : item.rental_price === Math.max(...items.map((p) => p.rental_price))
                     : true;
 
                 return (
+                    matchesSearch &&
                     matchesType &&
                     matchesColor &&
                     matchesSize &&
-                    matchesBrand &&
+                    matchesCondition &&
                     matchesRentalPrice
                 );
             });
 
             setFilteredItems(filtered);
-        }, 300); // 300ms debounce
+            setFilters(filters); // Update active filters
+        }, 300);
 
         handleFilter();
-    }, [type, color, size, brand, rentalPrice]); // Atualiza ao alterar filtros
+    }, [filters]);
+
+    const updateFilter = (key, value) => {
+        setLocalFilters((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    };
+
+    const clearFilters = () => {
+        setLocalFilters({
+            type: "",
+            color: "",
+            size: "",
+            brand: "",
+            condition: "",
+            rentalPrice: "",
+        });
+        setFilteredItems(items); // Reset the filtered items to the full list
+        setFilters({}); // Clear the filters
+    };
+
+    const hasActiveFilters = Object.values(filters).some((value) => value);
 
     return (
         <div className="grid gap-4 bg-white p-4 rounded-lg shadow-md">
             <div className="flex flex-wrap gap-2">
+                {/* Search Input */}
+                <div>
+                    <input
+                        id="item-search"
+                        type="text"
+                        placeholder="Search by name, category, brand, or rental price..."
+                        value={filters.search}
+                        onInput={(e) => updateFilter("search", e.target.value)}
+                        className={`border p-2 rounded w-full ${filters.search ? "border-blue-500" : "border-gray-300"
+                            }`}
+                        autoComplete={"off"}
+                    />
+                </div>
+
                 {/* Type Dropdown */}
                 <div>
                     <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        className="border p-2 rounded"
+                        id="item-type-search"
+                        value={filters.type}
+                        onChange={(e) => updateFilter("type", e.target.value)}
+                        className={`border p-2 rounded ${filters.type ? "border-blue-500" : "border-gray-300"
+                            }`}
                     >
-                        <option value="">Todos</option>
-                        <option value="footwear">Footwear</option>
-                        <option value="t-shirt">T-shirt</option>
+                        <option value="">Type</option>
+                        <option value="clothing">clothing</option>
+                        <option value="footwear">footwear</option>
+                        <option value="other">other</option>
                     </select>
-                </div>
-
-                {/* Color Input */}
-                <div>
-                    <input
-                        type="text"
-                        placeholder="Digite a cor..."
-                        value={color}
-                        onChange={(e) => setColor(e.target.value)}
-                        className="border p-2 rounded"
-                    />
                 </div>
 
                 {/* Size Dropdown */}
                 <div>
                     <select
-                        value={size}
-                        onChange={(e) => setSize(e.target.value)}
-                        className="border p-2 rounded"
+                        id="item-size-search"
+                        value={filters.size}
+                        onChange={(e) => updateFilter("size", e.target.value)}
+                        className={`border p-2 rounded`}
                     >
-                        <option value="">Todos</option>
-                        <option value="P">P</option>
+                        <option value="">Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
                         <option value="M">M</option>
-                        <option value="G">G</option>
                         <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
                     </select>
                 </div>
 
-                {/* Brand Input */}
+                {/* Color Input */}
                 <div>
-                    <input
-                        type="text"
-                        placeholder="Digite a marca..."
-                        value={brand}
-                        onChange={(e) => setBrand(e.target.value)}
-                        className="border p-2 rounded"
-                    />
+                    <select
+                        id="item-color-search"
+                        value={filters.color}
+                        onChange={(e) => updateFilter("color", e.target.value)}
+                        className={`border p-2 rounded`}
+                    >
+                        <option value="">Colors</option>
+                        <option value="red">red</option>
+                        <option value="blue">blue</option>
+                        <option value="yellow">yellow</option>
+                        <option value="green">green</option>
+                        <option value="brown">brown</option>
+                        <option value="black">black</option>
+                        <option value="white">white</option>
+                        <option value="other">other</option>
+                    </select>
+                </div>
+
+                {/* Condition Dropdown */}
+                <div>
+                    <select
+                        id="item-condition-search"
+                        value={filters.condition}
+                        onChange={(e) =>
+                            updateFilter("condition", e.target.value)
+                        }
+                        className={`border p-2 rounded ${filters.condition
+                            ? "border-blue-500"
+                            : "border-gray-300"
+                            }`}
+                    >
+                        <option value="">Condition</option>
+                        <option value="new">new</option>
+                        <option value="used">used</option>
+                        <option value="worn">worn</option>
+                    </select>
                 </div>
 
                 {/* Rental Price Dropdown */}
                 <div>
                     <select
-                        value={rentalPrice}
-                        onChange={(e) => setRentalPrice(e.target.value)}
-                        className="border p-2 rounded"
+                        id="item-rentalPrice-search"
+                        value={filters.rentalPrice}
+                        onChange={(e) =>
+                            updateFilter("rentalPrice", e.target.value)
+                        }
+                        className={`border p-2 rounded ${filters.rentalPrice
+                            ? "border-blue-500"
+                            : "border-gray-300"
+                            }`}
                     >
+                        <option value="">Rental Price</option>
                         <option value="lowest">Lowest</option>
                         <option value="highest">Highest</option>
                     </select>
                 </div>
+
+                {/* Refresh Button */}
+                {hasActiveFilters && (
+                    <button
+                        onClick={clearFilters}
+                        className="ml-8"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-reload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.933 13.041a8 8 0 1 1 -9.925 -8.788c3.899 -1 7.935 1.007 9.425 4.747" /><path d="M20 4v5h-5" /></svg>
+                    </button>
+                )}
             </div>
 
-            {/* Filtro Aplicado */}
-            <div className="flex gap-4">
-                <button
-                    onClick={() => console.log("Filtros aplicados:", { type, color, size, brand, rentalPrice })}
-                    className="w-32 px-4 py-2 text-sm font-medium text-white bg-teal-500 rounded-lg hover:bg-teal-600 focus:ring-4 focus:outline-none focus:ring-teal-300"
-                >
-                    Filtrar
-                </button>
-            </div>
         </div>
     );
 }

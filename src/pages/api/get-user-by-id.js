@@ -2,12 +2,12 @@ import { userExistsByID } from "@lib/dbFunctions";
 
 export async function POST({ request }) {
     const body = await request.json();
-    const { user_id } = body;
+    const { id } = body;
 
-    //console.log("user_id: ", user_id);
+    //console.log("id: ", id);
 
     try {
-        const exists = await userExistsByID(user_id);
+        const exists = await userExistsByID(id);
 
         if (exists) {
             return new Response(JSON.stringify({ success: true }), {

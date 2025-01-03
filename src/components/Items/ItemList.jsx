@@ -1,20 +1,27 @@
-import { userExistsByID } from "@lib/dbFunctions";
-import Delete from "@components/Modal/Delete";
-import ItemCards from "@components/Items/ItemCard";
 import ItemFilter from "@components/Items/ItemFilter";
+import ItemTableUser from "@components/Items/ItemTableUser";
+import ItemTableStaff from "@components/Items/ItemTableStaff";
 import { useState } from "preact/hooks";
 
-export default function ItemList({ items }) {
+export default function ItemList({ items, userType }) {
     // Estado para usuários filtrados
     const [filteredItems, setFilteredItems] = useState(items);
+    const [filters, setFilters] = useState({});
 
     return (
         <section>
             {/* Filtro */}
-            <ItemFilter items={items} setFilteredItems={setFilteredItems} />
+
+            {items.length > 0 && (
+                <ItemFilter items={items} setFilteredItems={setFilteredItems} setFilters={setFilters} />
+            )}
 
             {/* List */}
-            <ItemCards items={filteredItems} />
+            {userType === "staff" ? (
+                <ItemTableStaff items={filteredItems} activeFilters={filters} />
+            ) : (
+                <ItemTableUser items={filteredItems} activeFilters={filters} />
+            )}
         </section>
     );
 }

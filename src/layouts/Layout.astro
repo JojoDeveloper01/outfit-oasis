@@ -13,14 +13,14 @@ import { userExistsByID } from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
 
-let user_id: number;
+let id: number;
 let $user: any;
 
-if (Astro.cookies.has("user_id")) {
-	const getCookie = Astro.cookies.get("user_id");
-	user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+if (Astro.cookies.has("id")) {
+	const getCookie = Astro.cookies.get("id");
+	id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
 
-	$user = await userExistsByID(`${user_id}`);
+	$user = await userExistsByID(`${id}`);
 }
 
 const user = $user;
@@ -199,7 +199,6 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 
 <script is:inline define:vars={{ user }}>
 	if (user === null) {
-		document.cookie =
-			"user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+		document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 	}
 </script>

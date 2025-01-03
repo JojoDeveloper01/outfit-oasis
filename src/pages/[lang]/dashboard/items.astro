@@ -2,135 +2,50 @@
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import ItemList from "@components/Items/ItemList";
+import Alerts from "@components/Modal/Alerts.astro";
 import { getItems, addItem, editItem, deleteItem } from "@lib/dbFunctions";
 import { userExistsByID } from "@lib/dbFunctions";
+import { actions, isInputError } from "astro:actions";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// Define the type for errors
-interface Errors {
-    global?: string; // Optional "global" error field
-}
-
-const errors: Errors = {}; // Initialize errors with the defined type
 let items = await getItems();
 
-// Handle form submission
-if (Astro.request.method === "POST") {
-    try {
-        const data = await Astro.request.formData();
-        const action = data.get("action");
-
-        // Common fields
-        const id = data.get("id")?.toString().trim();
-        const name = data.get("name")?.toString().trim();
-        const type = data.get("type")?.toString().trim();
-        const category = data.get("category")?.toString().trim();
-        const size = data.get("size")?.toString().trim();
-        const color = data.get("color")?.toString().trim();
-        const brand = data.get("brand")?.toString().trim();
-        const rental_price = data.get("rental_price")?.toString().trim();
-        const condition = data.get("condition")?.toString().trim();
-
-        // Validation and Actions
-        if (action === "add") {
-            // Ensure all fields are provided for adding a new item
-
-            if (
-                !name ||
-                !type ||
-                !category ||
-                !size ||
-                !color ||
-                !brand ||
-                !rental_price ||
-                !condition
-            ) {
-                throw new Error("All fields must be filled in.");
-            }
-
-            try {
-                await addItem(
-                    name,
-                    type,
-                    category,
-                    size,
-                    color,
-                    brand,
-                    rental_price,
-                    condition,
-                );
-            } catch (error) {
-                errors.global = "Failed to add item. Please try again.";
-            }
-        } else if (action === "edit") {
-            // Ensure at least an `id` is provided for editing
-            if (!id) {
-                throw new Error("Missing item ID for editing.");
-            }
-
-            // Ensure at least one field is being updated
-            if (
-                !name ||
-                !type ||
-                !category ||
-                !size ||
-                !color ||
-                !brand ||
-                !rental_price ||
-                !condition
-            ) {
-                throw new Error(
-                    "At least one field must be provided for editing.",
-                );
-            }
-
-            // Call editItem with individual fields
-            await editItem(
-                Number(id),
-                name,
-                type,
-                category,
-                size,
-                color,
-                brand,
-                rental_price,
-                condition,
-            );
-        } else if (action === "delete") {
-            // Ensure an `id` is provided for deletion
-            if (!id) {
-                throw new Error("Missing item ID for deletion.");
-            }
-
-            await deleteItem(Number(id));
-        }
-
-        // Refresh items after any action
-        items = await getItems();
-    } catch (error) {
-        if (error instanceof Error) {
-            errors.global = error.message; // Assign the error message to the global field
-        } else {
-            errors.global = "An unexpected error occurred.";
-        }
-    }
-}
-
-let user_id: number;
+let id: number;
 let $user: any;
 
-if (Astro.cookies.has("user_id")) {
-    const getCookie = Astro.cookies.get("user_id");
-    user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
 
-    $user = await userExistsByID(`${user_id}`);
+    $user = await userExistsByID(`${id}`);
     // console.log($user);
 }
 
 const user = $user;
 const isStaff = user?.user_type || null;
+
+// Tratamento de erros
+let alertMessage = "";
+let alertType = "success";
+
+const addItemResult = Astro.getActionResult(actions.addItem);
+
+if (addItemResult?.error) {
+    if (isInputError(addItemResult.error)) {
+        // Captura erros específicos do Zod
+        alertMessage = Object.entries(addItemResult.error.fields)
+            .map(([field, errors]) => `${field}: ${errors.join(", ")}`)
+            .join("; ");
+    } else {
+        // Outros erros gerais
+        alertMessage = addItemResult.error.message;
+    }
+    alertType = "error";
+} else if (addItemResult?.data) {
+    alertMessage = "Item added successfully!";
+}
 ---
 
 <style>
@@ -163,20 +78,21 @@ const isStaff = user?.user_type || null;
 </style>
 
 <Dashboard>
-    <h1>Items</h1>
+    <h1>Manage Items</h1>
 
     <!-- Global error message -->
-    {errors.global && <p class="text-red-600">{errors.global}</p>}
+    {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
     <!-- Add New Item Form -->
-    <details class="bg-white max-w-screen-desktop my-16">
+    <details
+        class="max-w-screen-desktop my-16 group border border-gray-200 rounded-lg"
+    >
         <summary
-            class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 gap-3 cursor-pointer"
+            class="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white rounded-t-lg hover:bg-gray-100"
         >
             <span>Add New Item</span>
             <svg
-                class="w-3 h-3 rotate-180 shrink-0"
-                aria-hidden="true"
+                class="w-3 h-3 transition-transform group-open:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 10 6"
@@ -189,158 +105,137 @@ const isStaff = user?.user_type || null;
                     d="M9 5 5 1 1 5"></path>
             </svg>
         </summary>
-        <div class="p-5 border border-b-0 border-gray-200 bg-[--color5]">
-            <form method="POST" class="space-y-4">
-                <input type="hidden" name="action" value="add" />
-                <div class="col-wrap">
+
+        <div class="p-5 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+            <form
+                action={actions.addItem}
+                method="POST"
+                class="space-y-4"
+                enctype="multipart/form-data"
+            >
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                    <!-- name Field -->
                     <div>
-                        <label
-                            for="name"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            Name
-                        </label>
+                        <label for="name"> Name </label>
                         <input
                             type="text"
                             id="name"
                             name="name"
                             placeholder="Enter the item's name"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                            autocomplete="name"
                             required
                         />
                     </div>
+
+                    <!-- Category Field -->
                     <div>
-                        <label
-                            for="type"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            type
-                        </label>
-                        <select
-                            id="type"
-                            name="type"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
+                        <label for="category"> Category </label>
+                        <input
+                            type="text"
+                            id="category"
+                            name="category"
+                            placeholder="Enter the item's category"
+                            autocomplete="category"
                             required
-                        >
+                        />
+                    </div>
+
+                    <!-- type Field -->
+                    <div>
+                        <label for="type"> type </label>
+                        <select id="type" name="type" required>
                             <option value="">Select a Type</option>
                             <option value="clothing">clothing</option>
                             <option value="footwear">footwear</option>
                             <option value="other">other</option>
                         </select>
                     </div>
-                    <div>
-                        <label
-                            for="category"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            Category
-                        </label>
-                        <input
-                            type="text"
-                            id="category"
-                            name="category"
-                            placeholder="Enter the item's category"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
-                    </div>
-                </div>
 
-                <div class="col-wrap">
+                    <!-- Size Field -->
                     <div>
-                        <label
-                            for="size"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            Size
-                        </label>
-                        <select
-                            id="size"
-                            name="size"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        >
+                        <label for="size"> Size </label>
+                        <select id="size" name="size" required>
                             <option value="">Select a size</option>
-                            <option value="PP">PP</option>
-                            <option value="P">P</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
                             <option value="M">M</option>
                             <option value="L">L</option>
                             <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
                         </select>
                     </div>
 
+                    <!-- Color Field -->
                     <div>
-                        <label
-                            for="color"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            Color
-                        </label>
-                        <input
-                            type="text"
-                            id="color"
-                            name="color"
-                            placeholder="Enter the item's color"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
+                        <label for="color"> Color </label>
+                        <select id="color" name="color" required>
+                            <option value="">Select a color</option>
+                            <option value="red">red</option>
+                            <option value="blue">blue</option>
+                            <option value="yellow">yellow</option>
+                            <option value="green">green</option>
+                            <option value="brown">brown</option>
+                            <option value="black">black</option>
+                            <option value="white">white</option>
+                            <option value="other">other</option>
+                        </select>
                     </div>
+
+                    <!-- brand Field -->
                     <div>
-                        <label
-                            for="brand"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            brand
-                        </label>
+                        <label for="brand"> brand </label>
                         <input
                             type="text"
                             id="brand"
                             name="brand"
                             placeholder="Enter the item's brand"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
                             required
                         />
                     </div>
-                </div>
 
-                <div class="col-wrap">
+                    <!-- condition Field -->
                     <div>
-                        <label
-                            for="rental_price"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            rental price
-                        </label>
-                        <input
-                            type="number"
-                            id="rental_price"
-                            name="rental_price"
-                            placeholder="Enter the item's rental_price"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label
-                            for="condition"
-                            class="block text-sm font-medium text-white mb-1"
-                        >
-                            Condition
-                        </label>
-                        <select
-                            id="condition"
-                            name="condition"
-                            class="block w-full p-2.5 border rounded-lg bg-[--color-black] border-gray-300 focus:ring-[--color-white] focus:border-[--color-white] text-[--color-white]"
-                            required
-                        >
+                        <label for="condition"> Condition </label>
+                        <select id="condition" name="condition" required>
                             <option value="">Select a condition</option>
                             <option value="new">New</option>
                             <option value="used">Used</option>
                             <option value="worn">Worn</option>
                         </select>
                     </div>
-                </div>
 
+                    <!-- rental price Field -->
+                    <div>
+                        <label for="rental_price"> rental price </label>
+                        <input
+                            type="text"
+                            id="rental_price"
+                            name="rental_price"
+                            placeholder="Enter the item's rental_price"
+                            autocomplete="rental_price"
+                            required
+                        />
+                    </div>
+
+                    <!-- image Field -->
+                    <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                        <label
+                            for="image"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            image
+                        </label>
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/*"
+                            class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                        />
+                    </div>
+                </div>
                 <div class="flex justify-end">
                     <button
                         type="submit"
@@ -354,84 +249,5 @@ const isStaff = user?.user_type || null;
     </details>
 
     <!-- Items List -->
-    <ItemList client:load items={items} />
+    <ItemList client:load items={items} userType="staff" />
 </Dashboard>
-
-<!-- <script>
-    document.addEventListener("astro:page-load", () => {
-        //the button is in the item component
-        document.querySelectorAll(".edit-item").forEach((button) => {
-            button.addEventListener("click", (event: any) => {
-                // Obtém o contêiner pai do botão clicado
-                const parentContainer = button.closest(
-                    ".item-container",
-                ) as HTMLElement;
-
-                // Esconde os botões "Edit" e "Delete" apenas no contêiner pai
-                parentContainer
-                    .querySelector("#edit-delete")
-                    ?.classList.add("hidden");
-
-                const listItem = event.target.closest("li"); // Get the parent <li>
-                const fieldsContainer = listItem.querySelector(".item-fields"); // Get the fields container
-
-                if (!fieldsContainer) return;
-
-                const fields = Array.from(fieldsContainer.children); // Get all the <p> elements
-                const itemId = listItem.getAttribute("data-item-id"); // Get the item ID
-
-                // Replace fields with inputs
-                fieldsContainer.innerHTML = `
-            <form method="POST" class="space-y-2">
-                <input type="hidden" name="action" value="edit" />
-                <input type="hidden" name="id" value="${itemId}" />
-                ${fields
-                    .map((field: any) => {
-                        const labelElement = field.querySelector(".font-bold"); // Get the label
-                        const valueElement =
-                            field.querySelector(".value-field"); // Get the value
-
-                        if (!labelElement || !valueElement) return ""; // Skip if elements are missing
-
-                        const label = labelElement.textContent?.trim() || ""; // Extract the label
-                        const value = valueElement.textContent?.trim() || ""; // Extract the value
-                        const name = label.toLowerCase().replace(/ /g, "_"); // Convert label to a valid input name
-
-                        return `
-                            <label class="block">
-                                ${label}
-                                <input
-                                    type="text"
-                                    name="${name}"
-                                    value="${value}"
-                                    class="block w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-[--teal] focus:border-[--teal]"
-                                />
-                            </label>
-                        `;
-                    })
-                    .join("")}
-                        <div class="flex space-x-2">
-                            <button
-                                type="submit"
-                                class="px-4 py-2 text-white bg-[--teal] rounded-full shadow-md hover:bg-[--color2] focus:outline-none"
-                            >
-                                Save
-                            </button>
-                            <button
-                                type="button"
-                                class="px-4 py-2 text-white bg-[--blush] rounded-full shadow-md hover:bg-[--color3] focus:outline-none cancel-edit"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                `;
-                // Add Cancel functionality
-                const cancelButton = listItem.querySelector(".cancel-edit");
-                cancelButton.addEventListener("click", () => {
-                    location.reload(); // Reload the page to reset the fields
-                });
-            });
-        });
-    });
-</script> -->

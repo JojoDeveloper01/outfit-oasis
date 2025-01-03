@@ -1,5 +1,5 @@
 ---
-const { isStaff, name, email, lang, t } = Astro.props;
+const { isStaff, image, name, email, lang, t } = Astro.props;
 const dashboard = `/${lang}/dashboard`;
 ---
 
@@ -16,7 +16,7 @@ const dashboard = `/${lang}/dashboard`;
         data-dropdown-placement="bottom"
     >
         <span class="sr-only">Open user menu</span>
-        <img class="w-8 h-8 rounded-full" src="" alt="user photo" />
+        <img src={image} class="w-8 h-8 rounded-full" src="" alt="user photo" />
     </button>
     <!-- Dropdown menu -->
     <div
@@ -114,9 +114,9 @@ const dashboard = `/${lang}/dashboard`;
 <script>
     document.addEventListener("astro:page-load", () => {
         document.getElementById("logout")?.addEventListener("click", () => {
-            // Apaga a cookie 'user_id'
+            // Apaga a cookie 'id'
             document.cookie =
-                "user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             location.reload();
         });
     });

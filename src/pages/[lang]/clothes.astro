@@ -1,0 +1,36 @@
+---
+import Layout from "@layouts/Layout.astro";
+import ItemList from "@components/Items/ItemList";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+import { getItems, userExistsByID } from "@lib/dbFunctions";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+let id: number;
+let $user: any;
+
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+
+    $user = await userExistsByID(`${id}`);
+    // console.log($user);
+}
+
+const user = $user;
+const isStaff = user?.user_type || null;
+
+let items = await getItems();
+---
+
+<Layout
+    title="clothes"
+    description="O teu relevante lugar de aluguer de roupa"
+    keywords="aluguer, roupa, "
+    canonical="https://outfit-oasis.com"
+>
+    <section class="container m-auto py-8">
+        <ItemList client:load items={items} userType="client" />
+    </section>
+</Layout>

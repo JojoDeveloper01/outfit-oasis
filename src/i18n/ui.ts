@@ -11,7 +11,7 @@ export const ui = {
     en: {
         'nav.home': 'home',
         'nav.dashboard': 'dashboard',
-        'nav.inventory': 'inventory',
+        'nav.clothes': 'clothes',
         'nav.analytics': 'analytics',
         'nav.users': 'users',
         'nav.items': 'items',
@@ -22,7 +22,7 @@ export const ui = {
     pt: {
         'nav.home': 'início',
         'nav.dashboard': 'painel',
-        'nav.inventory': 'inventario',
+        'nav.clothes': 'roupa',
         'nav.analytics': 'analiticas',
         'nav.users': 'utilizadores',
         'nav.items': 'artigos',
@@ -33,7 +33,7 @@ export const ui = {
     es: {
         'nav.home': 'inicio',
         'nav.dashboard': 'panel',
-        'nav.inventory': 'inventario',
+        'nav.clothes': 'ropa',
         'nav.analytics': 'analiticas',
         'nav.users': 'usuarios',
         'nav.items': 'articulos',
@@ -46,14 +46,14 @@ export const ui = {
 /* export const routes = {
     en: {
         'dashboard': 'dashboard',
-        'Inventory': 'inventory',
+        'clothes': 'clothes',
     },
     pt: {
         'dashboard': 'painel',
-        'Inventory': 'inventario',
+        'clothes': 'inventario',
     },
     es: {
         'dashboard': 'panel',
-        'Inventory': 'inventario',
+        'clothes': 'inventario',
     },
 } */

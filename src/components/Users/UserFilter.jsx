@@ -8,7 +8,7 @@ const debounce = (func, delay) => {
     };
 };
 
-export default function UserFilter({ users, setFilteredUsers }) {
+export default function UserFilter({ users, setFilteredUsers, setFilters }) {
     const [search, setSearch] = useState("");
     const [type, setType] = useState("");
 
@@ -26,29 +26,34 @@ export default function UserFilter({ users, setFilteredUsers }) {
             });
 
             setFilteredUsers(filtered);
+            setFilters({ search, user_type: type });
         }, 300); // 300ms de debounce
 
         handleFilter();
     }, [search, type]); // Reexecuta ao alterar `search` ou `type`
 
     return (
-        <div className="flex gap-4">
-            <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onInput={(e) => setSearch(e.target.value)}
-                className="border p-2"
-            />
-            <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="border p-2"
-            >
-                <option value="">All Types</option>
-                <option value="client">Client</option>
-                <option value="staff">Staff</option>
-            </select>
+        <div className="grid gap-4 bg-white p-4 rounded-lg shadow-md">
+            <div className="flex gap-4">
+                <input
+                    id="user-search"
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onInput={(e) => setSearch(e.target.value)}
+                    className="border p-2"
+                />
+                <select
+                    id="userType-search"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="border p-2"
+                >
+                    <option value="">All Types</option>
+                    <option value="client">Client</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
         </div>
     );
 }
