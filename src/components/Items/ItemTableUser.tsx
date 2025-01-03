@@ -14,6 +14,14 @@ interface Item {
     availability: number;
 }
 
+function sanitizeName(name: string) {
+    if (!name) return "";
+    return name
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "")
+        .toLowerCase()
+}
+
 export default function ItemTableForUser({ items }: { items: Item[] }) {
     const [data, setData] = useState(items);
 
@@ -34,11 +42,13 @@ export default function ItemTableForUser({ items }: { items: Item[] }) {
                         {/* Image Section */}
                         {item.image && (
                             <div className="absolute inset-0">
-                                <img
-                                    src={item.image}
-                                    alt="Item image"
-                                    className="w-full h-full object-cover"
-                                />
+                                <a href={`/clothes/${sanitizeName(item.name)}`}>
+                                    <img
+                                        src={item.image}
+                                        alt="Item image"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </a>
                                 {/* Availability Badge */}
                                 <div
                                     className={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg ${item.availability

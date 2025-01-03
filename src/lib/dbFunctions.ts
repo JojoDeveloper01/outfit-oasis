@@ -101,7 +101,7 @@ export async function filterItems(fields: Record<string, string>) {
 
 export async function getItemByName(name: string) {
     const result = await turso.execute({
-        sql: `SELECT * FROM articles WHERE name = ?`,
+        sql: `SELECT * FROM articles WHERE name COLLATE NOCASE = ?`,
         args: [name],
     });
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
