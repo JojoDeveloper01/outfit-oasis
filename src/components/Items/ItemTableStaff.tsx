@@ -130,7 +130,6 @@ export default function ItemCard({ items, activeFilters }: { items: Item[], acti
         }
     };
 
-
     return (
         <div className="flex flex-col gap-2 mt-8">
             {data.length === 0 ? (

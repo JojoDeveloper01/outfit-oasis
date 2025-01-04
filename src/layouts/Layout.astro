@@ -41,6 +41,7 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 		--color4: #a99c5e;
 		--color5: #849474;
 		--teal: #008080;
+		--greenCake: #5bff6f;
 		--blush: #e99a8b;
 		--gold: #e8b904;
 		--gray: #dfdfdf;
@@ -192,7 +193,9 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 		<main class=`${overflowToggle ? 'overflow-y-hidden' : ''}`>
 			<slot />
 		</main>
+
 		{!hideFooter && <Footer user={user} isStaff={isStaff} />}
+
 		<script src="node_modules/flowbite/dist/flowbite.min.js"></script>
 	</body>
 </html>
@@ -200,5 +203,12 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 <script is:inline define:vars={{ user }}>
 	if (user === null) {
 		document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+	}
+
+	function addToCart(id) {
+		// Add item to cart
+		console.log(`Item with ID ${id} added to cart`);
+		const broadcastChannel = new BroadcastChannel("cartChannel");
+		broadcastChannel.postMessage(1); // Envia o ID do produto
 	}
 </script>

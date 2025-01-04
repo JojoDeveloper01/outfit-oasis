@@ -23,6 +23,11 @@ function sanitizeName(name: string) {
 }
 
 export default function ItemTableForUser({ items }: { items: Item[] }) {
+    const addToCart = (id: number) => {
+        console.log(`Item with id ${id} added to cart`);
+        const broadcastChannel = new BroadcastChannel("cartChannel");
+        broadcastChannel.postMessage(1); // Envia o ID do produto
+    };
     const [data, setData] = useState(items);
 
     useEffect(() => {
@@ -42,25 +47,33 @@ export default function ItemTableForUser({ items }: { items: Item[] }) {
                         {/* Image Section */}
                         {item.image && (
                             <div className="absolute inset-0">
-                                <a href={`/clothes/${sanitizeName(item.name)}`}>
-                                    <img
-                                        src={item.image}
-                                        alt="Item image"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </a>
-                                {/* Availability Badge */}
-                                <div
-                                    className={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg ${item.availability
-                                        ? "bg-green-500 text-white"
-                                        : "bg-orange-500 text-white"
-                                        }`}
-                                >
-                                    {item.availability ? "Available" : "Reserved"}
+                                <div style={`view-transition-name: item-${item.id}`} className="h-full">
+                                    <a href={`/clothes/${sanitizeName(item.name)}`}>
+                                        <img
+                                            src={item.image}
+                                            alt="Item image"
+                                            className="w-full h-full object-cover overflow-hidden hover:scale-110 hover:saturate-150 hover:translate-y-[25px] transition-transform duration-200 ease-in-out"
+                                        />
+                                    </a>
+
+                                    {/* Availability Badge */}
+                                    <div
+                                        className={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg ${item.availability
+                                            ? "bg-[--teal] text-white"
+                                            : "bg-[--gold] text-white"
+                                            }`}
+                                        style={{ boxShadow: "0 2px 24px 4px rgb(85 85 85 / 43%)" }}
+                                    >
+                                        {item.availability ? "Available" : "Reserved"}
+                                    </div>
                                 </div>
-                                {/* Color Options */}
-                                {item.color && (
-                                    <div className="absolute top-2 right-2 flex gap-1">
+
+                                <div className="absolute top-2 right-2 flex flex-col gap-2 items-center">
+                                    {/* Size*/}
+                                    <div className="px-3 py-1 bg-black text-white rounded-full text-xs">{item.size}</div>
+
+                                    {/* Color*/}
+                                    <div className=" right-2 flex gap-1">
                                         <div
                                             className="w-4 h-4 rounded-full"
                                             style={{
@@ -69,21 +82,44 @@ export default function ItemTableForUser({ items }: { items: Item[] }) {
                                             }}
                                         ></div>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         )}
 
                         {/* Bottom Info Section */}
-                        <div className="absolute bottom-0 w-full bg-gradient-to-t from-white/60 to-black/70 text-white px-4 pt-4 pb-3 flex flex-col items-center">
-                            <h3 className="text-base font-semibold truncate">
-                                {item.name}
-                            </h3>
-                            <p className="text-lg font-bold mt-1 ">{item.rental_price} €</p>
-                            {item.size && (
-                                <div className="mt-2 px-3 py-1 bg-black/40 rounded-full text-xs">
-                                    {item.size}
-                                </div>
-                            )}
+                        <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-4 pt-4 pb-3 flex gap-4 justify-around">
+                            {/* Title and Price */}
+                            <div className="grid">
+                                <h3 className="text-base font-semibold truncate">{item.name}</h3>
+                                <p style="font-family:cursive" className="text-lg font-bold text-[--color2]">{item.rental_price} €</p>
+                            </div>
+
+                            {/* Cart Button */}
+                            <button
+                                className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover:bg-white hover:text-[--color2] transition-colors duration-200 ease-in-out"
+                                aria-label="Add to Cart"
+                                onClick={() => addToCart(item.id)}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart-plus"
+                                >
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M4 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                    <path d="M12.5 17h-6.5v-14h-2" />
+                                    <path d="M6 5l14 1l-.86 6.017m-2.64 .983h-10.5" />
+                                    <path d="M16 19h6" />
+                                    <path d="M19 16v6" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 ))

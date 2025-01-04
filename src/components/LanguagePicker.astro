@@ -9,29 +9,35 @@ const { languages, lang } = Astro.props as {
 };
 ---
 
-<div
-    transition:persist="languagePicker"
-    class="flex items-center md:order-2 space-x-1 md:space-x-0 rtl:space-x-reverse"
->
+<div class="flex items-center space-x-1 md:space-x-0">
     <button
         type="button"
         data-dropdown-toggle="language-dropdown-menu"
         aria-haspopup="true"
         aria-label={`Selecionar idioma atual: ${languages[lang]?.label}`}
-        class="w-32 inline-flex items-center font-medium justify-center px-4 py-2 text-sm rounded-lg cursor-pointer text-white hover:bg-[#B1BAA5]"
+        class="w-6 inline-flex items-center font-medium justify-center px-4 py-2 text-sm rounded-lg cursor-pointer text-white hover:bg-[#B1BAA5]"
         id="language-button"
     >
         <div id={`flag-${lang}`} class="relative">
             <!-- Exibir apenas a bandeira do idioma atual -->
-            <img
-                src="/icons/language.svg"
-                alt={`Bandeira de ${languages[lang]?.label || "Idioma desconhecido"}`}
-                class="w-6 h-5 rounded-full mr-2"
-            />
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-language"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                    d="M4 5h7"></path><path d="M9 3v2c0 4.418 -2.239 8 -5 8"
+                ></path><path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path><path
+                    d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"
+                ></path></svg
+            >
         </div>
-        <span id="current-language-label">
-            {languages[lang]?.label || "Idioma desconhecido"}
-        </span>
     </button>
 
     <div

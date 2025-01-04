@@ -22,118 +22,129 @@ if (!item) {
 
 <Layout>
     <div
-        class="max-w-screen-lg mx-auto flex flex-col md:flex-row gap-8 bg-gray-50 p-6 rounded-xl shadow-xl"
+        class="max-w-screen-lg mx-auto my-16 flex flex-col md:flex-row bg-gray-50 rounded-xl shadow-xl"
     >
         {/* Image Section */}
-        <div class="w-full md:w-1/2 relative">
+        <div transition:name=`item-${item.id}` class="w-full md:w-1/2 relative">
             <img
                 src={String(item.image)}
                 alt={String(item.name)}
-                class="rounded-lg shadow-md w-full h-[46rem] max-[768px]:h-[32rem] object-cover object-top"
+                class="rounded-lg shadow-md w-full h-[46rem] max-[768px]:h-[32rem] object-cover object-top saturate-150"
             />
-            {/* Badge */}
+            {/* Availability Badge */}
             <div
-                class={`absolute top-4 left-4 px-3 py-1 text-xs font-semibold uppercase rounded-md ${
+                class={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg ${
                     item.availability
-                        ? "bg-green-600 text-white"
-                        : "bg-orange-600 text-white"
+                        ? "bg-[--teal] text-white"
+                        : "bg-[--gold] text-white"
                 }`}
+                style={{ boxShadow: "0 2px 24px 4px rgb(85 85 85 / 43%)" }}
             >
                 {item.availability ? "Available" : "Reserved"}
             </div>
         </div>
 
         {/* Details Section */}
-        <div class="w-full md:w-1/2 flex flex-col gap-6">
+        <div
+            class="px-6 py-8 w-full md:w-1/2 flex flex-col justify-between gap-6"
+        >
             {/* Título e Preço */}
             <div>
                 <h1 class="text-2xl md:text-4xl font-bold text-gray-800">
                     {item.name}
                 </h1>
-                <p class="text-sm text-gray-500 mt-1">{item.category}</p>
+                <p class="text-sm text-gray-500 font-bold mt-4">
+                    {item.category}
+                </p>
                 <div class="mt-3 flex items-center gap-4">
                     <p class="text-2xl md:text-3xl font-bold text-gray-900">
-                        €{Number(item.rental_price).toFixed(2)}
+                        {Number(item.rental_price).toFixed(2)} €
                     </p>
-                    {
-                        item.discountPrice && (
-                            <p class="text-lg text-gray-500 line-through">
-                                €{Number(item.discountPrice).toFixed(2)}
-                            </p>
-                        )
-                    }
-                </div>
-                {
-                    item.discount && (
-                        <p class="text-sm text-red-600 font-semibold">
-                            Desconto {item.discount}% OFF
-                        </p>
-                    )
-                }
-            </div>
-
-            {/* Cor */}
-            <div>
-                <p class="text-gray-800 font-semibold">Cor:</p>
-                <div class="flex items-center gap-4 mt-2">
-                    <span
-                        class="w-8 h-8 rounded-full border-2 border-gray-200"
-                        style={{ backgroundColor: String(item.color) }}></span>
                 </div>
             </div>
 
-            {/* Tamanhos */}
-            <div>
-                <p class="text-gray-800 font-semibold">Tamanho:</p>
-                <div class="flex items-center gap-4 mt-2">
-                    <button
-                        class="py-2 px-4 border rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition"
-                    >
-                        {item.size}
-                    </button>
+            <div class="grid gap-4">
+                {/* Color */}
+                <div>
+                    <p class="text-gray-800 font-semibold">Color</p>
+                    <div class="flex items-center gap-4 mt-2">
+                        <span
+                            class="w-8 h-8 rounded-full border-2 border-gray-200"
+                            style={{ backgroundColor: String(item.color) }}
+                        ></span>
+                    </div>
                 </div>
-                <a
-                    href="#size-guide"
-                    class="text-sm text-orange-600 hover:underline mt-2 block"
-                >
-                    Guia de tamanhos
-                </a>
-            </div>
 
-            {/* Quantidade */}
-            <div>
-                <p class="text-gray-800 font-semibold">Quantidade:</p>
-                <div class="flex items-center gap-4 mt-2">
-                    <button class="py-2 px-4 bg-gray-100 rounded-lg font-bold"
-                        >-</button
-                    >
-                    <input
-                        type="number"
-                        value={1}
-                        class="w-16 text-center border rounded-lg"
-                        min={1}
-                    />
-                    <button class="py-2 px-4 bg-gray-100 rounded-lg font-bold"
-                        >+</button
-                    >
+                {/* Brand */}
+                <div>
+                    <p class="text-gray-800 font-semibold">Brand</p>
+                    <div class="flex items-center gap-4 mt-2">
+                        <span
+                            class="py-2 px-4 border rounded-lg text-gray-700 font-medium bg-gray-100"
+                        >
+                            {item.brand}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Tamanhos */}
+                <div>
+                    <p class="text-gray-800 font-semibold">Size</p>
+                    <div class="flex items-center gap-4 mt-2">
+                        <button
+                            class="py-2 px-4 border rounded-lg text-gray-700 font-medium bg-gray-100"
+                        >
+                            {item.size}
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Botão de Ação */}
-            <div class="mt-6">
-                <button
-                    class="w-full py-4 bg-orange-600 text-white font-bold rounded-lg shadow-md hover:bg-orange-700 transition"
+            <div class="flex flex-col justify-evently mt-6">
+                <div
+                    class="flex gap-4 *:p-4 *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
                 >
-                    Adicionar ao Carrinho
-                </button>
-            </div>
+                    <button
+                        class="w-full bg-[--teal] hover:bg-black hover:text-white"
+                    >
+                        Rent Now</button
+                    >
+                    <button
+                        onclick=`addToCart(${item.id})`
+                        class="w-1/6 flex justify-center bg-[--color2] hover:bg-black hover:text-white"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart-plus"
+                        >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"
+                            ></path>
+                            <path d="M4 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                            <path d="M12.5 17h-6.5v-14h-2"></path>
+                            <path d="M6 5l14 1l-.86 6.017m-2.64 .983h-10.5"
+                            ></path>
+                            <path d="M16 19h6"></path>
+                            <path d="M19 16v6"></path>
+                        </svg>
+                    </button>
+                </div>
 
-            {/* Informação Adicional */}
-            <div class="border-t pt-4 mt-4">
-                <ul class="text-sm text-gray-600 space-y-2">
-                    <li>💸 Qualiade - Preço</li>
-                    <li>🔒 Pagamentos seguros e suporte rápido</li>
-                </ul>
+                {/* Informação Adicional */}
+                <div class="border-t pt-4 mt-4">
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li>💸 Qualiade - Preço</li>
+                        <li>🔒 Pagamentos seguros e suporte rápido</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ import {
 import { languages } from "@i18n/ui";
 import LanguagePicker from "./LanguagePicker.astro";
 import UserMenu from "./UserMenu.astro";
+import ModalCart from "./Modal/modalCart.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -71,6 +72,12 @@ const { user, isStaff } = Astro.props;
                     </li>
                 </ul>
 
+                <LanguagePicker
+                    languages={languages}
+                    lang={lang}
+                    translatePath={translatePath}
+                />
+
                 {
                     user ? (
                         <UserMenu
@@ -98,11 +105,8 @@ const { user, isStaff } = Astro.props;
                         </div>
                     )
                 }
-                <LanguagePicker
-                    languages={languages}
-                    lang={lang}
-                    translatePath={translatePath}
-                />
+
+                <ModalCart />
             </div>
         </div>
     </nav>
