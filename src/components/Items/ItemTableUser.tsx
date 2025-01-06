@@ -96,9 +96,9 @@ export default function ItemTableForUser({ items }: { items: Item[] }) {
 
                             {/* Cart Button */}
                             <button
+                                id={`add-to-cart-${item.id}`}
                                 className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover:bg-white hover:text-[--color2] transition-colors duration-200 ease-in-out"
                                 aria-label="Add to Cart"
-                                onClick={() => addToCart(item.id)}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

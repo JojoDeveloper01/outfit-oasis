@@ -18,6 +18,8 @@ if (!item) {
     // Handle case where the item is not found
     throw new Error(`Item with Name ${item} not found.`);
 }
+
+const isDisabled = item.availability === 0 ? "disabled" : "";
 ---
 
 <Layout>
@@ -106,12 +108,16 @@ if (!item) {
                     class="flex gap-4 *:p-4 *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
                 >
                     <button
+                        onclick="document.getElementById('modalRent').showModal()"
                         class="w-full bg-[--teal] hover:bg-black hover:text-white"
+                        data-rent={item.id}
+                        disabled={item.availability === 0}
+                        title=`${item.availability === 0 ? "This item is reserved" : ""}`
                     >
                         Rent Now</button
                     >
                     <button
-                        onclick=`addToCart(${item.id})`
+                        id={`add-to-cart-${item.id}`}
                         class="w-1/6 flex justify-center bg-[--color2] hover:bg-black hover:text-white"
                     >
                         <svg

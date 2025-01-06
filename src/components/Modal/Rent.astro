@@ -1,0 +1,686 @@
+---
+import Calendar from "@components/Calendar";
+---
+
+<style>
+    .tooltip {
+        position: absolute;
+        background-color: rgba(59, 130, 246, 0.9); /* Azul com transparência */
+        color: white;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        pointer-events: none; /* Não interferir com o rato */
+        white-space: nowrap;
+        display: none; /* Inicia invisível */
+    }
+
+    .hidden-step {
+        visibility: hidden;
+        height: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    #payment-form {
+        form {
+            width: 30vw;
+            min-width: 500px;
+            align-self: center;
+            box-shadow:
+                0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+                0px 2px 5px 0px rgba(50, 50, 93, 0.1),
+                0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+            border-radius: 7px;
+            padding: 40px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        #payment-message {
+            color: rgb(105, 115, 134);
+            font-size: 16px;
+            line-height: 20px;
+            padding-top: 12px;
+            text-align: center;
+        }
+
+        #payment-element {
+            margin-bottom: 24px;
+        }
+
+        /* Buttons and links */
+        button {
+            background: #0055de;
+            font-family: Arial, sans-serif;
+            color: #ffffff;
+            border-radius: 4px;
+            border: 0;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            transition: all 0.2s ease;
+            box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+            width: 100%;
+        }
+        button:hover {
+            filter: contrast(115%);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        /* spinner/processing state, errors */
+        .spinner,
+        .spinner:before,
+        .spinner:after {
+            border-radius: 50%;
+        }
+        .spinner {
+            color: #ffffff;
+            font-size: 22px;
+            text-indent: -99999px;
+            margin: 0px auto;
+            position: relative;
+            width: 20px;
+            height: 20px;
+            box-shadow: inset 0 0 0 2px;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        .spinner:before,
+        .spinner:after {
+            position: absolute;
+            content: "";
+        }
+        .spinner:before {
+            width: 10.4px;
+            height: 20.4px;
+            background: #0055de;
+            border-radius: 20.4px 0 0 20.4px;
+            top: -0.2px;
+            left: -0.2px;
+            -webkit-transform-origin: 10.4px 10.2px;
+            transform-origin: 10.4px 10.2px;
+            -webkit-animation: loading 2s infinite ease 1.5s;
+            animation: loading 2s infinite ease 1.5s;
+        }
+        .spinner:after {
+            width: 10.4px;
+            height: 10.2px;
+            background: #0055de;
+            border-radius: 0 10.2px 10.2px 0;
+            top: -0.1px;
+            left: 10.2px;
+            -webkit-transform-origin: 0px 10.2px;
+            transform-origin: 0px 10.2px;
+            -webkit-animation: loading 2s infinite ease;
+            animation: loading 2s infinite ease;
+        }
+
+        /* Payment status page */
+        #payment-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            row-gap: 30px;
+            width: 30vw;
+            min-width: 500px;
+            min-height: 380px;
+            align-self: center;
+            box-shadow:
+                0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+                0px 2px 5px 0px rgba(50, 50, 93, 0.1),
+                0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+            border-radius: 7px;
+            padding: 40px;
+            opacity: 0;
+            animation: fadeInAnimation 1s ease forwards;
+        }
+
+        #status-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        h2 {
+            margin: 0;
+            color: #30313d;
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            display: block;
+        }
+        a:hover {
+            filter: contrast(120%);
+        }
+
+        #details-table {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+        }
+        table tbody tr:first-child td {
+            border-top: 1px solid #e6e6e6; /* Top border */
+            padding-top: 10px;
+        }
+        table tbody tr:last-child td {
+            border-bottom: 1px solid #e6e6e6; /* Bottom border */
+        }
+        td {
+            padding-bottom: 10px;
+        }
+
+        .TableContent {
+            text-align: right;
+            color: #6d6e78;
+        }
+
+        .TableLabel {
+            font-weight: 600;
+            color: #30313d;
+        }
+
+        #view-details {
+            color: #0055de;
+        }
+
+        #retry-button {
+            text-align: center;
+            background: #0055de;
+            color: #ffffff;
+            border-radius: 4px;
+            border: 0;
+            padding: 12px 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+            width: 100%;
+        }
+    }
+    @-webkit-keyframes loading {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes loading {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes fadeInAnimation {
+        to {
+            opacity: 1;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        #payment-form {
+            form,
+            #payment-status {
+                width: 80vw;
+                min-width: initial;
+            }
+        }
+    }
+</style>
+
+<dialog
+    id="modalRent"
+    class="p-0 bg-white rounded-lg shadow-lg max-w-md w-full overflow-hidden"
+>
+    <!-- Botão de fechar -->
+    <button
+        id="closeModal"
+        class="absolute top-6 right-4 text-gray-500 hover:text-gray-700 z-10"
+        aria-label="Close"
+        onclick="document.getElementById('modalRent').close()"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icon-tabler-x"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M18 6l-12 12"></path>
+            <path d="M6 6l12 12"></path>
+        </svg>
+    </button>
+
+    <div
+        class="relative h-[38rem] *:h-full p-6 *:flex *:gap-4 *:flex-col *:justify-between"
+    >
+        <!-- Passo 1 -->
+        <section id="step1">
+            <h3 class="text-xl font-bold mb-2">Choose Rental Days</h3>
+            <p class="text-lg font-semibold text-black bg-gray-200 px-4 py-2">
+                Select the days you want to rent this item
+            </p>
+
+            <Calendar client:idle />
+
+            <div class="flex justify-between">
+                <button
+                    id="closeFromStep1"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    onclick="document.getElementById('modalRent').close()"
+                >
+                    Close
+                </button>
+                <button
+                    id="nextToStep2"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <!-- Passo 2 -->
+        <section id="step2" class="hidden-step">
+            <h3 class="text-xl font-bold mb-2">Confirm Your Selection</h3>
+            <div id="itemDetails" class="h-full">
+                <!-- Informações do item -->
+            </div>
+            <div class="flex justify-between">
+                <button
+                    id="backToStep1"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"
+                        ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                        ></path><path d="M15 6l-6 6l6 6"></path></svg
+                    >
+                </button>
+                <button
+                    id="nextToStep3"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                    Confirm
+                </button>
+            </div>
+        </section>
+
+        <!-- Passo 3 -->
+        <section id="step3" class="hidden-step">
+            <h3 class="text-xl font-bold mb-2">Payment</h3>
+            <p class="text-lg font-semibold text-black bg-gray-200 px-4 py-2">
+                Choose a payment method
+            </p>
+
+            <!-- Stripe Payment Section -->
+            <div id="paymentSection" class="h-[21rem] mb-12 space-y-6">
+                <!-- Stripe Elements will be injected here -->
+                <p class="font-bold text-lg"><span id="itemPrice"></span>€</p>
+                <div class="h-[25rem] mt-2">
+                    <!-- Elemento do Stripe -->
+                    <form
+                        id="payment-form"
+                        class="h-full flex flex-col justify-between"
+                    >
+                        <div
+                            id="payment-element"
+                            class="h-full overflow-y-auto"
+                        >
+                            <!-- Stripe.js vai injetar o formulário aqui -->
+                        </div>
+                        <button id="submit" type="submit">Pay Now</button>
+                    </form>
+                    <div id="payment-message" class="hidden"></div>
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-4">
+                <button
+                    id="backToStep2"
+                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"
+                    >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"
+                        ></path>
+                        <path d="M15 6l-6 6l6 6"></path>
+                    </svg>
+                    <span class="ml-2">Back</span>
+                </button>
+            </div>
+        </section>
+    </div>
+</dialog>
+
+<!-- fazer um template de um modal para rentar roupa em que terá varios passos
+Quando clicar no botão para abrir o madal, obter o id do item com data-id desse botão e obter as informações desse item
+para depois alugar
+
+ mostrar os dias disponiveis para alugar o item num calendario e quadno clicar nos dias que quer ficar com a roupa,
+ mandar para um passo de confirmar que quer esse item mostrando as diferentes caracteristicas das roupas e o lugar a procurar a roupa
+ finalmente o ultimo passo seria o de pagamente em que vai escolher as diferentes opções para pagar online com o preço desse artigo
+-->
+
+<script>
+    import { actions } from "astro:actions";
+
+    document.addEventListener("astro:page-load", () => {
+        interface Item {
+            id: string;
+            name: string;
+            image: string;
+            price: number;
+            size: string;
+            color: string;
+            brand: string;
+        }
+
+        // Elementos do DOM
+        const step1 = document.querySelector("#step1") as HTMLElement;
+        const step2 = document.querySelector("#step2") as HTMLElement;
+        const step3 = document.querySelector("#step3") as HTMLElement;
+
+        const nextToStep2 = document.querySelector(
+            "#nextToStep2",
+        ) as HTMLButtonElement;
+        const backToStep1 = document.querySelector(
+            "#backToStep1",
+        ) as HTMLButtonElement;
+        const nextToStep3 = document.querySelector(
+            "#nextToStep3",
+        ) as HTMLButtonElement;
+        const backToStep2 = document.querySelector(
+            "#backToStep2",
+        ) as HTMLButtonElement;
+
+        let selectedItem: Item | null = null;
+
+        // Configurar Stripe
+        let stripe: any;
+        let elements: any;
+
+        // Função para abrir o modal e carregar os dados do item
+        document.addEventListener("click", async (event) => {
+            const button = (event.target as HTMLElement).closest(
+                "button[data-rent]",
+            ) as HTMLElement;
+
+            if (button && button.getAttribute("data-rent")) {
+                const itemId = button.getAttribute("data-rent");
+
+                if (itemId) {
+                    selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
+                }
+                if (selectedItem) {
+                    renderItemDetails(selectedItem);
+                }
+            }
+        });
+
+        // Passo 1 -> Passo 2
+        nextToStep2.addEventListener("click", () => {
+            step1.classList.add("hidden-step");
+            step2.classList.remove("hidden-step");
+
+            // Exibir mapa
+            setupMap();
+        });
+
+        // Passo 2 -> Passo 1
+        backToStep1.addEventListener("click", () => {
+            step2.classList.add("hidden-step");
+            step1.classList.remove("hidden-step");
+        });
+
+        // Passo 2 -> Passo 3
+        nextToStep3.addEventListener("click", () => {
+            step2.classList.add("hidden-step");
+            step3.classList.remove("hidden-step");
+            renderPaymentDetails();
+            setupStripePayment();
+        });
+
+        // Passo 3 -> Passo 2
+        backToStep2.addEventListener("click", () => {
+            step3.classList.add("hidden-step");
+            step2.classList.remove("hidden-step");
+        });
+
+        // Função para inicializar o mapa no Step 2
+        function setupMap() {
+            const mapContainer = document.getElementById("map");
+            if (mapContainer) {
+                const map = L.map("map").setView([38.864406, -9.076287], 18);
+                const marker = L.marker([38.864406, -9.076287]).addTo(map);
+
+                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    maxZoom: 19,
+                    attribution: "&copy; OpenStreetMap",
+                }).addTo(map);
+
+                marker
+                    .bindPopup("Rua José Nogueira Vaz 16, Póvoa de Santa Iria")
+                    .openPopup();
+
+                // Corrige visualização do mapa
+                map.invalidateSize();
+            }
+        }
+
+        // Função para exibir detalhes do item no Step 1
+        function renderItemDetails(item: Item) {
+            const itemDetails = document.querySelector(
+                "#itemDetails",
+            ) as HTMLElement;
+            itemDetails.innerHTML = `
+            <div class="h-full flex flex-col md:flex-row items-center md:items-stretch gap-6">
+                <!-- Seção da Imagem -->
+                <div class="w-full md:w-1/3">
+                    <img 
+                        src="${item.image}" 
+                        alt="${item.name}" 
+                        class="size-full object-cover rounded-lg border border-gray-200 shadow-sm"
+                    />
+                </div>
+
+                <!-- Seção de Detalhes -->
+                <div class="flex flex-col justify-between w-full md:w-2/3">
+                    <h4 class="text-3xl font-semibold mb-3 text-gray-800">${item.name}</h4>
+                    <div class="grid gap-2">
+                        <div class="flex justify-evenly bg-gray-200 p-2 rounded-lg">
+                            <p class="flex gap-4 items-center">
+                                <span class="font-medium"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-ruler-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M17 3l4 4l-14 14l-4 -4z"></path><path d="M16 7l-1.5 -1.5"></path><path d="M13 10l-1.5 -1.5"></path><path d="M10 13l-1.5 -1.5"></path><path d="M7 16l-1.5 -1.5"></path></svg></span> 
+                                ${item.size}
+                            </p>
+                            <p class="flex gap-3 items-center">
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-palette"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25" /><path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg> 
+                                ${item.color}
+                            </p>
+                        </div>
+
+                        <p class="flex justify-center gap-4 bg-gray-200 p-2 rounded-lg text-lg text-black-600">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-cake"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20.84 12c0 2.05 .985 3.225 -.04 5c-1.026 1.775 -2.537 1.51 -4.314 2.534c-1.776 1.026 -2.302 2.466 -4.353 2.466c-2.051 0 -2.576 -1.441 -4.353 -2.466c-1.776 -1.024 -3.288 -.759 -4.314 -2.534c-1.025 -1.775 -.04 -2.95 -.04 -5s-.985 -3.225 .04 -5c1.026 -1.775 2.537 -1.51 4.314 -2.534c1.776 -1.026 2.302 -2.466 4.353 -2.466s2.577 1.441 4.353 2.466c1.776 1.024 3.288 .759 4.313 2.534c1.026 1.775 .04 2.95 .04 5z" /></svg> 
+                            ${item.brand}
+                        </p>
+                    </div>
+
+                    <!-- Mapa -->
+                    <div id="map" class="w-full h-40 border border-gray-200 rounded- overflow-hidden" title="Local that you have to go to get your item">
+                        <!-- O mapa será carregado aqui -->
+                    </div>
+                </div>
+            </div>
+    `;
+        }
+
+        // Exibir informações de pagamento no Step 3
+        function renderPaymentDetails() {
+            if (selectedItem) {
+                const itemPrice = document.querySelector(
+                    "#itemPrice",
+                ) as HTMLElement;
+                itemPrice.textContent = selectedItem.price.toFixed(2);
+            }
+        }
+
+        // Inicializar Stripe e criar o PaymentIntent
+        async function setupStripePayment() {
+            try {
+                // Verifica se o item selecionado existe
+                if (!selectedItem) {
+                    console.error("Nenhum item selecionado para pagamento.");
+                    return;
+                }
+
+                // Preparar o item para envio ao Stripe
+                const item = [
+                    {
+                        id: selectedItem.id, // ID do item
+                        amount: selectedItem.price, // Convertendo para centavos
+                    },
+                ];
+
+                console.log("item em pagamento: ", item);
+
+                // Criar PaymentIntent via action
+                const { data, error } = await actions.createPaymentIntent({
+                    items: item as [{ id: string; amount: number }],
+                });
+
+                if (error) {
+                    console.error("Erro ao criar PaymentIntent:", error);
+                    return;
+                }
+
+                const { clientSecret } = data;
+
+                // Inicializar Stripe.js
+                const stripe = Stripe(
+                    "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
+                );
+                const elements = stripe.elements({ clientSecret });
+
+                // Criar o elemento de pagamento
+                const paymentElement = elements.create("payment", {
+                    appearance: {
+                        theme: "stripe", // Personalize se necessário
+                    },
+                    paymentMethodOrder: ["card"], // Ordena os métodos de pagamento, remove Link
+                    fields: {
+                        link: {
+                            enabled: false, // Desativa o Stripe Link
+                        },
+                    },
+                });
+                paymentElement.mount("#payment-element");
+
+                paymentElement.mount("#payment-element");
+
+                // Configurar evento de submissão do formulário
+                const form = document.querySelector(
+                    "#payment-form",
+                ) as HTMLFormElement;
+                form.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+
+                    const { error } = await stripe.confirmPayment({
+                        elements,
+                        confirmParams: {
+                            // URL para redirecionar após o pagamento
+                            return_url: "http://localhost:4321/en/complete",
+                        },
+                    });
+
+                    if (error) {
+                        const paymentMessage =
+                            document.querySelector("#payment-message");
+                        if (paymentMessage) {
+                            paymentMessage.textContent = error.message;
+                        }
+                        console.error("Erro no pagamento:", error.message);
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao configurar Stripe:", error);
+            }
+        }
+
+        // Simula a busca de um item (substitua por lógica real)
+        async function fetchItemById(id: string): Promise<Item | null> {
+            try {
+                const { data, error } = await actions.getItemID({
+                    id: Number(id),
+                });
+
+                if (error) throw new Error("Erro ao buscar item");
+                if (!data) throw new Error("Item não encontrado");
+
+                return {
+                    id: String(data.id),
+                    name: String(data.name),
+                    image: String(data.image),
+                    price: Number(data.rental_price),
+                    size: String(data.size),
+                    color: String(data.color),
+                    brand: String(data.brand),
+                };
+            } catch (error) {
+                console.error("Erro ao buscar item:", error);
+                return null;
+            }
+        }
+    });
+</script>

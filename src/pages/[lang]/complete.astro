@@ -1,0 +1,231 @@
+---
+import Layout from "@layouts/Layout.astro";
+---
+
+<style>
+    .loader {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        border-left-color: #f76c6c;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<Layout>
+    <div
+        id="payment-status"
+        class="flex flex-col items-center justify-center h-screen bg-pink-100"
+    >
+        <!-- Status de carregamento -->
+        <div id="status-loading" class="flex flex-col items-center">
+            <h1 class="text-3xl font-bold mb-4">Status do Pagamento</h1>
+            <p id="status-message" class="text-lg text-gray-700">
+                Verificando status...
+            </p>
+            <div class="loader mt-6"></div>
+            <!-- Animação de carregamento -->
+        </div>
+
+        <!-- Sucesso no pagamento -->
+        <div
+            id="status-success"
+            class="hidden flex flex-col items-center text-center"
+        >
+            <h1 class="text-3xl font-bold mb-4">🎉 Success!</h1>
+            <p class="text-lg text-green-700 font-semibold mb-4">
+                Pagamento bem-sucedido! Obrigado!
+            </p>
+            <p class="text-xl text-gray-800 font-semibold mb-4">
+                Find your item here:
+            </p>
+            <div
+                id="mapComplete"
+                class="w-96 h-64 border-2 border-gray-300 rounded-lg overflow-hidden"
+            >
+                <!-- O mapa será renderizado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Adicionar o CDN da biblioteca tsparticles/confetti -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"
+    ></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+</Layout>
+
+<!-- 
+Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho e mostrar mais informações da base de dados
+- preencher as tabelas rentals e pagamentos usando actions
+- mandar um email quando seja feito a compra para confirmar qeu foi feita e p|or o id de compra
+- deixar que as items possam ser reservados mesmo já estando reservado uma vez, só deve estar reservado completamente quando todos os dias estiverem cheios 
+- só deixar que os utilizadores cliquem em rentar, de resto, vai pedir para iniciar sessão ou criar conta
+- confirmar o email quadno incia sessão 
+- fazer o historial de rents até o mommento que pode ser visivel pelos users e admins
+- fazer as analiticas de quem entrou em cada página 
+- fazer o inbox em que o user pode fazer uma perguntas sobre os items que rentou e qualquer admin pode responder
+- fazer a p]agina inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente
+- fazer API para que qualquer pessoa possa obter todos os items da página e filtrar
+- fazer documentação da API simples e rapida
+- pôr a página bonita 
+    - fazer a landing page mostrando as diferentes roupas
+    - fazer um fundo movivel, que se mexa com o scroll, como um video/imagens e a cada pixel que seja mmovido para baixo, umas milesimas de segundos ou alguma imagens s\ao mostradas
+
+-->
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const stripe = Stripe(
+            "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
+        );
+
+        checkStatus();
+
+        async function checkStatus() {
+            const clientSecret = new URLSearchParams(
+                window.location.search,
+            ).get("payment_intent_client_secret");
+
+            if (!clientSecret) {
+                const statusMessageElement =
+                    document.getElementById("status-message");
+                if (statusMessageElement) {
+                    statusMessageElement.textContent =
+                        "Erro: nenhum pagamento foi encontrado.";
+                }
+                return;
+            }
+
+            const { paymentIntent } =
+                await stripe.retrievePaymentIntent(clientSecret);
+
+            if (paymentIntent) {
+                if (paymentIntent.status === "succeeded") {
+                    showSuccess();
+                } else {
+                    const statusMessageElement =
+                        document.getElementById("status-message");
+                    if (statusMessageElement) {
+                        statusMessageElement.textContent =
+                            "Seu pagamento está sendo processado.";
+                    }
+                }
+            } else {
+                const statusMessageElement =
+                    document.getElementById("status-message");
+                if (statusMessageElement) {
+                    statusMessageElement.textContent =
+                        "Erro no pagamento. Por favor, tente novamente.";
+                }
+            }
+        }
+
+        // Função para mostrar sucesso, confete e mapa
+        function showSuccess() {
+            const statusLoadingElement =
+                document.getElementById("status-loading");
+            const statusSuccessElement =
+                document.getElementById("status-success");
+
+            if (statusLoadingElement) {
+                statusLoadingElement.classList.add("hidden");
+            }
+            if (statusSuccessElement) {
+                statusSuccessElement.classList.remove("hidden");
+            }
+
+            // Disparar confete
+            triggerConfetti();
+
+            // Renderizar o mapa
+            setupMap();
+        }
+
+        // Função para disparar o confete
+        function triggerConfetti() {
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 },
+            };
+
+            function fire(
+                particleRatio: number,
+                opts: {
+                    spread: number;
+                    startVelocity?: number;
+                    decay?: number;
+                    scalar?: number;
+                },
+            ) {
+                confetti(
+                    Object.assign({}, defaults, opts, {
+                        particleCount: Math.floor(count * particleRatio),
+                    }),
+                );
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
+
+            fire(0.2, {
+                spread: 60,
+            });
+
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8,
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2,
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        }
+
+        // Função para renderizar o mapa
+        function setupMap() {
+            const mapContainer = document.getElementById("mapComplete");
+            if (mapContainer) {
+                const map = L.map(mapContainer).setView(
+                    [38.864406, -9.076287], // Coordenadas do local
+                    18, // Zoom do mapa
+                );
+
+                L.tileLayer(
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    {
+                        attribution:
+                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    },
+                ).addTo(map);
+
+                L.marker([38.864406, -9.076287])
+                    .addTo(map)
+                    .bindPopup("Rua José Nogueira Vaz 16, Póvoa de Santa Iria")
+                    .openPopup();
+            }
+        }
+    });
+</script>

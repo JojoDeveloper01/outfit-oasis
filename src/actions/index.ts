@@ -1,7 +1,15 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
-import { addUser, editUser, deleteUser, getUserByEmail, addItem, getItemByName, editItem, deleteItem } from "@lib/dbFunctions";
+import { addUser, editUser, deleteUser, getUserByEmail, addItem, getItemByName, editItem, getItemByID, deleteItem } from "@lib/dbFunctions";
 import { saveFileToPublic, deleteImage } from "@lib/utils";
+import Stripe from "stripe";
+
+// Inicialize o Stripe com sua chave secreta
+const stripe = new Stripe("sk_test_51Qe20MQiiUMPEnxKmA9gEAXEMyfMP1pfF4pCNrLsihG686cZWSln7MWzI0sVRH7J3LlmvdrlHsKJayxp0Hq2K9eO001rcErWGV");
+
+const calculateOrderAmount = (items: { id: string; amount: number }[]) => {
+    return items.reduce((total, item) => total + item.amount, 0);
+};
 
 //User Schemas
 const baseUserSchema = z.object({
@@ -326,7 +334,33 @@ export const server = {
         },
     }),
 
+    getItemID: defineAction({
+        input: z.object({
+            id: z.number().min(1, "Item id is required."),
+        }),
+        handler: async ({ id }) => {
+            try {
+                const item = await getItemByID(id);
+
+                if (!item) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "Item not found.",
+                    });
+                }
+
+                return item;
+            } catch (error) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to get item ID. Please try again.",
+                });
+            }
+        },
+    }),
+
     //Delete User or Item
+
     delete: defineAction({
         input: z.object({
             id: z.number().min(1, "ID is required."),
@@ -352,6 +386,37 @@ export const server = {
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
                     message: `Failed to delete ${input.type}.`,
+                });
+            }
+        },
+    }),
+
+    //Stripe
+
+    createPaymentIntent: defineAction({
+        input: z.object({
+            items: z
+                .array(
+                    z.object({
+                        id: z.string(),
+                        amount: z.number().positive("Amount must be greater than 0"),
+                    })
+                )
+                .nonempty("At least one item is required."),
+        }),
+        handler: async ({ items }) => {
+            try {
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: calculateOrderAmount(items),
+                    currency: "eur",
+                    automatic_payment_methods: { enabled: true },
+                });
+
+                return { clientSecret: paymentIntent.client_secret };
+            } catch (error: any) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to create PaymentIntent. Please try again.",
                 });
             }
         },

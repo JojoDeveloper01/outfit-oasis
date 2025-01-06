@@ -107,6 +107,14 @@ export async function getItemByName(name: string) {
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
 }
 
+export async function getItemByID(id: number) {
+    const result = await turso.execute({
+        sql: `SELECT * FROM articles WHERE id = ?`,
+        args: [id],
+    });
+    return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
+}
+
 // Login and Regisyer
 
 export async function registerUser(name: string, email: string, password: string) {

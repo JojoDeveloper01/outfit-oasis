@@ -5,6 +5,7 @@ import Footer from "@components/Footer.astro";
 import LoginRegister from "@components/LoginRegister.astro";
 import { getLangFromUrl } from "@i18n/utils";
 import { userExistsByID } from "@lib/dbFunctions";
+import Rent from "@components/Modal/Rent.astro";
 
 //canonical
 //const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -178,6 +179,19 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="canonical" href={canonical} />
+
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+			integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+			crossorigin=""
+		/>
+		<script
+			is:inline
+			src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+			integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+			crossorigin=""></script>
+		<script src="https://js.stripe.com/v3/"></script>
 		<!-- <link rel="canonical" href={canonicalURL} />
 		<meta property="og:image" content={socialImageURL} /> -->
 
@@ -187,6 +201,7 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
 		<!-- Modais -->
 		<LoginRegister />
+		<Rent />
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />
@@ -203,12 +218,5 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 <script is:inline define:vars={{ user }}>
 	if (user === null) {
 		document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-	}
-
-	function addToCart(id) {
-		// Add item to cart
-		console.log(`Item with ID ${id} added to cart`);
-		const broadcastChannel = new BroadcastChannel("cartChannel");
-		broadcastChannel.postMessage(1); // Envia o ID do produto
 	}
 </script>
