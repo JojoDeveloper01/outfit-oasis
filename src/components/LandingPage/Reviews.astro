@@ -1,0 +1,26 @@
+---
+/* const { reviews } = Astro.props; */
+
+const defaultReviews = [
+    { user: "Alice", text: "Amazing service and quality!" },
+    { user: "John", text: "Perfect outfits for every event." },
+];
+---
+
+<section class="reviews py-16 bg-gray-100">
+    <h2 class="text-3xl font-bold text-center mb-8">What Our Customers Say</h2>
+    <ul class="space-y-8 px-8">
+        {
+            defaultReviews.map((review: { text: string; user: unknown }) => (
+                <li class="bg-white p-6 rounded-lg shadow-lg">
+                    <blockquote class="text-gray-700 italic">
+                        "{review.text}"
+                    </blockquote>
+                    <cite class="block text-right font-semibold mt-4">
+                        - {review.user}
+                    </cite>
+                </li>
+            ))
+        }
+    </ul>
+</section>

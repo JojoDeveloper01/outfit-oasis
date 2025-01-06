@@ -1,0 +1,25 @@
+---
+const defaultBenefits = [
+    { title: "Affordable", description: "Look great for less." },
+    { title: "Sustainable", description: "Eco-friendly fashion choices." },
+    { title: "Variety", description: "Outfits for every occasion." },
+];
+---
+
+<section class="benefits py-16 bg-gray-100">
+    <h2 class="text-3xl font-bold text-center mb-8">Why Rent with Us?</h2>
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-8 px-8">
+        {
+            defaultBenefits.map(
+                (benefit: { title: string; description: string }) => (
+                    <li class="bg-white p-6 rounded-lg shadow-lg text-center">
+                        <h3 class="text-xl font-semibold mb-2">
+                            {benefit.title}
+                        </h3>
+                        <p class="text-gray-700">{benefit.description}</p>
+                    </li>
+                ),
+            )
+        }
+    </ul>
+</section>

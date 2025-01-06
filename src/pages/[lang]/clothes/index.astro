@@ -18,8 +18,6 @@ if (!item) {
     // Handle case where the item is not found
     throw new Error(`Item with Name ${item} not found.`);
 }
-
-const isDisabled = item.availability === 0 ? "disabled" : "";
 ---
 
 <Layout>
