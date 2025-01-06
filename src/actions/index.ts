@@ -392,7 +392,6 @@ export const server = {
     }),
 
     //Stripe
-
     createPaymentIntent: defineAction({
         input: z.object({
             items: z

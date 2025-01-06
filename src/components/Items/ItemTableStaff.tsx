@@ -3,14 +3,7 @@ import Delete from "../Modal/Delete";
 import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
-
-function sanitizeName(name: string) {
-    if (!name) return "";
-    return name
-        .replace(/\s+/g, "-")
-        .replace(/[^\w-]/g, "")
-        .toLowerCase()
-}
+import { sanitizeName } from "@lib/functions"
 
 interface Item {
     id: number;

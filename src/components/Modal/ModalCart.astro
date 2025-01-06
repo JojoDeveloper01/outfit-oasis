@@ -63,14 +63,15 @@
 
 <script>
     import { actions } from "astro:actions";
+    import { sanitizeName } from "@lib/functions";
 
-    function sanitizeName(name: string | undefined): string {
+    /*  function sanitizeName(name: string | undefined): string {
         if (!name) return "";
         return name
             .replace(/\s+/g, "-")
             .replace(/[^\w-]/g, "")
             .toLowerCase();
-    }
+    } */
 
     document.addEventListener("astro:page-load", () => {
         interface CartItem {

@@ -1,4 +1,9 @@
 import { useEffect, useState } from "preact/hooks";
+import { sanitizeName } from "@lib/functions"
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+
+const lang = getLangFromUrl(new URL(window.location.href));
+const t = useTranslations(lang);
 
 interface Item {
     id: number;
@@ -14,21 +19,15 @@ interface Item {
     availability: number;
 }
 
-function sanitizeName(name: string) {
-    if (!name) return "";
-    return name
-        .replace(/\s+/g, "-")
-        .replace(/[^\w-]/g, "")
-        .toLowerCase()
-}
-
 export default function ItemTableForUser({ items }: { items: Item[] }) {
-    const addToCart = (id: number) => {
-        console.log(`Item with id ${id} added to cart`);
-        const broadcastChannel = new BroadcastChannel("cartChannel");
-        broadcastChannel.postMessage(1); // Envia o ID do produto
-    };
+    /*   const addToCart = (id: number) => {
+          console.log(`Item with id ${id} added to cart`);
+          const broadcastChannel = new BroadcastChannel("cartChannel");
+          broadcastChannel.postMessage(1); // Envia o ID do produto
+      }; */
     const [data, setData] = useState(items);
+
+    console.log("items: ", items)
 
     useEffect(() => {
         setData(items); // Sync with the provided `items` prop
@@ -48,7 +47,7 @@ export default function ItemTableForUser({ items }: { items: Item[] }) {
                         {item.image && (
                             <div className="absolute inset-0">
                                 <div style={`view-transition-name: item-${item.id}`} className="h-full">
-                                    <a href={`/clothes/${sanitizeName(item.name)}`}>
+                                    <a href={`/${lang}/clothes/${sanitizeName(item.name)}`}>
                                         <img
                                             src={item.image}
                                             alt="Item image"

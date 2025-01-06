@@ -1,3 +1,4 @@
+import { sanitizeName } from "./functions";
 import { writeFile, mkdir } from "fs/promises";
 import { promises as fs } from "fs";
 import path from "path";
@@ -52,14 +53,6 @@ export async function deleteImage(imagePath: string): Promise<void> {
         console.error("Error deleting the image:", error);
         throw new Error(`Failed to delete the image: ${error.message}`);
     }
-}
-
-export function sanitizeName(name: string | undefined): string {
-    if (!name) return "";
-    return name
-        .replace(/\s+/g, "-")
-        .replace(/[^\w-]/g, "")
-        .toLowerCase()
 }
 
 export async function fetchCountryFlag(countryName: string): Promise<string | null> {

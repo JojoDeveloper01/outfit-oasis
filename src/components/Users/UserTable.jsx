@@ -3,14 +3,15 @@ import Delete from "../Modal/Delete";
 import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
+import { sanitizeName } from "@lib/functions"
 
-function sanitizeName(name) {
+/* function sanitizeName(name) {
     if (!name) return "";
     return name
         .replace(/\s+/g, "-")
         .replace(/[^\w-]/g, "")
         .toLowerCase();
-}
+} */
 
 export default function UserTable({ users, activeFilters }) {
     const [data, setData] = useState(users); // Estado dos usuários

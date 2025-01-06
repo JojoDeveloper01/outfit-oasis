@@ -7,12 +7,16 @@ import { getItemByName } from "@lib/dbFunctions";
 
 const { clothes } = Astro.params;
 
+console.log("clothes: ", Astro.params);
+
 // Fetch the item data using the `id`
 if (!clothes) {
     throw new Error("Item name is not defined.");
 }
 
 const item = await getItemByName(clothes.replace("", "").replace(/-/g, " "));
+
+console.log("clothes: ", clothes);
 
 if (!item) {
     // Handle case where the item is not found
