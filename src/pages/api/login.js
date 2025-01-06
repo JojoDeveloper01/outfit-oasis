@@ -14,7 +14,7 @@ export async function POST({ request }) {
   try {
     const user = await getUserLogin(email, password);
 
-    //console.log("User: ", user)
+    console.log("User: ", user)
 
     if (user.length > 0) {
       // Login bem-sucedido, retorna os dados do usuário

@@ -16,7 +16,7 @@ const item = await getItemByName(clothes.replace("", "").replace(/-/g, " "));
 
 if (!item) {
     // Handle case where the item is not found
-    throw new Error(`Item with Name ${item} not found.`);
+    return Astro.redirect("/");
 }
 ---
 
