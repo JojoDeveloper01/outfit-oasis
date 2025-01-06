@@ -19,7 +19,6 @@ if (Astro.cookies.has("id")) {
 }
 
 const user = $user;
-const isStaff = user?.user_type || null;
 
 let items = await getItems();
 ---
@@ -31,6 +30,6 @@ let items = await getItems();
     canonical="https://outfit-oasis.com"
 >
     <section class="container m-auto py-8">
-        <ItemList client:load items={items} userType="client" />
+        <ItemList client:load items={items} , lang={lang} userType="client" />
     </section>
 </Layout>

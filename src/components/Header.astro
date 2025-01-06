@@ -16,12 +16,45 @@ const translatePath = useTranslatedPath(lang as keyof typeof languages);
 const { user, isStaff } = Astro.props;
 
 //console.log(user);
+
+//dashboard dropdown
+const dasboardItems = [
+    {
+        href: `/${lang}/dashboard/analytics`,
+        label: t("nav.analytics"),
+    },
+    {
+        href: `/${lang}/dashboard/users`,
+        label: t("nav.users"),
+    },
+    {
+        href: `/${lang}/dashboard/items`,
+        label: t("nav.items"),
+    },
+    {
+        href: `/${lang}/dashboard/inbox`,
+        label: t("nav.inbox"),
+    },
+    {
+        href: `/${lang}/dashboard/historical`,
+        label: t("nav.historical"),
+    },
+];
 ---
 
 <style>
     button {
         &:hover {
             color: var(--colo-white);
+        }
+    }
+
+    .dashboard-dropdown {
+        &:hover .dashboard-menu,
+        &:focus-within .dashboard-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 </style>
@@ -64,11 +97,32 @@ const { user, isStaff } = Astro.props;
                         >
                     </li>
                     <li class=`${isStaff}`>
-                        <a
-                            href={`/${lang}/dashboard/`}
-                            class="block py-2 px-3 rounded md:p-0"
-                            >{t("nav.dashboard")}</a
-                        >
+                        <ul class="dashboard-dropdown relative inline-block">
+                            <a
+                                href={`/${lang}/dashboard/`}
+                                class="block py-2 px-3 rounded md:p-0"
+                                >{t("nav.dashboard")}</a
+                            >
+
+                            <!-- dashboard Dropdown -->
+                            <ul
+                                class="dashboard-menu mt-4 absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000]"
+                                aria-label="submenu dropdown"
+                            >
+                                {
+                                    dasboardItems.map((item) => (
+                                        <li>
+                                            <a
+                                                href={item.href}
+                                                class="w-36 block p-3 hover:bg-gray-100 text-gray-700 text-sm text-center"
+                                            >
+                                                {item.label}
+                                            </a>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </ul>
                     </li>
                 </ul>
 

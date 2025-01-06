@@ -38,7 +38,6 @@
 ----------------
 
 - arranjar o sistema de Login (os campos estão todos trocados na DB)
-- que as linguagens funcionem em todas as páginas
 
 - preencher as tabelas rentals e pagamentos usando actions
 - mandar um email quando seja feito a compra para confirmar qeu foi feita e p|or o id de compra

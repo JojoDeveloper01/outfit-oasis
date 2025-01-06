@@ -4,7 +4,5 @@ export const sanitizeName = (text: string) => {
         .replace(/^-+|-+$/g, '')      // Remove '-' do início ou fim
         .toLowerCase();
 
-    console.log("Texto sanitizado:", sanitizedText);
-
     return sanitizedText;
 };

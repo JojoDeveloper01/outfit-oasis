@@ -3,7 +3,7 @@ import ItemTableUser from "@components/Items/ItemTableUser";
 import ItemTableStaff from "@components/Items/ItemTableStaff";
 import { useState } from "preact/hooks";
 
-export default function ItemList({ items, userType }) {
+export default function ItemList({ items, userType, lang }) {
     // Estado para usuários filtrados
     const [filteredItems, setFilteredItems] = useState(items);
     const [filters, setFilters] = useState({});
@@ -20,7 +20,7 @@ export default function ItemList({ items, userType }) {
             {userType === "staff" ? (
                 <ItemTableStaff items={filteredItems} activeFilters={filters} />
             ) : (
-                <ItemTableUser items={filteredItems} activeFilters={filters} />
+                <ItemTableUser items={filteredItems} lang={lang} />
             )}
         </section>
     );

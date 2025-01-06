@@ -1,22 +1,18 @@
 ---
 // Import necessary components or utilities
 import Layout from "@layouts/Layout.astro";
-import { getItemByName } from "@lib/dbFunctions";
+import { getItemByID } from "@lib/dbFunctions";
 
 // Access the `id` parameter from the URL
 
-const { clothes } = Astro.params;
-
-console.log("clothes: ", Astro.params);
+const id = Astro.url.searchParams.get("id");
 
 // Fetch the item data using the `id`
-if (!clothes) {
+if (!id) {
     throw new Error("Item name is not defined.");
 }
 
-const item = await getItemByName(clothes.replace("", "").replace(/-/g, " "));
-
-console.log("clothes: ", clothes);
+const item = await getItemByID(Number(id));
 
 if (!item) {
     // Handle case where the item is not found

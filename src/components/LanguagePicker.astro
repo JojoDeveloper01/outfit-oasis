@@ -9,16 +9,38 @@ const { languages, lang } = Astro.props as {
 };
 ---
 
-<div class="flex items-center space-x-1 md:space-x-0">
+<style>
+    .lang-dropdown {
+        button,
+        button svg {
+            transform: rotate(0deg);
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        &:hover .lang-menu,
+        &:focus-within .lang-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        &:hover .lang-button svg,
+        &:focus-within .lang-button svg {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+
+<div class="lang-dropdown relative inline-block">
     <button
         type="button"
-        data-dropdown-toggle="language-dropdown-menu"
         aria-haspopup="true"
-        aria-label={`Selecionar idioma atual: ${languages[lang]?.label}`}
-        class="w-6 inline-flex items-center font-medium justify-center px-4 py-2 text-sm rounded-lg cursor-pointer text-white hover:bg-[#B1BAA5]"
         id="language-button"
+        class="lang-button flex items-center justify-between text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:bg-[#dadada3a]"
     >
-        <div id={`flag-${lang}`} class="relative">
+        <div id={`flag-${lang}`}>
             <!-- Exibir apenas a bandeira do idioma atual -->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -30,36 +52,35 @@ const { languages, lang } = Astro.props as {
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-language"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-language ml-2"
                 ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
                     d="M4 5h7"></path><path d="M9 3v2c0 4.418 -2.239 8 -5 8"
                 ></path><path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path><path
-                    d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"
-                ></path></svg
-            >
+                    d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"></path>
+            </svg>
         </div>
     </button>
 
-    <div
-        class="relative z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700"
+    <!-- Menu Dropdown -->
+    <ul
+        class="lang-menu mt-4 absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000]"
+        aria-label="submenu"
         id="language-dropdown-menu"
     >
-        <ul>
-            {
-                Object.entries(languages).map(([code, { label }]) => (
-                    <li>
-                        <a
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-lang-code={code}
-                            data-lang-label={label}
-                        >
-                            {label || "Idioma desconhecido"}
-                        </a>
-                    </li>
-                ))
-            }
-        </ul>
-    </div>
+        {
+            Object.entries(languages).map(([code, { label }]) => (
+                <li>
+                    <a
+                        class="w-28 block p-3 hover:bg-gray-100 text-gray-700 text-sm text-center"
+                        data-lang-code={code}
+                        data-lang-label={label}
+                    >
+                        {label || ""}
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
 </div>
 
 <script>

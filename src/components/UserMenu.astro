@@ -1,97 +1,53 @@
 ---
-const { isStaff, image, name, email, lang, t } = Astro.props;
-const dashboard = `/${lang}/dashboard`;
+const { image, name, email, lang, t } = Astro.props;
 ---
 
-<div
-    transition:persist="userMenu"
-    class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
->
+<style>
+    .profile-dropdown {
+        &:hover .profile-menu,
+        &:focus-within .profile-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="profile-dropdown relative flex items-center space-x-3">
     <button
         type="button"
-        class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-        id="user-menu-button"
-        aria-expanded="false"
-        data-dropdown-toggle="user-dropdown"
-        data-dropdown-placement="bottom"
+        class="profile-button flex items-center bg-gray-800 text-white rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+        id="profile-menu-button"
     >
         <span class="sr-only">Open user menu</span>
         <img src={image} class="w-8 h-8 rounded-full" src="" alt="user photo" />
     </button>
+
     <!-- Dropdown menu -->
     <div
-        class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+        class="profile-menu absolute top-full right-0 mt-2 pt-2 bg-white border border-gray-200 rounded-lg shadow-lg invisible opacity-0 transform -translate-y-2 transition-all duration-300 ease z-50"
         id="user-dropdown"
     >
         <div class="px-4 py-3">
-            <span class="block text-sm text-gray-900 dark:text-white">
+            <span class="block text-sm text-black">
                 {name}
             </span>
-            <span
-                class="block text-sm text-gray-500 truncate dark:text-gray-400"
-                >{email}</span
-            >
+            <span class="block text-sm text-gray-500 truncate">{email}</span>
         </div>
-        <ul class="py-2" aria-labelledby="user-menu-button">
-            {
-                isStaff !== 'hidden' && (
-                        <li>
-                            <a
-                                href={`${dashboard}/analytics`}
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                            >
-                                {t("nav.analytics")}
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href={`${dashboard}/users`}
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                            >
-                                {t("nav.users")}
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href={`${dashboard}/items`}
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                            >
-                                {t("nav.items")}
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href={`${dashboard}/inbox`}
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                            >
-                                {t("nav.inbox")}
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href={`${dashboard}/historical`}
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                            >
-                                {t("nav.historical")}
-                            </a>
-                        </li>
-                )
-            }
+        <ul aria-labelledby="profile-menu-button">
             <li>
                 <a
                     id="logout"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    class="block p-3 hover:bg-gray-100 text-gray-700 text-sm"
                     >{t("nav.logout")}</a
                 >
             </li>
         </ul>
     </div>
     <button
-        data-collapse-toggle="navbar-user"
         type="button"
         class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         aria-controls="navbar-user"
-        aria-expanded="false"
     >
         <span class="sr-only">Open main menu</span>
         <svg
