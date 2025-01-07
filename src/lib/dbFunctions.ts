@@ -226,6 +226,7 @@ export async function getUserEmailById(id: number) {
         sql: `SELECT email FROM users WHERE id = ?`,
         args: [id],
     });
+    console.log("user", result)
     return result.rows.length > 0 ? result.rows[0] : null;
 }
 

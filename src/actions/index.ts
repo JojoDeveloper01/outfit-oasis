@@ -442,6 +442,14 @@ export const server = {
         }),
         handler: async ({ id }) => {
             try {
+                const email = await getUserEmailById(id);
+                if (!email) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "User email not found.",
+                    });
+                }
+
                 // Obtém o item e o email
                 const item = await getItemByID(id);
                 if (!item) {
@@ -451,16 +459,48 @@ export const server = {
                     });
                 }
 
-                const email = await getUserEmailById(id);
-                if (!email) {
-                    throw new ActionError({
-                        code: "NOT_FOUND",
-                        message: "User email not found.",
-                    });
-                }
+                console.log("item: ", item)
+                console.log("email: ", email)
+
+                const message = {
+                    subject: "Thank You for Your Purchase at Oafit Oasis! 🛍️",
+                    html: `
+                      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                        <h2 style="color: #5A9;">Thank You for Your Order!</h2>
+                        <p>
+                          Hi there, <br><br>
+                          We’re excited to let you know that your purchase has been successfully processed! Thank you for shopping at <strong>Oafit Oasis</strong>.
+                        </p>
+                        <p>
+                          Your order is being prepared and will be shipped soon. We'll send you a tracking number as soon as it’s available.
+                        </p>
+                        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                          <p><strong>Order Summary:</strong></p>
+                          <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li>🎽 Product: <strong>${item.name}</strong></li>
+                            <li>💵 Total: <strong>€${item.rental_price}</strong></li>
+                          </ul>
+                        </div>
+                        <p>
+                          If you have any questions about your order, feel free to reply to this email, and our support team will be happy to assist you.
+                        </p>
+                        <p>
+                          Warm regards, <br>
+                          <strong>The Oafit Oasis Team</strong>
+                        </p>
+                        <footer style="font-size: 12px; color: #777; margin-top: 20px;">
+                          <p>
+                            <em>This is an automated email. Please do not reply to this message.</em>
+                          </p>
+                        </footer>
+                      </div>
+                    `,
+                };
+
+                console.log("message: ", message)
 
                 // Envia o email
-                const send = await sendEmail(email.email, item);
+                const send = await sendEmail(email, message);
 
                 if (!send) {
                     throw new ActionError({

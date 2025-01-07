@@ -371,7 +371,7 @@ import Calendar from "@components/Calendar";
                             id="payment-element"
                             class="h-full overflow-y-auto mb-4"
                         >
-                            <!-- Stripe.js vai injetar o formulário aqui -->
+                            <!-- stripe.js vai injetar o formulário aqui -->
                         </div>
                         <button
                             id="submit"
@@ -424,7 +424,14 @@ para depois alugar
 
 <script>
     import { getLangFromUrl } from "@i18n/utils";
+    import { setupMap, stripe } from "@lib/functions";
     import { actions } from "astro:actions";
+    import {
+        type Appearance,
+        type StripeElementsOptions,
+    } from "@stripe/stripe-js";
+    /*     import Appearance from "@stripe/stripe-js";
+    import StripeElementsOptions from "@stripe/stripe-js"; */
 
     document.addEventListener("astro:page-load", () => {
         interface Item {
@@ -482,7 +489,7 @@ para depois alugar
             step2.classList.remove("hidden-step");
 
             // Exibir mapa
-            setupMap();
+            setupMap("map");
         });
 
         // Passo 2 -> Passo 1
@@ -505,27 +512,6 @@ para depois alugar
             step2.classList.remove("hidden-step");
         });
 
-        // Função para inicializar o mapa no Step 2
-        function setupMap() {
-            const mapContainer = document.getElementById("map");
-            if (mapContainer) {
-                const map = L.map("map").setView([38.864406, -9.076287], 18);
-                const marker = L.marker([38.864406, -9.076287]).addTo(map);
-
-                L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    maxZoom: 19,
-                    attribution: "&copy; OpenStreetMap",
-                }).addTo(map);
-
-                marker
-                    .bindPopup("Rua José Nogueira Vaz 16, Póvoa de Santa Iria")
-                    .openPopup();
-
-                // Corrige visualização do mapa
-                map.invalidateSize();
-            }
-        }
-
         // Função para exibir detalhes do item no Step 1
         function renderItemDetails(item: Item) {
             const itemDetails = document.querySelector(
@@ -535,11 +521,7 @@ para depois alugar
             <div class="h-full flex flex-col md:flex-row items-center md:items-stretch gap-6">
                 <!-- Seção da Imagem -->
                 <div class="w-full md:w-1/3">
-                    <img 
-                        src="${item.image}" 
-                        alt="${item.name}" 
-                        class="size-full object-cover rounded-lg border border-gray-200 shadow-sm"
-                    />
+                    <img src="${item.image}" class="size-full object-cover rounded-lg border border-gray-200 shadow-sm" />
                 </div>
 
                 <!-- Seção de Detalhes -->
@@ -608,8 +590,17 @@ para depois alugar
         }
 
         // Inicializar Stripe e criar o PaymentIntent
-        async function setupStripePayment() {
+        /*  async function setupStripePayment() {
             try {
+                const stripe = await loadStripe(
+                    "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
+                );
+
+                if (!stripe) {
+                    console.error("Stripe não pôde ser carregado!");
+                    return;
+                }
+
                 // Verifica se o item selecionado existe
                 if (!selectedItem) {
                     console.error("Nenhum item selecionado para pagamento.");
@@ -635,11 +626,6 @@ para depois alugar
                 }
 
                 const { clientSecret } = data;
-
-                // Inicializar Stripe.js
-                const stripe = Stripe(
-                    "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
-                );
 
                 const appearance = {
                     theme: "flat",
@@ -684,8 +670,8 @@ para depois alugar
                     },
                 };
 
-                const elements = stripe.elements({ clientSecret, appearance });
-
+                const elements = stripe.elements(options?: StripeElementsOptionsClientSecret | undefined): StripeElements
+                
                 // Criar o elemento de pagamento com o Stripe Link desativado
                 const paymentElement = elements.create("payment", {
                     paymentMethodOrder: ["card"], // Ordena os métodos de pagamento, priorizando "cartão"
@@ -711,10 +697,154 @@ para depois alugar
                     if (error) {
                         const paymentMessage =
                             document.querySelector("#payment-message");
+
                         if (paymentMessage) {
                             paymentMessage.textContent = error.message;
                         }
                         console.error("Erro no pagamento:", error.message);
+                    }
+                });
+            } catch (error) {
+                console.error("Erro ao configurar Stripe:", error);
+            }
+        } */
+
+        async function setupStripePayment() {
+            try {
+                if (!stripe) {
+                    console.error("Stripe não pôde ser carregado!");
+                    return;
+                }
+
+                // Verifica se o item selecionado existe
+                if (!selectedItem) {
+                    console.error("Nenhum item selecionado para pagamento.");
+                    return;
+                }
+
+                // Preparar o item para envio ao Stripe
+                const item = [
+                    {
+                        id: Number(selectedItem.id), // ID do item
+                        amount: selectedItem.price, // Convertendo para centavos
+                    },
+                ];
+
+                // Criar PaymentIntent via action
+                const { data, error } = await actions.createPaymentIntent({
+                    items: item as unknown as [{ id: number; amount: number }],
+                });
+
+                if (error) {
+                    console.error("Erro ao criar PaymentIntent:", error);
+                    return;
+                }
+
+                const { clientSecret } = data;
+
+                // Verifique se o clientSecret é válido
+                if (!clientSecret) {
+                    console.error(
+                        "O clientSecret é inválido ou não foi fornecido.",
+                    );
+                    return;
+                }
+
+                // Configuração do objeto appearance
+                const appearance: Appearance = {
+                    theme: "flat",
+                    variables: {
+                        fontFamily: ' "Gill Sans", sans-serif',
+                        fontLineHeight: "1.5",
+                        borderRadius: "10px",
+                        colorBackground: "#F6F8FA",
+                        accessibleColorOnColorPrimary: "#262626",
+                    },
+                    rules: {
+                        ".Block": {
+                            backgroundColor: "var(--colorBackground)",
+                            boxShadow: "none",
+                            padding: "12px",
+                        },
+                        ".Input": {
+                            padding: "12px",
+                        },
+                        ".Input:disabled, .Input--invalid:disabled": {
+                            color: "lightgray",
+                        },
+                        ".Tab": {
+                            padding: "10px 12px 8px 12px",
+                            border: "none",
+                        },
+                        ".Tab:hover": {
+                            border: "none",
+                            boxShadow:
+                                "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
+                        },
+                        ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover":
+                            {
+                                border: "none",
+                                backgroundColor: "#fff",
+                                boxShadow:
+                                    "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
+                            },
+                        ".Label": {
+                            fontWeight: "500",
+                        },
+                    },
+                };
+
+                // Configuração do objeto options para o Stripe Elements
+                const elementsOptions: StripeElementsOptions = {
+                    clientSecret: clientSecret ?? undefined, // Converte null para undefined, se necessário
+                    appearance, // Aparência configurada
+                };
+
+                // Inicializar o Stripe Elements
+                const elements = stripe.elements(elementsOptions);
+
+                // Criar o elemento de pagamento com o Stripe Link desativado
+                const paymentElement = elements.create("payment", {
+                    paymentMethodOrder: ["card"], // Ordena os métodos de pagamento
+                });
+
+                // Montar o Payment Element no elemento HTML
+                paymentElement.mount("#payment-element");
+
+                // Configurar evento de submissão do formulário
+                const form = document.querySelector(
+                    "#payment-form",
+                ) as HTMLFormElement;
+                form.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+
+                    // Confirmar o pagamento
+                    if (stripe) {
+                        const { error } = await stripe.confirmPayment({
+                            elements,
+                            confirmParams: {
+                                // URL para redirecionar após o pagamento
+                                return_url: `http://localhost:4321/${lang}/complete`,
+                            },
+                        });
+
+                        // Atualizar a mensagem de erro ou sucesso no pagamento
+                        const paymentMessage = document.querySelector(
+                            "#payment-message",
+                        ) as HTMLElement | null;
+
+                        if (error) {
+                            if (paymentMessage) {
+                                paymentMessage.textContent =
+                                    error?.message ||
+                                    "Ocorreu um erro durante o pagamento.";
+                            } else {
+                                console.error(
+                                    "Elemento #payment-message não encontrado no DOM.",
+                                );
+                            }
+                            console.error("Erro no pagamento:", error.message);
+                        }
                     }
                 });
             } catch (error) {

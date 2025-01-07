@@ -56,14 +56,6 @@ import Layout from "@layouts/Layout.astro";
     </div>
 
     <!-- Adicionar o CDN da biblioteca tsparticles/confetti -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"
-    ></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
 </Layout>
 
 <!-- 
@@ -86,7 +78,12 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 -->
 
 <script>
-    import { stripe } from "@lib/utils";
+    import {
+        getCookie,
+        setupMap,
+        stripe,
+        triggerConfetti,
+    } from "@lib/functions";
     import { actions } from "astro:actions";
 
     document.addEventListener("astro:page-load", () => {
@@ -107,12 +104,19 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
                 return;
             }
 
+            if (!stripe) {
+                console.error("Stripe não pôde ser carregado!");
+                return;
+            }
+
             const { paymentIntent } =
                 await stripe.retrievePaymentIntent(clientSecret);
 
             if (paymentIntent) {
                 if (paymentIntent.status === "succeeded") {
-                    sendEmailConfirmation();
+                    const id = getCookie("id");
+                    //console.log("user id: ", id);
+                    sendEmailConfirmation(Number(id));
                     showSuccess();
                 } else {
                     const statusMessageElement =
@@ -139,17 +143,9 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
                 if (error) throw new Error("Erro ao buscar item");
                 if (!data) throw new Error("Item não encontrado");
 
-                return {
-                    id: String(data.id),
-                    name: String(data.name),
-                    image: String(data.image),
-                    price: Number(data.rental_price),
-                    size: String(data.size),
-                    color: String(data.color),
-                    brand: String(data.brand),
-                };
+                return data;
             } catch (error) {
-                console.error("Erro ao buscar item:", error);
+                console.error("Erro ao enviar email:", error);
                 return null;
             }
         }
@@ -172,82 +168,7 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
             triggerConfetti();
 
             // Renderizar o mapa
-            setupMap();
-        }
-
-        // Função para disparar o confete
-        function triggerConfetti() {
-            const count = 200;
-            const defaults = {
-                origin: { y: 0.7 },
-            };
-
-            function fire(
-                particleRatio: number,
-                opts: {
-                    spread: number;
-                    startVelocity?: number;
-                    decay?: number;
-                    scalar?: number;
-                },
-            ) {
-                confetti(
-                    Object.assign({}, defaults, opts, {
-                        particleCount: Math.floor(count * particleRatio),
-                    }),
-                );
-            }
-
-            fire(0.25, {
-                spread: 26,
-                startVelocity: 55,
-            });
-
-            fire(0.2, {
-                spread: 60,
-            });
-
-            fire(0.35, {
-                spread: 100,
-                decay: 0.91,
-                scalar: 0.8,
-            });
-
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 25,
-                decay: 0.92,
-                scalar: 1.2,
-            });
-
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 45,
-            });
-        }
-
-        // Função para renderizar o mapa
-        function setupMap() {
-            const mapContainer = document.getElementById("mapComplete");
-            if (mapContainer) {
-                const map = L.map(mapContainer).setView(
-                    [38.864406, -9.076287], // Coordenadas do local
-                    18, // Zoom do mapa
-                );
-
-                L.tileLayer(
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    {
-                        attribution:
-                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    },
-                ).addTo(map);
-
-                L.marker([38.864406, -9.076287])
-                    .addTo(map)
-                    .bindPopup("Rua José Nogueira Vaz 16, Póvoa de Santa Iria")
-                    .openPopup();
-            }
+            setupMap("mapComplete");
         }
     });
 </script>
