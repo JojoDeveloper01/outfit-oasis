@@ -464,6 +464,7 @@ para depois alugar
         ) as HTMLButtonElement;
 
         let selectedItem: Item | null = null;
+        let itemId: any;
 
         // Função para abrir o modal e carregar os dados do item
         document.addEventListener("click", async (event) => {
@@ -472,7 +473,7 @@ para depois alugar
             ) as HTMLElement;
 
             if (button && button.getAttribute("data-rent")) {
-                const itemId = button.getAttribute("data-rent");
+                itemId = button.getAttribute("data-rent");
 
                 if (itemId) {
                     selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
@@ -589,126 +590,6 @@ para depois alugar
             }
         }
 
-        // Inicializar Stripe e criar o PaymentIntent
-        /*  async function setupStripePayment() {
-            try {
-                const stripe = await loadStripe(
-                    "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
-                );
-
-                if (!stripe) {
-                    console.error("Stripe não pôde ser carregado!");
-                    return;
-                }
-
-                // Verifica se o item selecionado existe
-                if (!selectedItem) {
-                    console.error("Nenhum item selecionado para pagamento.");
-                    return;
-                }
-
-                // Preparar o item para envio ao Stripe
-                const item = [
-                    {
-                        id: Number(selectedItem.id), // ID do item
-                        amount: selectedItem.price, // Convertendo para centavos
-                    },
-                ];
-
-                // Criar PaymentIntent via action
-                const { data, error } = await actions.createPaymentIntent({
-                    items: item as unknown as [{ id: number; amount: number }],
-                });
-
-                if (error) {
-                    console.error("Erro ao criar PaymentIntent:", error);
-                    return;
-                }
-
-                const { clientSecret } = data;
-
-                const appearance = {
-                    theme: "flat",
-                    variables: {
-                        fontFamily: ' "Gill Sans", sans-serif',
-                        fontLineHeight: "1.5",
-                        borderRadius: "10px",
-                        colorBackground: "#F6F8FA",
-                        accessibleColorOnColorPrimary: "#262626",
-                    },
-                    rules: {
-                        ".Block": {
-                            backgroundColor: "var(--colorBackground)",
-                            boxShadow: "none",
-                            padding: "12px",
-                        },
-                        ".Input": {
-                            padding: "12px",
-                        },
-                        ".Input:disabled, .Input--invalid:disabled": {
-                            color: "lightgray",
-                        },
-                        ".Tab": {
-                            padding: "10px 12px 8px 12px",
-                            border: "none",
-                        },
-                        ".Tab:hover": {
-                            border: "none",
-                            boxShadow:
-                                "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-                        },
-                        ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover":
-                            {
-                                border: "none",
-                                backgroundColor: "#fff",
-                                boxShadow:
-                                    "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-                            },
-                        ".Label": {
-                            fontWeight: "500",
-                        },
-                    },
-                };
-
-                const elements = stripe.elements(options?: StripeElementsOptionsClientSecret | undefined): StripeElements
-                
-                // Criar o elemento de pagamento com o Stripe Link desativado
-                const paymentElement = elements.create("payment", {
-                    paymentMethodOrder: ["card"], // Ordena os métodos de pagamento, priorizando "cartão"
-                });
-
-                paymentElement.mount("#payment-element");
-
-                // Configurar evento de submissão do formulário
-                const form = document.querySelector(
-                    "#payment-form",
-                ) as HTMLFormElement;
-                form.addEventListener("submit", async (event) => {
-                    event.preventDefault();
-
-                    const { error } = await stripe.confirmPayment({
-                        elements,
-                        confirmParams: {
-                            // URL para redirecionar após o pagamento
-                            return_url: `http://localhost:4321/${lang}/complete`,
-                        },
-                    });
-
-                    if (error) {
-                        const paymentMessage =
-                            document.querySelector("#payment-message");
-
-                        if (paymentMessage) {
-                            paymentMessage.textContent = error.message;
-                        }
-                        console.error("Erro no pagamento:", error.message);
-                    }
-                });
-            } catch (error) {
-                console.error("Erro ao configurar Stripe:", error);
-            }
-        } */
-
         async function setupStripePayment() {
             try {
                 if (!stripe) {
@@ -824,7 +705,7 @@ para depois alugar
                             elements,
                             confirmParams: {
                                 // URL para redirecionar após o pagamento
-                                return_url: `http://localhost:4321/${lang}/complete`,
+                                return_url: `http://localhost:4321/${lang}/complete?item_id=${itemId}`,
                             },
                         });
 
