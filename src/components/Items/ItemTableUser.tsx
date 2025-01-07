@@ -38,7 +38,7 @@ export default function ItemTableForUser({ items, lang }: { items: Item[], lang:
                         {item.image && (
                             <div className="absolute inset-0">
                                 <div style={`view-transition-name: item-${item.id}`} className="h-full">
-                                    <a href={`/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}?id=${item.id}`}>
+                                    <a href={`/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}`}>
                                         <img
                                             src={item.image}
                                             alt="Item image"

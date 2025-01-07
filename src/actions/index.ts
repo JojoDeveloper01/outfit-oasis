@@ -1,14 +1,23 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
-import { addUser, editUser, deleteUser, getUserByEmail, addItem, getItemByName, editItem, getItemByID, deleteItem } from "@lib/dbFunctions";
-import { saveFileToPublic, deleteImage } from "@lib/utils";
+import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
+import { addUser, editUser, deleteUser, getUserByEmail, getUserEmailById, addItem, getItemByName, editItem, getItemByID, deleteItem } from "@lib/dbFunctions";
 import Stripe from "stripe";
 
 // Inicialize o Stripe com sua chave secreta
 const stripe = new Stripe("sk_test_51Qe20MQiiUMPEnxKmA9gEAXEMyfMP1pfF4pCNrLsihG686cZWSln7MWzI0sVRH7J3LlmvdrlHsKJayxp0Hq2K9eO001rcErWGV");
 
-const calculateOrderAmount = (items: { id: string; amount: number }[]) => {
-    return items.reduce((total, item) => total + item.amount, 0);
+const calculateOrderAmount = (items: { id: number; amount: number }[]) => {
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        throw new Error("No items provided or invalid format.");
+    }
+
+    return items.reduce((total, item) => {
+        if (!item.amount || item.amount <= 0) {
+            throw new Error(`Invalid amount for item ID: ${item.id}`);
+        }
+        return total + item.amount;
+    }, 0) * 100; // Multiplicar por 100 para Stripe
 };
 
 //User Schemas
@@ -397,27 +406,78 @@ export const server = {
             items: z
                 .array(
                     z.object({
-                        id: z.string(),
+                        id: z.number(),
                         amount: z.number().positive("Amount must be greater than 0"),
                     })
                 )
                 .nonempty("At least one item is required."),
         }),
         handler: async ({ items }) => {
+            //console.log("Items Received:", items); // Log para depuração
+
             try {
+                const totalAmount = calculateOrderAmount(items);
+                //console.log("Total Amount (in cents):", totalAmount);
+
                 const paymentIntent = await stripe.paymentIntents.create({
-                    amount: calculateOrderAmount(items),
+                    amount: totalAmount,
                     currency: "eur",
                     automatic_payment_methods: { enabled: true },
                 });
 
                 return { clientSecret: paymentIntent.client_secret };
             } catch (error: any) {
+                console.error("Error Creating PaymentIntent:", error);
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
-                    message: "Failed to create PaymentIntent. Please try again.",
+                    message: error.message || "Failed to create PaymentIntent. Please try again.",
                 });
             }
         },
     }),
+
+    sendEmail: defineAction({
+        input: z.object({
+            id: z.number().min(1, "Item id is required."),
+        }),
+        handler: async ({ id }) => {
+            try {
+                // Obtém o item e o email
+                const item = await getItemByID(id);
+                if (!item) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "Item not found.",
+                    });
+                }
+
+                const email = await getUserEmailById(id);
+                if (!email) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "User email not found.",
+                    });
+                }
+
+                // Envia o email
+                const send = await sendEmail(email.email, item);
+
+                if (!send) {
+                    throw new ActionError({
+                        code: "CONFLICT",
+                        message: "Failed to send email.",
+                    });
+                }
+
+                return { success: true, messageId: send.messageId };
+            } catch (error) {
+                console.error("Error in sendEmail:", error);
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: (error instanceof Error ? error.message : "Unknown error") || "Failed to send email. Please try again.",
+                });
+            }
+        },
+    }),
+
 };

@@ -115,6 +115,14 @@ export async function getItemByID(id: number) {
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
 }
 
+export async function getEmailItemByID(id: number) {
+    const result = await turso.execute({
+        sql: `SELECT email FROM articles WHERE id = ?`,
+        args: [id],
+    });
+    return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
+}
+
 // Login and Regisyer
 
 export async function registerUser(name: string, email: string, password: string) {
@@ -211,6 +219,14 @@ export async function getUserByEmail(email: string) {
         args: [email],
     });
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
+}
+
+export async function getUserEmailById(id: number) {
+    const result = await turso.execute({
+        sql: `SELECT email FROM users WHERE id = ?`,
+        args: [id],
+    });
+    return result.rows.length > 0 ? result.rows[0] : null;
 }
 
 export async function userExistsByID(id: string): Promise<any | null> {

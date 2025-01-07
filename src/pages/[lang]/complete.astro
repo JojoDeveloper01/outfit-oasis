@@ -86,11 +86,10 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 -->
 
 <script>
-    document.addEventListener("astro:page-load", () => {
-        const stripe = Stripe(
-            "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
-        );
+    import { stripe } from "@lib/utils";
+    import { actions } from "astro:actions";
 
+    document.addEventListener("astro:page-load", () => {
         checkStatus();
 
         async function checkStatus() {
@@ -113,6 +112,7 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 
             if (paymentIntent) {
                 if (paymentIntent.status === "succeeded") {
+                    sendEmailConfirmation();
                     showSuccess();
                 } else {
                     const statusMessageElement =
@@ -129,6 +129,28 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
                     statusMessageElement.textContent =
                         "Erro no pagamento. Por favor, tente novamente.";
                 }
+            }
+        }
+
+        async function sendEmailConfirmation(id: number) {
+            try {
+                const { data, error } = await actions.sendEmail({ id });
+
+                if (error) throw new Error("Erro ao buscar item");
+                if (!data) throw new Error("Item não encontrado");
+
+                return {
+                    id: String(data.id),
+                    name: String(data.name),
+                    image: String(data.image),
+                    price: Number(data.rental_price),
+                    size: String(data.size),
+                    color: String(data.color),
+                    brand: String(data.brand),
+                };
+            } catch (error) {
+                console.error("Erro ao buscar item:", error);
+                return null;
             }
         }
 
