@@ -27,51 +27,10 @@ export function getCookie(name: any) {
     return null; // Retorna null se o cookie não for encontrado
 }
 
-export function setupMap(idElement: string) {
-    const mapContainer = document.getElementById(idElement);
-    if (mapContainer) {
-        const map = L.map(idElement).setView([38.864406, -9.076287], 18);
-        const marker = L.marker([38.864406, -9.076287]).addTo(map);
-
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 19,
-            attribution: "&copy; OpenStreetMap",
-        }).addTo(map);
-
-        marker
-            .bindPopup("Rua José Nogueira Vaz 16, Póvoa de Santa Iria")
-            .openPopup();
-
-        // Corrige visualização do mapa
-        map.invalidateSize();
-    }
+export function removeItemFromCart(itemId: number) {
+    const cart = JSON.parse(sessionStorage.getItem("cart") || "[]") || [];
+    sessionStorage.setItem("cart", JSON.stringify(cart.filter((item: { id: number; }) => item.id !== itemId)));
 }
-
-// async function triggerConfetti() {
-//     await loadConfetti(tsParticles); // Carregar o módulo de confetti
-
-//     tsParticles.load("confetti-container", {
-//         particles: {
-//             number: {
-//                 value: 200,
-//             },
-//             move: {
-//                 enable: true,
-//                 speed: 10,
-//             },
-//             shape: {
-//                 type: "circle",
-//             },
-//             size: {
-//                 value: { min: 2, max: 5 },
-//             },
-//         },
-//         background: {
-//             color: "transparent",
-//         },
-//     });
-// }
-
 
 // Função para disparar o confete
 export function triggerConfetti() {

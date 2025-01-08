@@ -1,7 +1,12 @@
 import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
-import { addUser, editUser, deleteUser, getUserByEmail, getUserEmailById, addItem, getItemByName, editItem, getItemByID, deleteItem } from "@lib/dbFunctions";
+import {
+    addUser, editUser, deleteUser, getUserByEmail,
+    getUserEmailById, addItem, getItemByName, editItem,
+    getItemByID, deleteItem, thereIsReservation, addUReservation
+} from "@lib/dbFunctions";
+
 import Stripe from "stripe";
 
 // Inicialize o Stripe com sua chave secreta
@@ -423,9 +428,10 @@ export const server = {
                     amount: totalAmount,
                     currency: "eur",
                     automatic_payment_methods: { enabled: true },
+                    expand: ["charges"],
                 });
 
-                return { clientSecret: paymentIntent.client_secret };
+                return { clientSecret: paymentIntent.client_secret, paymentIntent };
             } catch (error: any) {
                 console.error("Error Creating PaymentIntent:", error);
                 throw new ActionError({
@@ -436,13 +442,61 @@ export const server = {
         },
     }),
 
-    sendEmail: defineAction({
+    thereIsReservation: defineAction({
         input: z.object({
-            id: z.number().min(1, "Item id is required."),
+            user_id: z.number().min(1, "user id is required."),
+            item_id: z.number().min(1, "item id is required."),
         }),
-        handler: async ({ id }) => {
+        handler: async ({ user_id, item_id }) => {
             try {
-                const email = await getUserEmailById(id);
+                const reservation = Boolean(await thereIsReservation(user_id, item_id));
+                console.log("reservation: ", reservation)
+
+                return reservation;
+            } catch (error) {
+                console.error("Error in sendEmail:", error);
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: (error instanceof Error ? error.message : "Unknown error") || "Failed to send email. Please try again.",
+                });
+            }
+        },
+    }),
+
+    itemPaymentConfirmation: defineAction({
+        input: z.object({
+            user_id: z.number().min(1, "user id is required."),
+            item_id: z.number().min(1, "item id is required."),
+            start_date: z.string().refine(
+                (date) => !isNaN(Date.parse(date)), // Verifica se a string pode ser convertida para uma data válida
+                { message: "start_date must be a valid date in YYYY-MM-DD format." }
+            ),
+            end_date: z.string().refine(
+                (date) => !isNaN(Date.parse(date)), // Verifica se a string pode ser convertida para uma data válida
+                { message: "end_date must be a valid date in YYYY-MM-DD format." }
+            ),
+            payment_amount: z.number()
+                .min(0.01, "payment_amount must be at least 0.01.") // Verifica se o pagamento é positivo
+                .refine(
+                    (amount) => Number.isFinite(amount),
+                    { message: "payment_amount must be a valid number." }
+                ),
+            payment_method: z.string().min(1, "payment method is required."),
+        }),
+        handler: async ({ user_id, item_id, start_date, end_date, payment_amount, payment_method }) => {
+            try {
+
+                const reservation = await addUReservation(user_id, item_id, start_date, end_date, payment_amount, payment_method);
+
+                if (!reservation) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "Payment not found.",
+                    });
+                }
+
+                //ober email do utilizador
+                const email = await getUserEmailById(user_id);
                 if (!email) {
                     throw new ActionError({
                         code: "NOT_FOUND",
@@ -451,7 +505,7 @@ export const server = {
                 }
 
                 // Obtém o item e o email
-                const item = await getItemByID(id);
+                const item = await getItemByID(item_id);
                 if (!item) {
                     throw new ActionError({
                         code: "NOT_FOUND",
@@ -459,9 +513,10 @@ export const server = {
                     });
                 }
 
-                console.log("item: ", item)
-                console.log("email: ", email)
+                //console.log("email: ", email)
+                //console.log("item: ", item)
 
+                //messagem para enviar ao user
                 const message = {
                     subject: "Thank You for Your Purchase at Oafit Oasis! 🛍️",
                     html: `
@@ -472,13 +527,13 @@ export const server = {
                           We’re excited to let you know that your purchase has been successfully processed! Thank you for shopping at <strong>Oafit Oasis</strong>.
                         </p>
                         <p>
-                          Your order is being prepared and will be shipped soon. We'll send you a tracking number as soon as it’s available.
+                          Your order is ready to collect at address <a href="https://maps.app.goo.gl/EhatjmBKQSNDYaQD6">Rua José Nogueira Vaz 16, Póvoa de Santa Iria</a>. We'll send you a tracking number as soon as it’s available.
                         </p>
                         <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
                           <p><strong>Order Summary:</strong></p>
                           <ul style="list-style: none; padding: 0; margin: 0;">
                             <li>🎽 Product: <strong>${item.name}</strong></li>
-                            <li>💵 Total: <strong>€${item.rental_price}</strong></li>
+                            <li>💵 Total: <strong>${item.rental_price} €</strong></li>
                           </ul>
                         </div>
                         <p>
@@ -497,7 +552,7 @@ export const server = {
                     `,
                 };
 
-                console.log("message: ", message)
+                //console.log("message: ", message)
 
                 // Envia o email
                 const send = await sendEmail(email, message);
@@ -509,12 +564,12 @@ export const server = {
                     });
                 }
 
-                return { success: true, messageId: send.messageId };
+                return { success: true };
             } catch (error) {
-                console.error("Error in sendEmail:", error);
+                console.error("Error in confirmation in reservation:", error);
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
-                    message: (error instanceof Error ? error.message : "Unknown error") || "Failed to send email. Please try again.",
+                    message: (error instanceof Error ? error.message : "Unknown error") || "Failed to confirm reservation. Please try again.",
                 });
             }
         },

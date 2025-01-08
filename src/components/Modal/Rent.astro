@@ -424,7 +424,7 @@ para depois alugar
 
 <script>
     import { getLangFromUrl } from "@i18n/utils";
-    import { setupMap, stripe } from "@lib/functions";
+    import { stripe } from "@lib/functions";
     import { actions } from "astro:actions";
     import {
         type Appearance,
@@ -488,9 +488,6 @@ para depois alugar
         nextToStep2.addEventListener("click", () => {
             step1.classList.add("hidden-step");
             step2.classList.remove("hidden-step");
-
-            // Exibir mapa
-            setupMap("map");
         });
 
         // Passo 2 -> Passo 1
@@ -547,8 +544,15 @@ para depois alugar
                     </div>
 
                     <!-- Mapa -->
-                    <div id="map" class="w-full h-40 border border-gray-200 rounded- overflow-hidden" title="Local that you have to go to get your item">
-                        <!-- O mapa será carregado aqui -->
+                    <div class="w-full h-40 border border-gray-200 rounded- overflow-hidden" title="Local that you have to go to get your item">
+                         <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3106.609552808246!2d-9.077966787753034!3d38.86429367161323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd192ec1c4a591d1%3A0x384a0c3b46e3770a!2sR.%20Jos%C3%A9%20Nogueira%20Vaz%2016%2C%202625-099%20P%C3%B3voa%20de%20Santa%20Iria!5e0!3m2!1spt-PT!2spt!4v1736287506229!5m2!1spt-PT!2spt"
+                            width="400"
+                            height="300"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>
@@ -621,7 +625,7 @@ para depois alugar
                     return;
                 }
 
-                const { clientSecret } = data;
+                const { clientSecret, paymentIntent } = data;
 
                 // Verifique se o clientSecret é válido
                 if (!clientSecret) {
@@ -699,15 +703,57 @@ para depois alugar
                 form.addEventListener("submit", async (event) => {
                     event.preventDefault();
 
+                    const payment_amount = selectedItem?.price.toFixed(2);
+                    const intervalDate =
+                        document.getElementById("interval-date")?.textContent ||
+                        "";
+
+                    // Dividir a string em `startDate` e `endDate`
+                    const [startDate, endDate] = intervalDate.split(" - ");
+
+                    console.log("startDate: ", startDate, "endDate: ", endDate);
+
                     // Confirmar o pagamento
                     if (stripe) {
                         const { error } = await stripe.confirmPayment({
                             elements,
                             confirmParams: {
                                 // URL para redirecionar após o pagamento
-                                return_url: `http://localhost:4321/${lang}/complete?item_id=${itemId}`,
+                                return_url: `http://localhost:4321/${lang}/complete?item_id=${itemId}?start_date=${startDate}?end_date=${endDate}?payment_amount=${payment_amount}`,
                             },
+                            redirect: "if_required",
                         });
+
+                        console.log("data: ", data);
+
+                        if (error) {
+                            // Tratar erro de pagamento
+                            console.error("Erro no pagamento:", error.message);
+                            const paymentMessage = document.querySelector(
+                                "#payment-message",
+                            ) as HTMLElement | null;
+                            if (paymentMessage) {
+                                paymentMessage.textContent =
+                                    error?.message ||
+                                    "Ocorreu um erro durante o pagamento.";
+                            }
+                        } else if (data.paymentIntent) {
+                            // Obter informações do PaymentIntent
+                            console.log("Pagamento confirmado:", paymentIntent);
+
+                            // Obter o método de pagamento usado
+                            const paymentMethod = paymentIntent.payment_method; // ID do método de pagamento
+                            const paymentDetails =
+                                paymentIntent.charges?.data[0]
+                                    ?.payment_method_details;
+
+                            alert(
+                                "Método de pagamento usado:" + paymentDetails,
+                            );
+
+                            // Adicionar o método de pagamento à sua URL ou processar os dados no backend
+                            window.location.href = `http://localhost:4321/${lang}/complete?item_id=${itemId}&start_date=${startDate}&end_date=${endDate}&payment_amount=${payment_amount}&payment_method=${paymentMethod}`;
+                        }
 
                         // Atualizar a mensagem de erro ou sucesso no pagamento
                         const paymentMessage = document.querySelector(

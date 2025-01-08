@@ -22,7 +22,7 @@ export async function POST({ request }) {
             });
         }
 
-        // Registra o novo usuário no banco de dados
+        // Registra o novo usuário na base de dados
         const newUser = await registerUser(email, password, name);
         // console.log(newUser)
         return new Response(JSON.stringify({ success: true, user: newUser }), {

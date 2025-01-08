@@ -50,7 +50,14 @@ import Layout from "@layouts/Layout.astro";
                 id="mapComplete"
                 class="w-96 h-64 border-2 border-gray-300 rounded-lg overflow-hidden"
             >
-                <!-- O mapa será renderizado aqui -->
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3106.609552808246!2d-9.077966787753034!3d38.86429367161323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd192ec1c4a591d1%3A0x384a0c3b46e3770a!2sR.%20Jos%C3%A9%20Nogueira%20Vaz%2016%2C%202625-099%20P%C3%B3voa%20de%20Santa%20Iria!5e0!3m2!1spt-PT!2spt!4v1736287506229!5m2!1spt-PT!2spt"
+                    width="400"
+                    height="300"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </div>
@@ -80,9 +87,9 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 <script>
     import {
         getCookie,
-        setupMap,
         stripe,
         triggerConfetti,
+        removeItemFromCart,
     } from "@lib/functions";
     import { actions } from "astro:actions";
 
@@ -114,9 +121,26 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 
             if (paymentIntent) {
                 if (paymentIntent.status === "succeeded") {
-                    const id = getCookie("id");
-                    //console.log("user id: ", id);
-                    sendEmailConfirmation(Number(id));
+                    const params = new URLSearchParams(
+                        document.location.search,
+                    );
+
+                    const user_id = Number(getCookie("id"));
+                    const item_id = Number(params.get("item_id"));
+                    const start_date = params.get("start_date") || "";
+                    const end_date = params.get("end_date") || "";
+                    const payment_amount = Number(params.get("payment_amount"));
+                    const payment_method = params.get("payment_method") || "";
+
+                    handleReservation(
+                        user_id,
+                        item_id,
+                        start_date,
+                        end_date,
+                        payment_amount,
+                        payment_method,
+                    );
+
                     showSuccess();
                 } else {
                     const statusMessageElement =
@@ -136,16 +160,69 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
             }
         }
 
-        async function sendEmailConfirmation(id: number) {
+        async function handleReservation(
+            user_id: number,
+            item_id: number,
+            start_date: string,
+            end_date: string,
+            payment_amount: number,
+            payment_method: string,
+        ) {
             try {
-                const { data, error } = await actions.sendEmail({ id });
+                // Verifica se já existe a reserva
+                const { data, error } = await actions.thereIsReservation({
+                    user_id,
+                    item_id,
+                });
 
-                if (error) throw new Error("Erro ao buscar item");
-                if (!data) throw new Error("Item não encontrado");
+                if (error) throw new Error("Erro ao verificar reserva");
+                if (data) {
+                    console.log("O produto já foi reservado.");
+                    return;
+                }
+
+                // Confirma o pagamento e adiciona a reserva
+                await confirmationPayment(
+                    user_id,
+                    item_id,
+                    start_date,
+                    end_date,
+                    payment_amount,
+                    payment_method,
+                );
+
+                // Remove o item do carrinho
+                removeItemFromCart(item_id);
+            } catch (error) {
+                console.error("Erro ao processar reserva:", error);
+            }
+        }
+
+        async function confirmationPayment(
+            user_id: number,
+            item_id: number,
+            start_date: string,
+            end_date: string,
+            payment_amount: number,
+            payment_method: string,
+        ) {
+            try {
+                const { data, error } = await actions.itemPaymentConfirmation({
+                    user_id,
+                    item_id,
+                    start_date,
+                    end_date,
+                    payment_amount,
+                    payment_method,
+                });
+
+                if (error) throw new Error("Erro ao confirmar pagamento");
+                if (!data)
+                    throw new Error("Item não encontrado para confirmação");
 
                 return data;
             } catch (error) {
-                console.error("Erro ao enviar email:", error);
+                console.error("Erro ao confirmar pagamento:", error);
                 return null;
             }
         }
@@ -166,9 +243,6 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
 
             // Disparar confete
             triggerConfetti();
-
-            // Renderizar o mapa
-            setupMap("mapComplete");
         }
     });
 </script>

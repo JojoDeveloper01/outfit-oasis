@@ -103,7 +103,7 @@ export const sendEmail = async (to: any, message: any) => {
 
     const mailOptions = {
       from: `"Oafit Oasis" <${config.EMAIL}>`,
-      to,
+      to: to.email,
       subject: message.subject,
       html: message.html,
     };

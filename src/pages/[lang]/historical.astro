@@ -1,0 +1,22 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getItems, getUserLogin } from "@lib/dbFunctions";
+
+const email = "";
+const pass = "";
+const user = (await getUserLogin(email, pass)) || null;
+const isStaff = user?.user_type === "staff" ? "block" : "hidden";
+
+const items = await getItems();
+---
+
+<Layout
+    title="Historical"
+    description="historical"
+    keywords="historical"
+    canonical="https://outfit-oasis.com/historical"
+>
+    <section>
+        <h1>My historical</h1>
+    </section>
+</Layout>

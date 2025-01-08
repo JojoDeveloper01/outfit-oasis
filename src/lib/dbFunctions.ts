@@ -255,3 +255,56 @@ export async function getFilteredUsers(search: string, type: string) {
     const result = await turso.execute({ sql: query, args: params });
     return result.rows;
 }
+
+//Payments
+export async function itemPayment(user_id: number, reservation_id: number, payment_amount: number, payment_method: string) {
+    // Realiza a consulta na base de dados
+    const result = await turso.execute({
+        sql: `INSERT INTO payments (user_id, reservation_id, payment_amount, payment_method) VALUES (?, ?, ?, ?)`,
+        args: [user_id, reservation_id, payment_amount, payment_method],
+    });
+
+    // Retorna `true` se a reserva existir ou `false` caso contrário
+    return result.rows.length > 0;
+}
+
+//Reservations
+export async function addUReservation(user_id: number, item_id: number, start_date: string, end_date: string, payment_amount: number, payment_method: string) {
+    const result = await turso.execute({
+        sql: 'INSERT INTO reservations (user_id, article_id, start_date, end_date, reservation_status) VALUES (?, ?, ?, ?, "confirmed")',
+        args: [user_id, item_id, start_date, end_date],
+    });
+
+    const reservation_id = Number(result.rows[0]?.id); // Obtém o ID da resposta
+
+    if (!reservation_id) {
+        console.error("Não foi possível obter o ID da reserva.");
+        throw new Error("Erro ao criar reserva");
+    }
+
+    const paymentSuccess = await itemPayment(
+        user_id,
+        reservation_id,
+        payment_amount,
+        payment_method
+    );
+
+    if (!paymentSuccess) {
+        console.error("Erro ao registrar pagamento para a reserva.");
+        throw new Error("Erro ao registrar pagamento");
+    }
+
+    return result.rowsAffected;
+}
+
+
+export async function thereIsReservation(user_id: number, item_id: number) {
+    // Realiza a consulta na base de dados
+    const result = await turso.execute({
+        sql: `SELECT * FROM reservations WHERE user_id = ? AND article_id = ?`,
+        args: [user_id, item_id],
+    });
+
+    // Retorna `true` se a reserva existir ou `false` caso contrário
+    return result.rows.length > 0;
+}
