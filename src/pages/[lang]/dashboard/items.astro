@@ -46,6 +46,32 @@ if (addItemResult?.error) {
 } else if (addItemResult?.data) {
     alertMessage = "Item added successfully!";
 }
+
+/////////////
+
+const rentals = await getRentals(user.id);
+
+// Obtém os dados do item e vincula-os ao aluguel e usuário
+const rentalDetails = await Promise.all(
+    rentals.map(async (rental: any) => {
+        // Obtém os detalhes do item relacionado ao aluguel
+        const item = await getItemByID(rental.item_id);
+
+        // Retorna o aluguel com os detalhes do item e do usuário
+        return {
+            ...rental,
+            user: {
+                id: user.id,
+                name: user.name, // Inclua mais detalhes do usuário se necessário
+                email: user.email,
+            },
+            item,
+        };
+    }),
+);
+
+// Exibe os detalhes
+console.log(rentalDetails);
 ---
 
 <style>

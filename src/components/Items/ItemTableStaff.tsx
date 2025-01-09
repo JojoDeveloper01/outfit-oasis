@@ -286,6 +286,29 @@ export default function ItemCard({ items, activeFilters }: { items: Item[], acti
                             ))}
                         </div>
 
+                        {/* Locações históricas */}
+                        <details className="w-full my-4 px-12">
+                            <summary className="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
+                                Histórico de Locações
+                            </summary>
+                            <div className="p-5 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                                {item.rentalUsers?.length ? (
+                                    item.rentalUsers.map((renter, index) => (
+                                        <div key={index} className="flex flex-col gap-2 p-2 border-b border-gray-300">
+                                            <div><strong>Nome:</strong> {renter.userName}</div>
+                                            <div><strong>Data Início:</strong> {renter.start_date}</div>
+                                            <div><strong>Data Fim:</strong> {renter.end_date}</div>
+                                            <div><strong>Status:</strong> {renter.status}</div>
+                                            <div><strong>Retorno:</strong> {renter.return_date || "Pendente"}</div>
+                                            <div><strong>Custo Total:</strong> ${renter.total_cost}</div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-sm text-gray-500">Nenhuma locação registrada.</div>
+                                )}
+                            </div>
+                        </details>
+
                         {/* Botões de ação */}
                         <div className="w-full flex flex-col gap-2 items-end">
                             <Delete

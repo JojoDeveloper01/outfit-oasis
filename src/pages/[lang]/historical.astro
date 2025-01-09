@@ -1,4 +1,5 @@
 ---
+import ErrorTooltip from "@components/Modal/ErrorTooltip";
 import PreviewImage from "@components/Modal/PreviewImage";
 import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
@@ -58,15 +59,22 @@ const items = await Promise.all(
 );
 
 // Função para retornar as classes de status dinamicamente
-function getStatusClass(status: string, endDate: string): string {
+function getStatusClass(endDate: string, returnDate: string | null): string {
     const today = new Date();
     const endDateObj = new Date(endDate);
-    if (status === "active" && endDateObj >= today) {
-        return "bg-green-100 text-green-800"; // Verde para ativos
-    } else if (status !== "active" || endDateObj < today) {
-        return "bg-red-100 text-red-800"; // Vermelho para finalizados
+
+    today.setHours(0, 0, 0, 0);
+    endDateObj.setHours(0, 0, 0, 0);
+
+    if (returnDate) {
+        return "bg-gray-100 text-gray-800"; // Item já devolvido
+    } else if (endDateObj < today) {
+        return "bg-red-100 text-red-800"; // Atrasado
+    } else if (endDateObj.toDateString() === today.toDateString()) {
+        return "bg-yellow-100 text-yellow-800"; // Devolução hoje
+    } else {
+        return "bg-green-100 text-green-800"; // Ainda no prazo
     }
-    return "bg-gray-100 text-gray-800"; // Padrão
 }
 ---
 
@@ -76,83 +84,128 @@ function getStatusClass(status: string, endDate: string): string {
     keywords="Historical"
     canonical="https://outfit-oasis.com/historical"
 >
-    <section class="py-8 px-4 bg-gray-50 min-h-screen">
+    <section class="max-w-[85vw] mx-auto py-12 px-4 min-h-screen">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">My Rental History</h1>
-        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+        <div class="bg-white shadow-md rounded-lg">
             <table class="min-w-full border-collapse border border-gray-300">
                 <thead>
-                    <tr class="bg-gray-200">
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >Rental ID</th
-                        >
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >Item</th
-                        >
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >Start Date</th
-                        >
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >End Date</th
-                        >
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >Status</th
-                        >
-                        <th class="px-4 py-3 border border-gray-300 text-left"
-                            >Total Cost</th
-                        >
+                    <tr
+                        class="*:bg-gray-200 *:px-4 *:py-3 *:border *:border-gray-300 *:text-left"
+                    >
+                        <th>Rental ID</th>
+                        <th>Item</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Return Date </th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        items.map((rental: Rental) => (
-                            <tr
-                                class={`${getStatusClass(rental.rental_status, rental.end_date)}`}
-                            >
-                                <td class="px-4 py-3 border border-gray-300">
-                                    {rental.rental_id}
-                                </td>
-                                <td class="px-4 py-3 border border-gray-300 flex items-center gap-4">
-                                    <PreviewImage
-                                        client:idle
-                                        src={rental.item?.image}
-                                        type="item"
-                                    />
-                                    <img
-                                        onclick={`document.getElementById('preview-item-image-${rental.item?.image}').showModal()`}
-                                        src={
-                                            rental.item?.image ||
-                                            "/placeholder.png"
-                                        }
-                                        alt={rental.item?.name || "Item"}
-                                        class="w-16 h-16 object-cover rounded-lg cursor-pointer"
-                                    />
-                                    <div>
-                                        <p class="font-bold text-gray-800">
-                                            {rental.item?.name ||
-                                                "Unknown Item"}
-                                        </p>
-                                        <p class="text-sm text-gray-600">
-                                            {rental.item?.brand ||
-                                                "Unknown Brand"}
-                                        </p>
-                                    </div>
-                                </td>
-                                <td class="px-4 py-3 border border-gray-300">
-                                    {rental.start_date}
-                                </td>
-                                <td class="px-4 py-3 border border-gray-300">
-                                    {rental.end_date}
-                                </td>
-                                <td class="px-4 py-3 border border-gray-300 font-bold">
-                                    {rental.rental_status === "active"
-                                        ? "Active"
-                                        : "Finished"}
-                                </td>
-                                <td class="px-4 py-3 border border-gray-300 text-gray-800">
-                                    ${rental.total_cost}
-                                </td>
-                            </tr>
-                        ))
+                        items.map((rental: Rental) => {
+                            const endDateObj = new Date(rental.end_date);
+                            const today = new Date();
+
+                            today.setHours(0, 0, 0, 0);
+                            endDateObj.setHours(0, 0, 0, 0);
+
+                            return (
+                                <tr key={rental.rental_id}>
+                                    <td class="px-4 py-3 border border-gray-300">
+                                        {rental.rental_id}
+                                    </td>
+                                    <td class="px-4 py-3 border border-gray-300 flex items-center gap-4">
+                                        <PreviewImage
+                                            client:idle
+                                            src={rental.item?.image}
+                                            type="item"
+                                        />
+                                        <img
+                                            src={
+                                                rental.item?.image ||
+                                                "/placeholder.png"
+                                            }
+                                            onclick={`document.getElementById('preview-item-image-${rental.item?.image}').showModal()`}
+                                            alt={rental.item?.name || "Item"}
+                                            class="w-16 h-16 object-cover rounded-lg cursor-pointer"
+                                        />
+                                        <div>
+                                            <p class="font-bold text-gray-800">
+                                                {rental.item?.name ||
+                                                    "Unknown Item"}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                {rental.item?.brand ||
+                                                    "Unknown Brand"}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 border border-gray-300">
+                                        {rental.start_date}
+                                    </td>
+                                    <td class="px-4 py-3 border border-gray-300">
+                                        {rental.end_date}
+                                    </td>
+                                    <td class="px-4 py-3 border border-gray-300">
+                                        {rental.return_date
+                                            ? "Finished" // Devolvido
+                                            : rental.rental_status === "active"
+                                              ? "Active" // Em andamento
+                                              : "Pending"}{" "}
+                                    </td>
+                                    <td
+                                        class={`px-4 py-3 border border-gray-300 font-bold ${getStatusClass(
+                                            rental.end_date,
+                                            rental.return_date,
+                                        )}`}
+                                    >
+                                        <div class="relative flex gap-3 items-center group">
+                                            <span class="m-w-28">
+                                                {rental.return_date
+                                                    ? rental.return_date // Data de devolução
+                                                    : endDateObj < today
+                                                      ? "Late Return" // Atrasado
+                                                      : endDateObj.toDateString() ===
+                                                          today.toDateString()
+                                                        ? "Return Today" // Deve ser devolvido hoje
+                                                        : "On Time"}{" "}
+                                            </span>
+                                            <button>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="currentColor"
+                                                    class="icon icon-tabler icons-tabler-filled icon-tabler-alert-square-rounded"
+                                                >
+                                                    <path
+                                                        stroke="none"
+                                                        d="M0 0h24v24H0z"
+                                                        fill="none"
+                                                    />
+                                                    <path d="M12 2l.642 .005l.616 .017l.299 .013l.579 .034l.553 .046c4.687 .455 6.65 2.333 7.166 6.906l.03 .29l.046 .553l.041 .727l.006 .15l.017 .617l.005 .642l-.005 .642l-.017 .616l-.013 .299l-.034 .579l-.046 .553c-.455 4.687 -2.333 6.65 -6.906 7.166l-.29 .03l-.553 .046l-.727 .041l-.15 .006l-.617 .017l-.642 .005l-.642 -.005l-.616 -.017l-.299 -.013l-.579 -.034l-.553 -.046c-4.687 -.455 -6.65 -2.333 -7.166 -6.906l-.03 -.29l-.046 -.553l-.041 -.727l-.006 -.15l-.017 -.617l-.004 -.318v-.648l.004 -.318l.017 -.616l.013 -.299l.034 -.579l.046 -.553c.455 -4.687 2.333 -6.65 6.906 -7.166l.29 -.03l.553 -.046l.727 -.041l.15 -.006l.617 -.017c.21 -.003 .424 -.005 .642 -.005zm.01 13l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -8a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
+                                                </svg>
+                                            </button>
+                                            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-800 text-white text-sm px-4 py-2 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                {rental.return_date
+                                                    ? "The item has already been returned." // Devolvido
+                                                    : endDateObj < today
+                                                      ? "The product price will be added per day." // Atrasado
+                                                      : endDateObj.toDateString() ===
+                                                          today.toDateString()
+                                                        ? "Please return it by the end of the day." // Devolução hoje
+                                                        : "The item is still within the rental period."}{" "}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 border border-gray-300 text-gray-800">
+                                        ${rental.total_cost}
+                                    </td>
+                                </tr>
+                            );
+                        })
                     }
                 </tbody>
             </table>

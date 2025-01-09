@@ -226,7 +226,7 @@ export async function getUserEmailById(id: number) {
         sql: `SELECT email FROM users WHERE id = ?`,
         args: [id],
     });
-    console.log("user", result)
+    //console.log("user", result)
     return result.rows.length > 0 ? result.rows[0] : null;
 }
 
@@ -306,7 +306,6 @@ export async function addUReservation(user_id: number, item_id: number, start_da
     return result.rowsAffected;
 }
 
-
 export async function thereIsReservation(user_id: number, item_id: number) {
     // Realiza a consulta na base de dados
     const result = await turso.execute({
@@ -317,7 +316,6 @@ export async function thereIsReservation(user_id: number, item_id: number) {
     // Retorna `true` se a reserva existir ou `false` caso contrário
     return result.rows.length > 0;
 }
-
 
 //Rent
 export async function addRental(user_id: number, item_id: number, start_date: string, end_date: string, payment_amount: number) {

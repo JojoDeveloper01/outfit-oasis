@@ -474,7 +474,7 @@ export const server = {
         handler: async ({ user_id, item_id }) => {
             try {
                 const reservation = Boolean(await thereIsReservation(user_id, item_id));
-                console.log("reservation: ", reservation)
+                //console.log("reservation: ", reservation)
 
                 return reservation;
             } catch (error) {
