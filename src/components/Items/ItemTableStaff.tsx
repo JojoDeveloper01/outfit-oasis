@@ -19,7 +19,7 @@ interface Item {
     availability: number;
 }
 
-export default function ItemCard({ items, activeFilters }: { items: Item[], activeFilters: { [key: string]: string } }) {
+export default function ItemCard({ items, users, rentals, activeFilters }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string } }) {
     const [data, setData] = useState(items); // Estado dos itens
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState<{ [key: number]: Item }>({}); // Valores originais dos itens
@@ -41,14 +41,41 @@ export default function ItemCard({ items, activeFilters }: { items: Item[], acti
 
     // Sincronizar `data` e `originalValues` com `items`
     useEffect(() => {
-        setData(items);
+        // Combinar os dados dos itens com aluguéis e usuários
+        const combinedData = items.map((item) => {
+            // Filtrar aluguéis relacionados ao item atual
+            const relatedRentals = rentals.filter((rental: { item_id: number; }) => rental.item_id === item.id);
+
+            console.log("relatedRentals: ", relatedRentals);
+
+            // Adicionar detalhes do usuário a cada aluguel
+            const rentalUsers = relatedRentals.map((rental: { user_id: any; }) => {
+                const user = users.find((u: { id: number; }) => u.id === rental.user_id); // Encontrar usuário correspondente
+                return {
+                    ...rental,
+                    userName: user?.name || "Usuário desconhecido",
+                    email: user?.email || "Email não disponível",
+                };
+            });
+
+            console.log("rentalUsers: ", rentalUsers);
+
+            // Combinar item com informações de aluguel e usuários
+            return {
+                ...item,
+                rentalUsers, // Adiciona os usuários e detalhes de aluguel ao item
+            };
+        });
+
+        setData(combinedData); // Atualiza o estado `data` com os dados combinados
         setOriginalValues(
             items.reduce((acc: { [key: number]: Item }, item) => {
                 acc[item.id] = { ...item };
                 return acc;
             }, {})
         );
-    }, [items]);
+    }, [items, rentals, users]);
+
 
     const highlightMatch = (field: string, value: { toString: () => string; }) => {
         if (!activeFilters[field]) return false; // No filter applied

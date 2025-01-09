@@ -3,7 +3,7 @@ import ErrorTooltip from "@components/Modal/ErrorTooltip";
 import PreviewImage from "@components/Modal/PreviewImage";
 import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
-import { getRentals, userExistsByID, getItemByID } from "@lib/dbFunctions";
+import { getRentalByID, userExistsByID, getItemByID } from "@lib/dbFunctions";
 
 // Define os tipos para os objetos de Rental e Item
 interface Item {
@@ -48,7 +48,7 @@ const user = $user;
 if (!user) return Astro.redirect(`/${lang}/`);
 
 // Obtem os dados de aluguel
-const rentals = await getRentals(user.id);
+const rentals = await getRentalByID(user.id);
 
 // Obtem os dados do item para cada aluguel
 const items = await Promise.all(

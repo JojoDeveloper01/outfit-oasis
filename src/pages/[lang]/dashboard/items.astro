@@ -3,7 +3,12 @@ import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import ItemList from "@components/Items/ItemList";
 import Alerts from "@components/Modal/Alerts.astro";
-import { getItems, addItem, editItem, deleteItem } from "@lib/dbFunctions";
+import {
+    getItems,
+    getRentalByID,
+    getRentals,
+    getUsers,
+} from "@lib/dbFunctions";
 import { userExistsByID } from "@lib/dbFunctions";
 import { actions, isInputError } from "astro:actions";
 
@@ -24,7 +29,6 @@ if (Astro.cookies.has("id")) {
 }
 
 const user = $user;
-const isStaff = user?.user_type || null;
 
 // Tratamento de erros
 let alertMessage = "";
@@ -47,31 +51,8 @@ if (addItemResult?.error) {
     alertMessage = "Item added successfully!";
 }
 
-/////////////
-
-const rentals = await getRentals(user.id);
-
-// Obtém os dados do item e vincula-os ao aluguel e usuário
-const rentalDetails = await Promise.all(
-    rentals.map(async (rental: any) => {
-        // Obtém os detalhes do item relacionado ao aluguel
-        const item = await getItemByID(rental.item_id);
-
-        // Retorna o aluguel com os detalhes do item e do usuário
-        return {
-            ...rental,
-            user: {
-                id: user.id,
-                name: user.name, // Inclua mais detalhes do usuário se necessário
-                email: user.email,
-            },
-            item,
-        };
-    }),
-);
-
-// Exibe os detalhes
-console.log(rentalDetails);
+const users = await getUsers();
+const rentals = await getRentals();
 ---
 
 <style>
@@ -275,5 +256,12 @@ console.log(rentalDetails);
     </details>
 
     <!-- Items List -->
-    <ItemList client:load items={items} lang={lang} userType="staff" />
+    <ItemList
+        client:load
+        items={items}
+        users={users}
+        rentals={rentals}
+        lang={lang}
+        userType="staff"
+    />
 </Dashboard>

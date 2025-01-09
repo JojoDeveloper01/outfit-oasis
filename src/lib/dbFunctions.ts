@@ -329,10 +329,17 @@ export async function addRental(user_id: number, item_id: number, start_date: st
     return result.rowsAffected > 0;
 }
 
-export async function getRentals(id: number) {
+export async function getRentalByID(id: number) {
     const result = await turso.execute({
         sql: `SELECT * FROM rentals WHERE user_id = ?`,
         args: [id],
     });
     return result.rows
+}
+
+export async function getRentals() {
+    const result = await turso.execute(
+        'SELECT * FROM rentals ORDER BY end_date DESC'
+    );
+    return result.rows as unknown as User[];
 }
