@@ -29,8 +29,16 @@ export function getCookie(name: any) {
 
 export function removeItemFromCart(itemId: number) {
     const cart = JSON.parse(sessionStorage.getItem("cart") || "[]") || [];
-    sessionStorage.setItem("cart", JSON.stringify(cart.filter((item: { id: number; }) => item.id !== itemId)));
+    console.log("Carrinho antes da remoção:", cart);
+
+    // Converter `item.id` para número para garantir a comparação correta
+    const updatedCart = cart.filter((item: { id: string | number }) => Number(item.id) !== itemId);
+
+    sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    console.log("Carrinho após a remoção:", updatedCart);
 }
+
 
 // Função para disparar o confete
 export function triggerConfetti() {

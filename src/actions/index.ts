@@ -428,7 +428,6 @@ export const server = {
                     amount: totalAmount,
                     currency: "eur",
                     automatic_payment_methods: { enabled: true },
-                    expand: ["charges"],
                 });
 
                 return { clientSecret: paymentIntent.client_secret, paymentIntent };
@@ -437,6 +436,31 @@ export const server = {
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
                     message: error.message || "Failed to create PaymentIntent. Please try again.",
+                });
+            }
+        },
+    }),
+
+    getPaymentMethod: defineAction({
+        input: z.object({
+            id: z.string().min(1, "id is required."),
+        }),
+        handler: async ({ id }) => {
+            try {
+                const paymentMethod = await stripe.paymentMethods.retrieve(id);
+
+                if (!paymentMethod.card) {
+                    throw new ActionError({
+                        code: "NOT_FOUND",
+                        message: "Card details not found.",
+                    });
+                }
+                return paymentMethod.card.brand;
+            } catch (error) {
+                console.error('Erro ao obter detalhes do método de pagamento:', error);
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: (error instanceof Error ? error.message : "Unknown error") || "Error to get details payment method. Please try again.",
                 });
             }
         },

@@ -625,7 +625,7 @@ para depois alugar
                     return;
                 }
 
-                const { clientSecret, paymentIntent } = data;
+                const { clientSecret } = data;
 
                 // Verifique se o clientSecret é válido
                 if (!clientSecret) {
@@ -688,7 +688,6 @@ para depois alugar
                 // Inicializar o Stripe Elements
                 const elements = stripe.elements(elementsOptions);
 
-                // Criar o elemento de pagamento com o Stripe Link desativado
                 const paymentElement = elements.create("payment", {
                     paymentMethodOrder: ["card"], // Ordena os métodos de pagamento
                 });
@@ -703,7 +702,9 @@ para depois alugar
                 form.addEventListener("submit", async (event) => {
                     event.preventDefault();
 
-                    const payment_amount = selectedItem?.price.toFixed(2);
+                    const payment_amount = Number(
+                        selectedItem?.price.toFixed(2),
+                    );
                     const intervalDate =
                         document.getElementById("interval-date")?.textContent ||
                         "";
@@ -711,17 +712,13 @@ para depois alugar
                     // Dividir a string em `startDate` e `endDate`
                     const [startDate, endDate] = intervalDate.split(" - ");
 
-                    console.log("startDate: ", startDate, "endDate: ", endDate);
-
                     // Confirmar o pagamento
                     if (stripe) {
                         const { error } = await stripe.confirmPayment({
                             elements,
                             confirmParams: {
-                                // URL para redirecionar após o pagamento
-                                return_url: `http://localhost:4321/${lang}/complete?item_id=${itemId}?start_date=${startDate}?end_date=${endDate}?payment_amount=${payment_amount}`,
+                                return_url: `http://localhost:4321/${lang}/complete?item_id=${encodeURIComponent(itemId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&payment_amount=${encodeURIComponent(payment_amount)}`,
                             },
-                            redirect: "if_required",
                         });
 
                         console.log("data: ", data);
@@ -737,22 +734,6 @@ para depois alugar
                                     error?.message ||
                                     "Ocorreu um erro durante o pagamento.";
                             }
-                        } else if (data.paymentIntent) {
-                            // Obter informações do PaymentIntent
-                            console.log("Pagamento confirmado:", paymentIntent);
-
-                            // Obter o método de pagamento usado
-                            const paymentMethod = paymentIntent.payment_method; // ID do método de pagamento
-                            const paymentDetails =
-                                paymentIntent.charges?.data[0]
-                                    ?.payment_method_details;
-
-                            alert(
-                                "Método de pagamento usado:" + paymentDetails,
-                            );
-
-                            // Adicionar o método de pagamento à sua URL ou processar os dados no backend
-                            window.location.href = `http://localhost:4321/${lang}/complete?item_id=${itemId}&start_date=${startDate}&end_date=${endDate}&payment_amount=${payment_amount}&payment_method=${paymentMethod}`;
                         }
 
                         // Atualizar a mensagem de erro ou sucesso no pagamento

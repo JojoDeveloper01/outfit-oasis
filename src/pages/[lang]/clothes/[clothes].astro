@@ -1,7 +1,7 @@
 ---
 // Import necessary components or utilities
 import Layout from "@layouts/Layout.astro";
-import { getItemByID } from "@lib/dbFunctions";
+import { getItemByID, userExistsByID } from "@lib/dbFunctions";
 
 // Access the `id` parameter from the URL
 
@@ -18,6 +18,19 @@ if (!item) {
     // Handle case where the item is not found
     return Astro.redirect("/");
 }
+
+let $user;
+
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    const user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+
+    $user = await userExistsByID(`${user_id}`);
+    // console.log($user);
+}
+
+const user = $user;
+const isUser = user ? "modalRent" : "modalLogin";
 ---
 
 <Layout>
@@ -106,7 +119,7 @@ if (!item) {
                     class="flex gap-4 *:p-4 *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
                 >
                     <button
-                        onclick="document.getElementById('modalRent').showModal()"
+                        onclick=`document.getElementById('${isUser}').showModal()`
                         class="w-full bg-[--teal] hover:bg-black hover:text-white"
                         data-rent={item.id}
                         disabled={item.availability === 0}

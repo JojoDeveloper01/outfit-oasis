@@ -265,13 +265,13 @@ export async function itemPayment(user_id: number, reservation_id: number, payme
     });
 
     // Retorna `true` se a reserva existir ou `false` caso contrário
-    return result.rows.length > 0;
+    return result.rowsAffected > 0;
 }
 
 //Reservations
 export async function addUReservation(user_id: number, item_id: number, start_date: string, end_date: string, payment_amount: number, payment_method: string) {
     const result = await turso.execute({
-        sql: 'INSERT INTO reservations (user_id, article_id, start_date, end_date, reservation_status) VALUES (?, ?, ?, ?, "confirmed")',
+        sql: 'INSERT INTO reservations (user_id, article_id, start_date, end_date, reservation_status) VALUES (?, ?, ?, ?, "confirmed") RETURNING id',
         args: [user_id, item_id, start_date, end_date],
     });
 
@@ -294,6 +294,15 @@ export async function addUReservation(user_id: number, item_id: number, start_da
         throw new Error("Erro ao registrar pagamento");
     }
 
+    const rentalSuccess = await addRental(
+        user_id, item_id, start_date, end_date, payment_amount
+    );
+
+    if (!rentalSuccess) {
+        console.error("Erro ao registar o historico de alugueres.");
+        throw new Error("Erro ao registrar alugueres");
+    }
+
     return result.rowsAffected;
 }
 
@@ -307,4 +316,25 @@ export async function thereIsReservation(user_id: number, item_id: number) {
 
     // Retorna `true` se a reserva existir ou `false` caso contrário
     return result.rows.length > 0;
+}
+
+
+//Rent
+export async function addRental(user_id: number, item_id: number, start_date: string, end_date: string, payment_amount: number) {
+    // Realiza a consulta na base de dados
+    const result = await turso.execute({
+        sql: `INSERT INTO rentals (user_id, article_id, start_date, end_date, rental_status, total_cost) VALUES (?, ?, ?, ?, "active", ?)`,
+        args: [user_id, item_id, start_date, end_date, payment_amount],
+    });
+
+    // Retorna `true` se a reserva existir ou `false` caso contrário
+    return result.rowsAffected > 0;
+}
+
+export async function getRentals(id: number) {
+    const result = await turso.execute({
+        sql: `SELECT * FROM rentals WHERE user_id = ?`,
+        args: [id],
+    });
+    return result.rows
 }

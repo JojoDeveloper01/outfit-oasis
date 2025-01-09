@@ -14,12 +14,11 @@ import Rent from "@components/Modal/Rent.astro";
 
 const lang = getLangFromUrl(Astro.url);
 
-let id: number;
 let $user: any;
 
 if (Astro.cookies.has("id")) {
 	const getCookie = Astro.cookies.get("id");
-	id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+	const id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
 
 	$user = await userExistsByID(`${id}`);
 }

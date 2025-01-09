@@ -4,7 +4,7 @@ export async function POST({ request }) {
     try {
         const filters = await request.json();
         const items = await filterItems(filters);
-        console.log("items: ", items)
+        //console.log("items: ", items)
 
         return new Response(JSON.stringify(items), {
             headers: { 'Content-Type': 'application/json' },

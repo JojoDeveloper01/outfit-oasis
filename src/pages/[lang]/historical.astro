@@ -1,22 +1,161 @@
 ---
+import PreviewImage from "@components/Modal/PreviewImage";
+import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
-import { getItems, getUserLogin } from "@lib/dbFunctions";
+import { getRentals, userExistsByID, getItemByID } from "@lib/dbFunctions";
 
-const email = "";
-const pass = "";
-const user = (await getUserLogin(email, pass)) || null;
-const isStaff = user?.user_type === "staff" ? "block" : "hidden";
+// Define os tipos para os objetos de Rental e Item
+interface Item {
+    id: number;
+    name: string;
+    type: string;
+    category: string;
+    size: string;
+    color: string;
+    brand: string;
+    rental_price: number;
+    image: string;
+    condition: string;
+    availability: number;
+    added_date: string;
+}
 
-const items = await getItems();
+interface Rental {
+    rental_id: number;
+    user_id: number;
+    article_id: number;
+    start_date: string;
+    end_date: string;
+    rental_status: string;
+    return_date: string | null;
+    total_cost: number;
+    item?: Item; // Item associado ao aluguel
+}
+
+let $user: any;
+
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    const id = Number(getCookie?.value);
+
+    $user = await userExistsByID(`${id}`);
+}
+
+const lang = getLangFromUrl(Astro.url);
+const user = $user;
+
+if (!user) return Astro.redirect(`/${lang}/`);
+
+// Obtem os dados de aluguel
+const rentals = await getRentals(user.id);
+
+// Obtem os dados do item para cada aluguel
+const items = await Promise.all(
+    rentals.map(async (rental: any) => {
+        const item = await getItemByID(rental.article_id);
+        return { ...rental, item }; // Junta os detalhes do item ao rental
+    }),
+);
+
+// Função para retornar as classes de status dinamicamente
+function getStatusClass(status: string, endDate: string): string {
+    const today = new Date();
+    const endDateObj = new Date(endDate);
+    if (status === "active" && endDateObj >= today) {
+        return "bg-green-100 text-green-800"; // Verde para ativos
+    } else if (status !== "active" || endDateObj < today) {
+        return "bg-red-100 text-red-800"; // Vermelho para finalizados
+    }
+    return "bg-gray-100 text-gray-800"; // Padrão
+}
 ---
 
 <Layout
     title="Historical"
-    description="historical"
-    keywords="historical"
+    description="Historical"
+    keywords="Historical"
     canonical="https://outfit-oasis.com/historical"
 >
-    <section>
-        <h1>My historical</h1>
+    <section class="py-8 px-4 bg-gray-50 min-h-screen">
+        <h1 class="text-3xl font-bold mb-8 text-gray-800">My Rental History</h1>
+        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table class="min-w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >Rental ID</th
+                        >
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >Item</th
+                        >
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >Start Date</th
+                        >
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >End Date</th
+                        >
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >Status</th
+                        >
+                        <th class="px-4 py-3 border border-gray-300 text-left"
+                            >Total Cost</th
+                        >
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        items.map((rental: Rental) => (
+                            <tr
+                                class={`${getStatusClass(rental.rental_status, rental.end_date)}`}
+                            >
+                                <td class="px-4 py-3 border border-gray-300">
+                                    {rental.rental_id}
+                                </td>
+                                <td class="px-4 py-3 border border-gray-300 flex items-center gap-4">
+                                    <PreviewImage
+                                        client:idle
+                                        src={rental.item?.image}
+                                        type="item"
+                                    />
+                                    <img
+                                        onclick={`document.getElementById('preview-item-image-${rental.item?.image}').showModal()`}
+                                        src={
+                                            rental.item?.image ||
+                                            "/placeholder.png"
+                                        }
+                                        alt={rental.item?.name || "Item"}
+                                        class="w-16 h-16 object-cover rounded-lg cursor-pointer"
+                                    />
+                                    <div>
+                                        <p class="font-bold text-gray-800">
+                                            {rental.item?.name ||
+                                                "Unknown Item"}
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            {rental.item?.brand ||
+                                                "Unknown Brand"}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 border border-gray-300">
+                                    {rental.start_date}
+                                </td>
+                                <td class="px-4 py-3 border border-gray-300">
+                                    {rental.end_date}
+                                </td>
+                                <td class="px-4 py-3 border border-gray-300 font-bold">
+                                    {rental.rental_status === "active"
+                                        ? "Active"
+                                        : "Finished"}
+                                </td>
+                                <td class="px-4 py-3 border border-gray-300 text-gray-800">
+                                    ${rental.total_cost}
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
     </section>
 </Layout>

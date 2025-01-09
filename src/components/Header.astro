@@ -80,27 +80,34 @@ const dasboardItems = [
                 id="navbar-user"
             >
                 <ul
-                    class="flex flex-col font-medium p-4 md:p-0 mt-4 mr-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
+                    class="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
                 >
                     <li>
                         <a
                             href={`/${lang}/`}
-                            class="block py-2 px-3 rounded md:p-0"
+                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
                             aria-current="page">{t("nav.home")}</a
                         >
                     </li>
                     <li>
                         <a
                             href=`/${lang}/clothes/`
-                            class="block py-2 px-3 rounded md:p-0"
+                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
                             >{t("nav.clothes")}</a
+                        >
+                    </li>
+                    <li class=`${user === undefined ? 'hidden' : ''}`>
+                        <a
+                            href=`/${lang}/historical/`
+                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
+                            >{t("nav.historical")}</a
                         >
                     </li>
                     <li class=`${isStaff}`>
                         <ul class="dashboard-dropdown relative inline-block">
                             <a
                                 href={`/${lang}/dashboard/`}
-                                class="block py-2 px-3 rounded md:p-0"
+                                class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
                                 >{t("nav.dashboard")}</a
                             >
 
