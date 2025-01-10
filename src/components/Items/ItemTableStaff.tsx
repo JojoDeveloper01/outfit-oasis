@@ -4,8 +4,10 @@ import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
 import { sanitizeName } from "@lib/functions"
+import type { VNode } from "preact";
 
 interface Item {
+    rentalUsers: any;
     id: number;
     name: string;
     category: string;
@@ -44,21 +46,17 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
         // Combinar os dados dos itens com aluguéis e usuários
         const combinedData = items.map((item) => {
             // Filtrar aluguéis relacionados ao item atual
-            const relatedRentals = rentals.filter((rental: { item_id: number; }) => rental.item_id === item.id);
-
-            console.log("relatedRentals: ", relatedRentals);
+            const relatedRentals = rentals.filter((rental: { article_id: number; }) => rental.article_id === item.id);
 
             // Adicionar detalhes do usuário a cada aluguel
             const rentalUsers = relatedRentals.map((rental: { user_id: any; }) => {
                 const user = users.find((u: { id: number; }) => u.id === rental.user_id); // Encontrar usuário correspondente
                 return {
                     ...rental,
-                    userName: user?.name || "Usuário desconhecido",
+                    userName: user?.name || "Utilizador desconhecido",
                     email: user?.email || "Email não disponível",
                 };
             });
-
-            console.log("rentalUsers: ", rentalUsers);
 
             // Combinar item com informações de aluguel e usuários
             return {
@@ -316,25 +314,71 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                         {/* Locações históricas */}
                         <details className="w-full my-4 px-12">
                             <summary className="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
-                                Histórico de Locações
+                                Historical Rents
+                                <span className="text-[#00671e] font-bold">{item.rentalUsers?.length || 0}</span>
                             </summary>
-                            <div className="p-5 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                            <div className="bg-gray-100 border-t border-gray-200 rounded-b-lg">
                                 {item.rentalUsers?.length ? (
-                                    item.rentalUsers.map((renter, index) => (
-                                        <div key={index} className="flex flex-col gap-2 p-2 border-b border-gray-300">
-                                            <div><strong>Nome:</strong> {renter.userName}</div>
-                                            <div><strong>Data Início:</strong> {renter.start_date}</div>
-                                            <div><strong>Data Fim:</strong> {renter.end_date}</div>
-                                            <div><strong>Status:</strong> {renter.status}</div>
-                                            <div><strong>Retorno:</strong> {renter.return_date || "Pendente"}</div>
-                                            <div><strong>Custo Total:</strong> ${renter.total_cost}</div>
-                                        </div>
-                                    ))
+                                    item.rentalUsers.map(
+                                        (
+                                            renter: {
+                                                userName: string;
+                                                start_date: string;
+                                                end_date: string;
+                                                rental_status: string;
+                                                return_date: string | null;
+                                                total_cost: number;
+                                            },
+                                            index: number
+                                        ) => (
+                                            <div
+                                                key={index}
+                                                className="flex flex-wrap items-center gap-4 px-4 py-6 border-b border-gray-300 bg-white rounded-md shadow-sm"
+                                            >
+                                                {/* Name */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Name</span>
+                                                    <span className="text-gray-800 font-bold">{renter.userName}</span>
+                                                </div>
+
+                                                {/* Start Date */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Start Date</span>
+                                                    <span className="text-gray-800">{renter.start_date}</span>
+                                                </div>
+
+                                                {/* End Date */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">End Date</span>
+                                                    <span className="text-gray-800">{renter.end_date}</span>
+                                                </div>
+
+                                                {/* Status */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Status</span>
+                                                    <span className="text-gray-800">{renter.rental_status}</span>
+                                                </div>
+
+                                                {/* Return */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Return</span>
+                                                    <span className="text-gray-800">{renter.return_date || "Pending"}</span>
+                                                </div>
+
+                                                {/* Total Cost */}
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Total Cost</span>
+                                                    <span className="text-gray-800 font-bold">${renter.total_cost}</span>
+                                                </div>
+                                            </div>
+                                        )
+                                    )
                                 ) : (
-                                    <div className="text-sm text-gray-500">Nenhuma locação registrada.</div>
+                                    <div className="p-5 text-sm text-gray-500">No rentals recorded.</div>
                                 )}
                             </div>
                         </details>
+
 
                         {/* Botões de ação */}
                         <div className="w-full flex flex-col gap-2 items-end">
