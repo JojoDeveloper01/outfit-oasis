@@ -4,7 +4,7 @@ import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
 import {
     addUser, editUser, deleteUser, getUserByEmail,
     getUserEmailById, addItem, getItemByName, editItem,
-    getItemByID, deleteItem, thereIsReservation, addUReservation
+    getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus
 } from "@lib/dbFunctions";
 
 import Stripe from "stripe";
@@ -599,4 +599,44 @@ export const server = {
         },
     }),
 
+    //Rent
+
+    validateRentField: defineAction({
+        input: z.object({
+            value: z.enum(["active", "completed", "late"]),
+            id: z.number().min(1, "Rental ID is required."),
+        }),
+        handler: async ({ value, id }) => {
+            try {
+                return { valid: true };
+            } catch (error) {
+                if (error instanceof z.ZodError) {
+                    return {
+                        valid: false,
+                        message: error.message,
+                    };
+                }
+                throw error;
+            }
+        },
+    }),
+
+
+    editRent: defineAction({
+        input: z.object({
+            id: z.number().min(1, "Rental ID is required."),
+            value: z.enum(['active', 'completed', 'late']),
+        }),
+        handler: async ({ id, value }) => {
+            try {
+
+                await editRentalStatus(id, value);
+            } catch (error) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to edit rental rental. Please try again.",
+                });
+            }
+        },
+    }),
 };

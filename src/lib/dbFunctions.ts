@@ -343,3 +343,25 @@ export async function getRentals() {
     );
     return result.rows as unknown as User[];
 }
+
+export async function editRentalStatus(id: number, value: string) {
+    try {
+        // Check and update in one query if the value is different
+        const result = await turso.execute({
+            sql: `
+                UPDATE rentals 
+                SET rental_status = ? 
+                WHERE rental_id = ? AND rental_status != ?`,
+            args: [value, id, value], // Only update if the current status is different
+        });
+
+        if (result.rowsAffected > 0) {
+            return true; // Update was made
+        } else {
+            return false; // No update was made
+        }
+    } catch (error) {
+        console.error("Error updating rental status:", error);
+        return false; // Indicate failure
+    }
+}

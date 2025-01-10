@@ -39,7 +39,8 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
          condition: 'new',
          availability: 1,
          added_date: '2025-01-02 17:29:17'
-       } */
+       } 
+    */
 
     // Sincronizar `data` e `originalValues` com `items`
     useEffect(() => {
@@ -66,8 +67,10 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
         });
 
         setData(combinedData); // Atualiza o estado `data` com os dados combinados
+
+        // Store the original values, including rentalUsers
         setOriginalValues(
-            items.reduce((acc: { [key: number]: Item }, item) => {
+            combinedData.reduce((acc: { [key: number]: Item }, item) => {
                 acc[item.id] = { ...item };
                 return acc;
             }, {})
@@ -146,6 +149,97 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                 [`${itemId}-${field}`]: "An unexpected error occurred.",
             }));
         }
+    };
+
+    // Atualizar valor de um campo
+    const handleRentalStatusChange = async (event: any, rental_id: number, field: string) => {
+        const value = event.target.value.trim();
+
+        setData((prevData) =>
+            prevData.map((item) => ({
+                ...item,
+                rentalUsers: item.rentalUsers.map((rental: { rental_id: number; }) =>
+                    rental.rental_id === rental_id ? { ...rental, [field]: value } : rental
+                ),
+            }))
+        );
+
+
+        try {
+            const { data, error } = await actions.validateRentField({
+                id: Number(rental_id),
+                value,
+            });
+
+            if (error || !data.valid) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [`${rental_id}-${field}`]: data?.message || error?.message || "Validation error",
+                }));
+            } else {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [`${rental_id}-${field}`]: null,
+                }));
+            }
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [`${rental_id}-${field}`]: "An unexpected error occurred.",
+            }));
+        }
+    };
+
+    const handleSaveStatusRent = async (rental_id: number, field: string) => {
+        const value = data
+            .flatMap((item) => item.rentalUsers)
+            .find((rental) => rental.rental_id === rental_id)?.[field];
+
+        try {
+            const { error } = await actions.editRent({ id: rental_id, value });
+
+            if (error) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [`${rental_id}-${field}`]: error.message,
+                }));
+            } else {
+                // Update `originalValues` to reflect the saved status
+                setOriginalValues(() =>
+                    data.reduce((acc: { [key: number]: Item }, item) => {
+                        acc[item.id] = {
+                            ...item,
+                            rentalUsers: item.rentalUsers.map((rental: { rental_id: number; }) =>
+                                rental.rental_id === rental_id
+                                    ? { ...rental, [field]: value } // Update the saved field in originalValues
+                                    : rental
+                            ),
+                        };
+                        return acc;
+                    }, {})
+                );
+            }
+        } catch (err) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [`${rental_id}-${field}`]: "An unexpected error occurred.",
+            }));
+        }
+    };
+
+    interface StatusColorMap {
+        [key: string]: string;
+    }
+
+    const statusBg = (status: string): string => {
+        const colorMap: StatusColorMap = {
+            completed: "bg-[#9df3cd]",
+            active: "bg-[#ffd4ad]",
+            late: "bg-[#f9b9b9]",
+        };
+
+        return colorMap[status] || "";
     };
 
     return (
@@ -322,6 +416,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                     item.rentalUsers.map(
                                         (
                                             renter: {
+                                                rental_id: number;
                                                 userName: string;
                                                 start_date: string;
                                                 end_date: string;
@@ -333,41 +428,89 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                         ) => (
                                             <div
                                                 key={index}
-                                                className="flex flex-wrap items-center gap-4 px-4 py-6 border-b border-gray-300 bg-white rounded-md shadow-sm"
-                                            >
+                                                className={`
+                                                flex flex-wrap items-center gap-4 px-4 py-6 border-b rounded-md shadow-sm
+                                                        ${renter.rental_status === "completed" ? "bg-green-100 border-green-400"
+                                                        : renter.rental_status === "active"
+                                                            ? "bg-orange-100 border-orange-400"
+                                                            : "bg-red-100 border-red-400"}`}>
+
                                                 {/* Name */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Name</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Name</span>
                                                     <span className="text-gray-800 font-bold">{renter.userName}</span>
                                                 </div>
 
                                                 {/* Start Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Start Date</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Start Date</span>
                                                     <span className="text-gray-800">{renter.start_date}</span>
                                                 </div>
 
                                                 {/* End Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">End Date</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>End Date</span>
                                                     <span className="text-gray-800">{renter.end_date}</span>
                                                 </div>
 
                                                 {/* Status */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Status</span>
-                                                    <span className="text-gray-800">{renter.rental_status}</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Status</span>
+                                                    <div class="flex gap-2">
+                                                        <select
+                                                            id={`${renter.rental_id}-rental_status`}
+                                                            name="rental_status"
+                                                            value={renter.rental_status}
+                                                            style={{ width: "7rem", paddingRight: "0.5rem", background: "transparent" }}
+                                                            className={`px-2 py-1 border rounded "border-gray-300 cursor-pointer`}
+                                                            onChange={(e) => handleRentalStatusChange(e, renter.rental_id, "rental_status")}
+                                                        >
+                                                            <option value="active">Active</option>
+                                                            <option value="completed">Completed</option>
+                                                            <option value="late">Late</option>
+                                                        </select>
+
+                                                        <div class="w-8 *:h-full">
+                                                            {!errors[`${renter.rental_id}-rental_status`] &&
+                                                                originalValues[item.id] && // Ensure `originalValues` exists
+                                                                renter.rental_status !==
+                                                                originalValues[item.id]?.rentalUsers?.find((r: any) => r.rental_id === renter.rental_id)?.rental_status && (
+                                                                    <button onClick={() => handleSaveStatusRent(renter.rental_id, "rental_status")}>
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            width="24"
+                                                                            height="24"
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke="currentColor"
+                                                                            strokeWidth="2"
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            class="w-full icon"
+                                                                        >
+                                                                            <path
+                                                                                stroke="none"
+                                                                                d="M0 0h24v24H0z"
+                                                                                fill="none"
+                                                                            />
+                                                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                                                                        </svg>
+                                                                    </button>
+                                                                )}
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 {/* Return */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Return</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Return</span>
                                                     <span className="text-gray-800">{renter.return_date || "Pending"}</span>
                                                 </div>
 
                                                 {/* Total Cost */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className="px-4 py-1 text-black-600 text-sm font-medium bg-[#f0f0f0] rounded-lg">Total Cost</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Total Cost</span>
                                                     <span className="text-gray-800 font-bold">${renter.total_cost}</span>
                                                 </div>
                                             </div>

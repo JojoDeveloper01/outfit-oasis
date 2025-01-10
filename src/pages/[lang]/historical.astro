@@ -3,7 +3,12 @@ import ErrorTooltip from "@components/Modal/ErrorTooltip";
 import PreviewImage from "@components/Modal/PreviewImage";
 import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
-import { getRentalByID, userExistsByID, getItemByID } from "@lib/dbFunctions";
+import {
+    getRentalByID,
+    userExistsByID,
+    getItemByID,
+    editRentalStatus,
+} from "@lib/dbFunctions";
 
 // Define os tipos para os objetos de Rental e Item
 interface Item {
@@ -59,7 +64,11 @@ const items = await Promise.all(
 );
 
 // Função para retornar as classes de status dinamicamente
-function getStatusClass(endDate: string, returnDate: string | null): string {
+function getStatusClass(
+    id: number,
+    endDate: string,
+    returnDate: string | null,
+): string {
     const today = new Date();
     const endDateObj = new Date(endDate);
 
@@ -69,7 +78,10 @@ function getStatusClass(endDate: string, returnDate: string | null): string {
     if (returnDate) {
         return "bg-gray-100 text-gray-800"; // Item já devolvido
     } else if (endDateObj < today) {
-        return "bg-red-100 text-red-800"; // Atrasado
+        // Atrasado
+        editRentalStatus(id, "late");
+
+        return "bg-red-100 text-red-800";
     } else if (endDateObj.toDateString() === today.toDateString()) {
         return "bg-yellow-100 text-yellow-800"; // Devolução hoje
     } else {
@@ -111,7 +123,7 @@ function getStatusClass(endDate: string, returnDate: string | null): string {
                             endDateObj.setHours(0, 0, 0, 0);
 
                             return (
-                                <tr key={rental.rental_id}>
+                                <tr>
                                     <td class="px-4 py-3 border border-gray-300">
                                         {rental.rental_id}
                                     </td>
@@ -156,6 +168,7 @@ function getStatusClass(endDate: string, returnDate: string | null): string {
                                     </td>
                                     <td
                                         class={`px-4 py-3 border border-gray-300 font-bold ${getStatusClass(
+                                            rental.rental_id,
                                             rental.end_date,
                                             rental.return_date,
                                         )}`}
