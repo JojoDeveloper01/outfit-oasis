@@ -39,6 +39,10 @@ export function removeItemFromCart(itemId: number) {
     //console.log("Carrinho após a remoção:", updatedCart);
 }
 
+export const getTotalPriceFromURL = (param: string) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return parseFloat(urlParams.get(param) || '0'); // Obtém o valor como número
+}
 
 // Função para disparar o confete
 export function triggerConfetti() {

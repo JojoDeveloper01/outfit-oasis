@@ -3,7 +3,7 @@ import { useState, useEffect } from 'preact/hooks';
 const Calendar = () => {
   const today = new Date();
   const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-  const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
+  const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 365);
 
   const monthNames = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -15,6 +15,8 @@ const Calendar = () => {
   const [endDate, setEndDate] = useState(null);
   const [hoverDate, setHoverDate] = useState(null);
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
+  const [pricePerDay, setPricePerDay] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -25,10 +27,47 @@ const Calendar = () => {
   const formatDate = (date) =>
     `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
 
+  const calculateIntervalDays = (startDate, endDate) => {
+    if (!startDate || !endDate) return 0;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const differenceInTime = end.getTime() - start.getTime();
+    return Math.ceil(differenceInTime / (1000 * 3600 * 24));
+  };
+
+  const updateTotalPrice = (intervalDays) => {
+    if (pricePerDay !== null) {
+      const total = pricePerDay * intervalDays;
+
+      // Atualiza o estado do total
+      setTotalPrice(total);
+
+      // Atualiza o elemento DOM #itemPrice
+      const itemPriceElement = document.getElementById("itemPrice");
+      if (itemPriceElement) {
+        itemPriceElement.textContent = `${total.toFixed(2)}`; // Atualiza o conteúdo do elemento
+      }
+    }
+  };
+
+  const handleDateSelection = () => {
+    if (startDate && endDate) {
+      const intervalDays = calculateIntervalDays(startDate, endDate);
+      updateTotalPrice(intervalDays);
+    }
+  };
+
+  const getTotalPriceFromURL = (param) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return parseFloat(urlParams.get(param) || '0'); // Obtém o valor como número
+  }
+
   const getTooltipText = (date) => {
     if (date <= today) return "Cannot select today or past.";
     if (date < minDate) return "Cannot rent on the same day.";
-    if (date > maxDate) return "Cannot rent for over 2 weeks.";
+    if (date > maxDate) return "Cannot rent for over 1 year.";
     return null;
   };
 
@@ -75,20 +114,26 @@ const Calendar = () => {
   };
 
   useEffect(() => {
+    // Inicializar o preço por dia do elemento DOM apenas uma vez
+    const totalPriceFromURL = getTotalPriceFromURL("totalPrice");
+
+    if (totalPriceFromURL) {
+      setPricePerDay(parseFloat(totalPriceFromURL) || 0); // Armazena o preço inicial em um estado
+    }
+
+    // Habilita ou desabilita o botão "nextToStep2" com base em `endDate`
     const nextToStep2 = document.querySelector("#nextToStep2");
-    if (endDate) {
-      if (nextToStep2) {
-        nextToStep2.disabled = false;
-      }
-    } else {
-      if (nextToStep2) {
-        nextToStep2.disabled = true;
-      }
+    if (nextToStep2) {
+      nextToStep2.disabled = !endDate; // Desabilitado se `endDate` não existir
     }
   }, [endDate]);
 
+  useEffect(() => {
+    handleDateSelection();
+  }, [startDate, endDate, pricePerDay]);
+
   return (
-    <div class="flex flex-col gap-4 justify-evenly w-full h-[25rem] relative">
+    <div class="flex flex-col gap-4 justify-evenly w-full relative">
       <div class="flex justify-between items-center">
         <button
           class="text-blue-500 font-bold disabled:text-gray-400"
@@ -156,8 +201,14 @@ const Calendar = () => {
         </div>
       )}
       {startDate && endDate && (
-        <div id='interval-date' class="text-lg font-semibold text-gray-700">
-          {`${formatDate(startDate)} - ${formatDate(endDate)}`}
+        <div
+          className="flex flex-wrap gap-x-2 text-lg font-semibold text-gray-700"
+        >
+          <span id="interval-date">{`${formatDate(startDate)} - ${formatDate(endDate)}`}</span>
+          -
+          <span>{`${calculateIntervalDays(startDate, endDate)} days x ${pricePerDay.toFixed(2)} €/day =`}
+            <span id="totalPriceItem" className="ml-2 px-2 py-1 bg-gray-300 rounded-lg">{`${totalPrice.toFixed(2)}`}</span> €
+          </span>
         </div>
       )}
     </div>

@@ -286,7 +286,7 @@ import Calendar from "@components/Calendar";
     </button>
 
     <div
-        class="relative h-[38rem] *:h-full p-6 *:flex *:gap-4 *:flex-col *:justify-between"
+        class="relative h-[41rem] *:h-full p-6 *:flex *:gap-4 *:flex-col *:justify-between"
     >
         <!-- Passo 1 -->
         <section id="step1">
@@ -367,10 +367,7 @@ import Calendar from "@components/Calendar";
                         id="payment-form"
                         class="h-full flex flex-col justify-between shadow-md mt-auto mb-auto"
                     >
-                        <div
-                            id="payment-element"
-                            class="h-full overflow-y-auto mb-4"
-                        >
+                        <div id="payment-element" class="h-full mb-4">
                             <!-- stripe.js vai injetar o formulário aqui -->
                         </div>
                         <button
@@ -430,8 +427,6 @@ para depois alugar
         type Appearance,
         type StripeElementsOptions,
     } from "@stripe/stripe-js";
-    /*     import Appearance from "@stripe/stripe-js";
-    import StripeElementsOptions from "@stripe/stripe-js"; */
 
     document.addEventListener("astro:page-load", () => {
         interface Item {
@@ -466,6 +461,12 @@ para depois alugar
         let selectedItem: Item | null = null;
         let itemId: any;
 
+        const updateTotalPriceInURL = (totalPrice: string) => {
+            const url = new URL(window.location.href);
+            url.searchParams.set("totalPrice", totalPrice); // Adiciona ou atualiza o parâmetro
+            window.history.pushState({}, "", url); // Atualiza a URL sem recarregar
+        };
+
         // Função para abrir o modal e carregar os dados do item
         document.addEventListener("click", async (event) => {
             const button = (event.target as HTMLElement).closest(
@@ -477,9 +478,11 @@ para depois alugar
 
                 if (itemId) {
                     selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
-                }
-                if (selectedItem) {
-                    renderItemDetails(selectedItem);
+                    renderPaymentDetails();
+                    if (selectedItem) {
+                        updateTotalPriceInURL(selectedItem.price.toFixed(2));
+                        renderItemDetails(selectedItem);
+                    }
                 }
             }
         });
@@ -500,7 +503,6 @@ para depois alugar
         nextToStep3.addEventListener("click", () => {
             step2.classList.add("hidden-step");
             step3.classList.remove("hidden-step");
-            renderPaymentDetails();
             setupStripePayment();
         });
 
