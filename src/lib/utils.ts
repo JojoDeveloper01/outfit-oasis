@@ -2,6 +2,7 @@ import { sanitizeName } from "./functions";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { promises as fs } from "fs";
+import sharp from "sharp";
 
 import { google } from "googleapis";
 import nodemailer from "nodemailer";
@@ -15,14 +16,24 @@ export async function saveFileToPublic(file: File, name: string, type: string): 
     const uploadDir = path.join(process.cwd(), `public/${pathType}`);
     await mkdir(uploadDir, { recursive: true });
 
-    // Gera o nome do ficheiro: "profile_nome-do-user.extensão" ou "item_nome-do-item.extensão"
-    const fileExtension = path.extname(file.name);
+    // Define o nome do ficheiro: "profile_nome-do-user.avif" ou "item_nome-do-item.avif"
     const sanitizedFileName = sanitizeName(name);
-    const fileName = `${type}_${sanitizedFileName}${fileExtension}`;
+    const fileName = `${type}_${sanitizedFileName}.avif`; // Sempre salva como .avif
     const filePath = path.join(uploadDir, fileName);
 
-    // Salva o ficheiro no diretório
-    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+    // Verifica o formato original da imagem
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const metadata = await sharp(buffer).metadata();
+
+    // Se a imagem já for WebP ou AVIF, salva sem conversão
+    if (metadata.format === "avif") {
+      await writeFile(filePath, buffer);
+    } else {
+      // Caso contrário, converte para AVIF
+      await sharp(buffer)
+        .avif({ quality: 80 }) // Define a qualidade da conversão (ajustável)
+        .toFile(filePath);
+    }
 
     // Retorna o caminho relativo
     return `${pathType}/${fileName}`;
@@ -31,7 +42,6 @@ export async function saveFileToPublic(file: File, name: string, type: string): 
     throw new Error(`Falha ao salvar o ficheiro: ${error.message}`);
   }
 }
-
 //delete the images when the item or user is deleted
 export async function deleteImage(imagePath: string): Promise<void> {
   try {

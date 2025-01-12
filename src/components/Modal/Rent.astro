@@ -461,9 +461,10 @@ para depois alugar
         let selectedItem: Item | null = null;
         let itemId: any;
 
-        const updateTotalPriceInURL = (totalPrice: string) => {
+        const updateParamInURL = (itemId: string, totalPrice: string) => {
             const url = new URL(window.location.href);
             url.searchParams.set("totalPrice", totalPrice); // Adiciona ou atualiza o parâmetro
+            url.searchParams.set("itemId", itemId); // Adiciona ou atualiza o parâmetro
             window.history.pushState({}, "", url); // Atualiza a URL sem recarregar
         };
 
@@ -480,7 +481,7 @@ para depois alugar
                     selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
                     renderPaymentDetails();
                     if (selectedItem) {
-                        updateTotalPriceInURL(selectedItem.price.toFixed(2));
+                        updateParamInURL(itemId, selectedItem.price.toFixed(2));
                         renderItemDetails(selectedItem);
                     }
                 }
@@ -704,9 +705,13 @@ para depois alugar
                 form.addEventListener("submit", async (event) => {
                     event.preventDefault();
 
-                    const payment_amount = Number(
-                        selectedItem?.price.toFixed(2),
-                    );
+                    const itemPriceText =
+                        document.getElementById("itemPrice")?.textContent;
+                    const itemPrice = itemPriceText
+                        ? parseFloat(itemPriceText)
+                        : 0;
+
+                    const payment_amount = itemPrice;
                     const intervalDate =
                         document.getElementById("interval-date")?.textContent ||
                         "";

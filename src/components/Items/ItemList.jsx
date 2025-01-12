@@ -20,7 +20,7 @@ export default function ItemList({ items, users, rentals, userType, lang }) {
             {userType === "staff" ? (
                 <ItemTableStaff items={filteredItems} users={users} rentals={rentals} activeFilters={filters} />
             ) : (
-                <ItemTableUser items={filteredItems} lang={lang} />
+                <ItemTableUser items={filteredItems} rentals={rentals} lang={lang} />
             )}
         </section>
     );

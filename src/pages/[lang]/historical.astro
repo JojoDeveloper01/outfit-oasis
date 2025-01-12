@@ -55,13 +55,19 @@ if (!user) return Astro.redirect(`/${lang}/`);
 // Obtem os dados de aluguel
 const rentals = await getRentalByID(user.id);
 
+//console.log("rentals: ", rentals);
+
 // Obtem os dados do item para cada aluguel
-const items = await Promise.all(
-    rentals.map(async (rental: any) => {
-        const item = await getItemByID(rental.article_id);
-        return { ...rental, item }; // Junta os detalhes do item ao rental
-    }),
-);
+const items = (
+    await Promise.all(
+        rentals.map(async (rental: any) => {
+            const item = await getItemByID(rental.article_id);
+            return item ? { ...rental, item } : null; // Retorna null se o item não existir
+        }),
+    )
+).filter((rentalWithItem) => rentalWithItem !== null); // Remove os nulos
+
+//console.log("items: ", items);
 
 // Função para retornar as classes de status dinamicamente
 function getStatusClass(
@@ -134,22 +140,17 @@ function getStatusClass(
                                             type="item"
                                         />
                                         <img
-                                            src={
-                                                rental.item?.image ||
-                                                "/placeholder.png"
-                                            }
+                                            src={rental.item?.image}
                                             onclick={`document.getElementById('preview-item-image-${rental.item?.image}').showModal()`}
-                                            alt={rental.item?.name || "Item"}
+                                            alt={rental.item?.name}
                                             class="w-16 h-16 object-cover rounded-lg cursor-pointer"
                                         />
                                         <div>
                                             <p class="font-bold text-gray-800">
-                                                {rental.item?.name ||
-                                                    "Unknown Item"}
+                                                {rental.item?.name}
                                             </p>
                                             <p class="text-sm text-gray-600">
-                                                {rental.item?.brand ||
-                                                    "Unknown Brand"}
+                                                {rental.item?.brand}
                                             </p>
                                         </div>
                                     </td>

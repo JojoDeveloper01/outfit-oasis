@@ -4,7 +4,7 @@ import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
 import {
     addUser, editUser, deleteUser, getUserByEmail,
     getUserEmailById, addItem, getItemByName, editItem,
-    getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus
+    getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus, getRentalDateWithItemID
 } from "@lib/dbFunctions";
 
 import Stripe from "stripe";
@@ -61,7 +61,7 @@ const baseItemSchema = z.object({
     name: z
         .string()
         .min(3, "Name must be at least 3 characters")
-        .max(60, "Your item name must be no more than 60 characters"),
+        .max(80, "Your item name must be no more than 80 characters"),
     category: z
         .string()
         .min(2, "category must be at least 2 characters")
@@ -118,7 +118,7 @@ export const server = {
                         return await saveFileToPublic(input.profile_pic, input.name, "profile");
                     } else {
                         // Caminho padrão
-                        return "/profile_users/default.png";
+                        return "/profile_users/default.webp";
                     }
                 };
 
@@ -551,13 +551,14 @@ export const server = {
                           We’re excited to let you know that your purchase has been successfully processed! Thank you for shopping at <strong>Oafit Oasis</strong>.
                         </p>
                         <p>
-                          Your order is ready to collect at address <a href="https://maps.app.goo.gl/EhatjmBKQSNDYaQD6">Rua José Nogueira Vaz 16, Póvoa de Santa Iria</a>. We'll send you a tracking number as soon as it’s available.
+                          Your order is ready to collect at address <a href="https://maps.app.goo.gl/EhatjmBKQSNDYaQD6">Rua José Nogueira Vaz 16, Póvoa de Santa Iria</a>.
                         </p>
                         <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
                           <p><strong>Order Summary:</strong></p>
                           <ul style="list-style: none; padding: 0; margin: 0;">
                             <li>🎽 Product: <strong>${item.name}</strong></li>
-                            <li>💵 Total: <strong>${item.rental_price} €</strong></li>
+                            <li>💲 Price per day: <strong>${item.rental_price}</strong></li>
+                            <li>💵 Total: <strong>${payment_amount} €</strong></li>
                           </ul>
                         </div>
                         <p>
@@ -600,6 +601,21 @@ export const server = {
     }),
 
     //Rent
+    getRentalDate: defineAction({
+        input: z.object({
+            id: z.number().min(1, "Item ID is required."),
+        }),
+        handler: async ({ id }) => {
+            const rentalDate = await getRentalDateWithItemID(id);
+            if (!rentalDate) {
+                throw new ActionError({
+                    code: "NOT_FOUND",
+                    message: "Item not found.",
+                });
+            }
+            return { rentalDate };
+        },
+    }),
 
     validateRentField: defineAction({
         input: z.object({

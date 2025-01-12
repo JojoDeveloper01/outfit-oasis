@@ -2,7 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import ItemList from "@components/Items/ItemList";
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
-import { getItems, userExistsByID } from "@lib/dbFunctions";
+import { getItems, getRentals, userExistsByID } from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -21,6 +21,7 @@ if (Astro.cookies.has("id")) {
 const user = $user;
 
 let items = await getItems();
+const rentals = await getRentals();
 ---
 
 <Layout
@@ -30,6 +31,13 @@ let items = await getItems();
     canonical="https://outfit-oasis.com"
 >
     <section class="container m-auto py-8">
-        <ItemList client:load items={items} lang={lang} userType="client" />
+        <ItemList
+            client:load
+            items={items}
+            users={[]}
+            rentals={rentals}
+            lang={lang}
+            userType="client"
+        />
     </section>
 </Layout>

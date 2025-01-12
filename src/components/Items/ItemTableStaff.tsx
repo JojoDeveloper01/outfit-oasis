@@ -4,7 +4,6 @@ import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
 import { sanitizeName } from "@lib/functions"
-import type { VNode } from "preact";
 
 interface Item {
     rentalUsers: any;
@@ -250,17 +249,8 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                 data.map((item) => (
                     <div
                         key={item.id}
-                        className="flex flex-wrap items-start gap-2 p-4 bg-white shadow-lg rounded-lg border border-gray-300"
+                        className="flex flex-wrap items-start gap-2 p-4 pt-7 bg-white shadow-lg rounded-lg border border-gray-300"
                     >
-                        <div
-                            className={`mx-12 my-4 px-4 py-2 text-sm font-medium border rounded-lg ${item.availability
-                                ? "bg-green-100 text-green-800 border-green-400"
-                                : "bg-orange-100 text-orange-800 border-orange-400"
-                                }`}
-                        >
-                            {item.availability ? "Available" : "Reserved"}
-                        </div>
-
                         {/* Campos */}
                         <div className="flex flex-wrap gap-2 flex-grow px-12">
 

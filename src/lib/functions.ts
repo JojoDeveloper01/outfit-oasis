@@ -39,9 +39,23 @@ export function removeItemFromCart(itemId: number) {
     //console.log("Carrinho após a remoção:", updatedCart);
 }
 
-export const getTotalPriceFromURL = (param: string) => {
+export const getParamsFromURL = (param: string) => {
     const urlParams = new URLSearchParams(window.location.search);
     return parseFloat(urlParams.get(param) || '0'); // Obtém o valor como número
+}
+
+// Verifica se o item está atualmente alugado
+export function isCurrentlyRented(startDate: string, endDate: string) {
+    if (!startDate || !endDate) return false; // Caso não tenha rental, está disponível
+
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1); // Incrementa um dia na data atual
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    return start <= tomorrow && tomorrow <= end; // Verifica se "amanhã" está dentro do intervalo
 }
 
 // Função para disparar o confete

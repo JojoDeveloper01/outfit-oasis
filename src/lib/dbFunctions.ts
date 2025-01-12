@@ -15,7 +15,7 @@ interface Item {
 }
 
 export async function getItems() {
-    const result = await turso.execute('SELECT * FROM articles ORDER BY added_date DESC');
+    const result = await turso.execute('SELECT * FROM articles WHERE availability = 1 ORDER BY added_date DESC');
     return result.rows;
 }
 
@@ -62,7 +62,7 @@ export async function editItem(id: number, updates: Partial<Item>): Promise<bool
 
 export async function deleteItem(id: number) {
     const result = await turso.execute({
-        sql: 'DELETE FROM articles WHERE id = ?',
+        sql: 'UPDATE articles SET availability = 0 WHERE id = ?',
         args: [id],
     });
 
@@ -70,38 +70,9 @@ export async function deleteItem(id: number) {
     return result.rowsAffected;
 }
 
-export async function filterItems(fields: Record<string, string>) {
-    const conditions: string[] = [];
-    const args: any[] = [];
-
-    // Build SQL conditions based on non-empty fields
-    for (const [key, value] of Object.entries(fields)) {
-        if (value) {
-            conditions.push(`${key} = ?`);
-            args.push(value);
-        }
-    }
-
-    // Construct the query
-    const sql = conditions.length
-        ? `SELECT * FROM articles WHERE ${conditions.join(" AND ")}`
-        : `SELECT * FROM articles WHERE availability = 1`;
-
-    try {
-        const result = await turso.execute({
-            sql,
-            args,
-        });
-        return result.rows;
-    } catch (error) {
-        console.error("Error executing filterItems:", error);
-        throw new Error("Failed to fetch items.");
-    }
-}
-
 export async function getItemByName(name: string) {
     const result = await turso.execute({
-        sql: `SELECT * FROM articles WHERE name COLLATE NOCASE = ?`,
+        sql: `SELECT * FROM articles WHERE name COLLATE NOCASE = ? AND availability = 1`,
         args: [name],
     });
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
@@ -109,15 +80,23 @@ export async function getItemByName(name: string) {
 
 export async function getItemByID(id: number) {
     const result = await turso.execute({
-        sql: `SELECT * FROM articles WHERE id = ?`,
+        sql: `SELECT * FROM articles WHERE id = ? AND availability = 1`,
         args: [id],
     });
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
 }
 
+export async function getRentalDateWithItemID(id: number) {
+    const result = await turso.execute({
+        sql: `SELECT start_date, end_date FROM rentals WHERE article_id = ? LIMIT 1`, // Limita a 1 resultado
+        args: [id],
+    });
+    return result.rows[0] || null; // Retorna o registro ou null se não encontrado
+}
+
 export async function getEmailItemByID(id: number) {
     const result = await turso.execute({
-        sql: `SELECT email FROM articles WHERE id = ?`,
+        sql: `SELECT email FROM articles WHERE id = ? AND availability = 1`,
         args: [id],
     });
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado

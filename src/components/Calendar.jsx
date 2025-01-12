@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
+import { actions } from "astro:actions";
+import { getParamsFromURL } from "@lib/functions";
 
 const Calendar = () => {
   const today = new Date();
@@ -17,6 +19,7 @@ const Calendar = () => {
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
   const [pricePerDay, setPricePerDay] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [blockedDates, setBlockedDates] = useState([]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -47,7 +50,7 @@ const Calendar = () => {
       // Atualiza o elemento DOM #itemPrice
       const itemPriceElement = document.getElementById("itemPrice");
       if (itemPriceElement) {
-        itemPriceElement.textContent = `${total.toFixed(2)}`; // Atualiza o conteúdo do elemento
+        itemPriceElement.textContent = `${total}`; // Atualiza o conteúdo do elemento
       }
     }
   };
@@ -58,11 +61,6 @@ const Calendar = () => {
       updateTotalPrice(intervalDays);
     }
   };
-
-  const getTotalPriceFromURL = (param) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return parseFloat(urlParams.get(param) || '0'); // Obtém o valor como número
-  }
 
   const getTooltipText = (date) => {
     if (date <= today) return "Cannot select today or past.";
@@ -113,14 +111,63 @@ const Calendar = () => {
     setHoverDate(null);
   };
 
-  useEffect(() => {
-    // Inicializar o preço por dia do elemento DOM apenas uma vez
-    const totalPriceFromURL = getTotalPriceFromURL("totalPrice");
+  const isDateBlocked = (date) => {
+    if (!Array.isArray(blockedDates) || blockedDates.length === 0) return false; // Certifica-se de que é um array não vazio
 
-    if (totalPriceFromURL) {
-      setPricePerDay(parseFloat(totalPriceFromURL) || 0); // Armazena o preço inicial em um estado
+    return blockedDates.some((blockedRange) => {
+      const start = new Date(blockedRange.startDate);
+      const end = new Date(blockedRange.endDate);
+      return date >= start && date <= end; // Verifica se a data está no intervalo bloqueado
+    });
+  };
+
+
+  const getRentalDate = async (id) => {
+    try {
+      const { data, error } = await actions.getRentalDate({ id });
+      if (error) throw new Error("Failed to fetch item details");
+      return data;
+    } catch (error) {
+      console.error("Error fetching rental date:", error.message);
+      return null;
     }
+  };
 
+  useEffect(() => {
+    const fetchRentalData = async () => {
+      try {
+        const itemID = getParamsFromURL("itemId");
+        const totalPriceFromURL = getParamsFromURL("totalPrice");
+
+        if (itemID && totalPriceFromURL) {
+          setPricePerDay(parseFloat(totalPriceFromURL) || 0);
+
+          const rentalDates = await getRentalDate(itemID);
+          console.log("rentalDates: ", rentalDates);
+
+          if (rentalDates?.rentalDate) {
+            // Garante que blockedDates é um array de objetos com startDate e endDate
+            const blocked = [
+              {
+                startDate: rentalDates.rentalDate.start_date,
+                endDate: rentalDates.rentalDate.end_date,
+              },
+            ];
+            setBlockedDates(blocked);
+          } else {
+            setBlockedDates([]); // Define como vazio se não houver dados
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching rental data:", error);
+      }
+    };
+
+    fetchRentalData();
+  }, []); // Passa [] para garantir que só é executado no carregamento do componente.
+
+
+  useEffect(() => {
     // Habilita ou desabilita o botão "nextToStep2" com base em `endDate`
     const nextToStep2 = document.querySelector("#nextToStep2");
     if (nextToStep2) {
@@ -163,21 +210,21 @@ const Calendar = () => {
         {[...Array(daysInMonth)].map((_, i) => {
           const day = i + 1;
           const date = new Date(year, month, day);
-          const isDisabled = date < minDate || date > maxDate;
+          const isDisabled = date < minDate || date > maxDate || isDateBlocked(date); // Inclui `isDateBlocked`
           const isSelected = startDate && endDate && date >= startDate && date <= endDate;
           const isHovered = startDate && !endDate && hoverDate && date >= startDate && date <= hoverDate;
 
           return (
             <div
-              class={`p-2 rounded-md cursor-pointer ${isSelected
-                ? 'bg-blue-300'
-                : isHovered && date >= startDate && date <= maxDate // Limitar hover ao intervalo permitido
-                  ? 'bg-blue-100'
+              className={`p-2 rounded-md cursor-pointer ${isSelected
+                ? "bg-blue-300"
+                : isHovered
+                  ? "bg-blue-100"
                   : isDisabled
-                    ? 'bg-gray-300'
-                    : 'bg-gray-200'
-                } ${isDisabled ? 'cursor-not-allowed' : 'hover:bg-blue-100'}`}
-              onClick={() => handleDateClick(date)}
+                    ? "bg-gray-300"
+                    : "bg-gray-200"
+                } ${isDisabled ? "cursor-not-allowed" : "hover:bg-blue-100"}`}
+              onClick={() => !isDisabled && handleDateClick(date)} // Bloqueia clique em datas desabilitadas
               onMouseEnter={(e) => handleMouseEnter(date, e)}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
@@ -206,8 +253,8 @@ const Calendar = () => {
         >
           <span id="interval-date">{`${formatDate(startDate)} - ${formatDate(endDate)}`}</span>
           -
-          <span>{`${calculateIntervalDays(startDate, endDate)} days x ${pricePerDay.toFixed(2)} €/day =`}
-            <span id="totalPriceItem" className="ml-2 px-2 py-1 bg-gray-300 rounded-lg">{`${totalPrice.toFixed(2)}`}</span> €
+          <span>{`${calculateIntervalDays(startDate, endDate)} days x ${pricePerDay} €/day =`}
+            <span id="totalPriceItem" className="ml-2 px-2 py-1 bg-gray-300 rounded-lg">{`${totalPrice}`}</span> €
           </span>
         </div>
       )}

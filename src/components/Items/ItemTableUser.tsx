@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { sanitizeName } from "@lib/functions"
+import Availability from "./Availability";
 
 interface Item {
     id: number;
@@ -15,59 +16,59 @@ interface Item {
     availability: number;
 }
 
-export default function ItemTableForUser({ items, lang }: { items: Item[], lang: string }) {
-    const [data, setData] = useState(items);
-
-    // console.log("items: ", items)
+export default function ItemTableForUser({ items, rentals, lang }: { items: Item[], rentals: any, lang: string }) {
+    const [data, setData] = useState<any[]>([]);
 
     useEffect(() => {
-        setData(items); // Sync with the provided `items` prop
-    }, [items]);
+        // Cria uma lista de itens com informações do rental quando aplicável
+        const mergedData = items.map((item) => {
+            const relatedRental = rentals.find((rental: { article_id: number; }) => rental.article_id === item.id);
+            return relatedRental
+                ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
+                : { ...item, hasRental: false }; // Marca itens sem rental relacionado
+        });
+
+        setData(mergedData);
+    }, [items, rentals]);
+
+    //console.log("data:", data)
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {data.length === 0 ? (
                 <div className="py-3 px-4 text-center">No items available.</div>
             ) : (
-                data.map((item) => (
+                data.map((entry) => (
                     <div
-                        key={item.id}
+                        key={entry.id}
                         className="relative w-full h-[34rem] max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300"
                     >
                         {/* Image Section */}
-                        {item.image && (
+                        {entry.image && (
                             <div className="absolute inset-0">
-                                <div style={`view-transition-name: item-${item.id}`} className="h-full">
-                                    <a href={`/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}`}>
+                                <div style={`view-transition-name: item-${entry.id}`} className="h-full">
+                                    <a href={`/${lang}/clothes/${sanitizeName(entry.name)}?id=${entry.id}`}>
                                         <img
-                                            src={item.image}
+                                            src={entry.image}
                                             alt="Item image"
                                             className="w-full h-full object-cover overflow-hidden hover:scale-110 hover:saturate-150 hover:translate-y-[25px] transition-transform duration-200 ease-in-out"
                                         />
                                     </a>
 
                                     {/* Availability Badge */}
-                                    <div
-                                        className={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg ${item.availability
-                                            ? "bg-[--teal] text-white"
-                                            : "bg-[--gold] text-white"
-                                            }`}
-                                        style={{ boxShadow: "0 2px 24px 4px rgb(85 85 85 / 43%)" }}
-                                    >
-                                        {item.availability ? "Available" : "Reserved"}
-                                    </div>
+                                    <Availability entry={entry} />
                                 </div>
 
                                 <div className="absolute top-2 right-2 flex flex-col gap-2 items-center">
                                     {/* Size*/}
-                                    <div className="px-3 py-1 bg-black text-white rounded-full text-xs">{item.size}</div>
+                                    <div className="px-3 py-1 bg-black text-white rounded-full text-xs">{entry.size}</div>
 
                                     {/* Color*/}
                                     <div className=" right-2 flex gap-1">
                                         <div
                                             className="w-4 h-4 rounded-full"
                                             style={{
-                                                backgroundColor: item.color,
+                                                backgroundColor: entry.color,
                                                 boxShadow: "0 0 2px 2px rgb(0 0 0 / 24%)",
                                             }}
                                         ></div>
@@ -80,13 +81,13 @@ export default function ItemTableForUser({ items, lang }: { items: Item[], lang:
                         <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-4 pt-4 pb-3 flex gap-4 justify-around">
                             {/* Title and Price */}
                             <div className="grid">
-                                <h3 className="text-base font-semibold truncate">{item.name}</h3>
-                                <p style="font-family:cursive" className="text-lg font-bold text-[--color2]">{item.rental_price} €</p>
+                                <h3 className="text-base font-semibold truncate">{entry.name}</h3>
+                                <p style="font-family:cursive" className="text-lg font-bold text-[--color2]">{entry.rental_price} €</p>
                             </div>
 
                             {/* Cart Button */}
                             <button
-                                id={`add-to-cart-${item.id}`}
+                                id={`add-to-cart-${entry.id}`}
                                 className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover:bg-white hover:text-[--color2] transition-colors duration-200 ease-in-out"
                                 aria-label="Add to Cart"
                             >

@@ -19,11 +19,11 @@
 - Vizualizar estado de artigo (disponível, reservado) ✅
 
 - Sistema de reservas
-  - clientes podem reservar, especificando as datas pretendidas do aluguer do artigo e confirmar por email a reserva
-  - A reserva só é concluida quando a pessoa paga
+  - clientes podem reservar, especificando as datas pretendidas do aluguer do artigo e confirmar por email a reserva ✅
+  - A reserva só é concluida quando a pessoa paga ✅
   
 - Histórico
-  - Registo das reservas e devoluções dos clientes, acessível pelo cliente e pelo admin
+  - Registo das reservas e devoluções dos clientes, acessível pelo cliente e pelo admin ✅
 
 - API
   - Para qualquer pessoa conseguir obter a informação do artigo consoante categoria, cor, nome do artigo, tamanho, marcas, etc
@@ -39,14 +39,18 @@
 
 - arranjar o sistema de Login (os campos estão todos trocados na DB)
 
-- preencher as tabelas rentals e pagamentos usando actions
-- mandar um email quando seja feito a compra para confirmar qeu foi feita e p|or o id de compra
-- deixar que as items possam ser reservados mesmo já estando reservado uma vez, só deve estar reservado completamente quando todos os dias estiverem cheios 
-- só deixar que os utilizadores cliquem em rentar, de resto, vai pedir para iniciar sessão ou criar conta
-- confirmar o email quadno incia sessão 
-- fazer o historial de rents até o mommento que pode ser visivel pelos users e admins
+- preencher as tabelas rentals e pagamentos usando actions ✅
+- mandar um email quando seja feito a compra para confirmar que foi feita e pôr o id de compra ✅
+- só deixar que os utilizadores cliquem em rentar, de resto, vai pedir para iniciar sessão ou criar conta ✅
+- fazer o historial de rents até o momento. Pode ser visivel pelos users e admins ✅
+
+
+- deixar que os items possam ser reservados mesmo já estando reservado uma vez,
+só deve estar reservado completamente quando todos os dias estiverem cheios 
+
+- confirmar o email quando incia sessão 
 - fazer as analiticas de quem entrou em cada página 
-- fazer o inbox em que o user pode fazer uma perguntas sobre os items que rentou e qualquer admin pode responder
+- fazer o inbox em que o user pode fazer uma perguntas sobre os items que rentou e qualquer admin pode responder 
 - fazer a página inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente
 - fazer API para que qualquer pessoa possa obter todos os items da página e filtrar
 - fazer documentação da API simples e rapida

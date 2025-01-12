@@ -3,12 +3,7 @@ import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import ItemList from "@components/Items/ItemList";
 import Alerts from "@components/Modal/Alerts.astro";
-import {
-    getItems,
-    getRentalByID,
-    getRentals,
-    getUsers,
-} from "@lib/dbFunctions";
+import { getItems, getRentals, getUsers } from "@lib/dbFunctions";
 import { userExistsByID } from "@lib/dbFunctions";
 import { actions, isInputError } from "astro:actions";
 
