@@ -1,5 +1,21 @@
 ---
 import Calendar from "@components/Calendar";
+import { getItemByID, getRentals } from "@lib/dbFunctions";
+
+const { user_id } = Astro.props;
+
+const item = await getItemByID(Number(user_id));
+const rentals = await getRentals();
+
+// Combina o item com seu aluguel relacionado
+const data: any = (() => {
+    const relatedRental = rentals.find(
+        (rental: any) => rental.article_id === item.id,
+    );
+    return relatedRental
+        ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
+        : { ...item, hasRental: false }; // Marca itens sem rental relacionado
+})();
 ---
 
 <style>
@@ -295,7 +311,7 @@ import Calendar from "@components/Calendar";
                 Select the days you want to rent this item
             </p>
 
-            <Calendar client:idle />
+            <Calendar itemsRent={data} client:idle />
 
             <div class="flex justify-between">
                 <button
@@ -461,7 +477,7 @@ para depois alugar
         let selectedItem: Item | null = null;
         let itemId: any;
 
-        const updateParamInURL = (itemId: string, totalPrice: string) => {
+        const updateParamxInURL = (itemId: string, totalPrice: string) => {
             const url = new URL(window.location.href);
             url.searchParams.set("totalPrice", totalPrice); // Adiciona ou atualiza o parâmetro
             url.searchParams.set("itemId", itemId); // Adiciona ou atualiza o parâmetro
@@ -481,7 +497,10 @@ para depois alugar
                     selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
                     renderPaymentDetails();
                     if (selectedItem) {
-                        updateParamInURL(itemId, selectedItem.price.toFixed(2));
+                        updateParamxInURL(
+                            itemId,
+                            selectedItem.price.toFixed(2),
+                        );
                         renderItemDetails(selectedItem);
                     }
                 }

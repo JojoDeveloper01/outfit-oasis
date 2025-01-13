@@ -1,7 +1,7 @@
 - Login Register distinguir entre user e stuff ✅
 - Só ser utilizada pelos funcionários e User ✅
 - User 
-  - Podem vizualizar e reservar items
+  - Podem vizualizar e reservar items ✅
 - Stuff
   - Gerir o inventário (CRUD) ✅
   - Iserção: ✅
@@ -14,7 +14,7 @@
   - Atualização ✅
     - editar informações já criadas
   - Eliminação ✅
-    - Remover registos já não estejam disponíveis para alugar
+    - Remover registos já não estejam disponíveis para alugar ✅
 
 - Vizualizar estado de artigo (disponível, reservado) ✅
 

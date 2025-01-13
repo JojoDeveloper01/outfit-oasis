@@ -191,7 +191,7 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
 		<!-- Modais -->
 		<LoginRegister />
-		<Rent />
+		<Rent user_id={user.id} />
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />

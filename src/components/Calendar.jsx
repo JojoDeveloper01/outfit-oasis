@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
-import { actions } from "astro:actions";
 import { getParamsFromURL } from "@lib/functions";
 
-const Calendar = () => {
+const Calendar = ({ itemsRent }) => {
   const today = new Date();
   const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 365);
@@ -121,17 +120,19 @@ const Calendar = () => {
     });
   };
 
+  /*   const getRentalDate = async (id) => {
+      try {
+        const { data, error } = await actions.getRentalDate({ id });
+        if (error) throw new Error("Failed to fetch item details");
+        return data;
+      } catch (error) {
+        console.error("Error fetching rental date:", error.message);
+        return null;
+      }
+    }; */
 
-  const getRentalDate = async (id) => {
-    try {
-      const { data, error } = await actions.getRentalDate({ id });
-      if (error) throw new Error("Failed to fetch item details");
-      return data;
-    } catch (error) {
-      console.error("Error fetching rental date:", error.message);
-      return null;
-    }
-  };
+  //tenho que fazer, se o itemID é igual a algum dos items do objeto "itemsRent", 
+  //ent obter o start_date e o end_data  
 
   useEffect(() => {
     const fetchRentalData = async () => {
@@ -142,7 +143,7 @@ const Calendar = () => {
         if (itemID && totalPriceFromURL) {
           setPricePerDay(parseFloat(totalPriceFromURL) || 0);
 
-          const rentalDates = await getRentalDate(itemID);
+          /* const rentalDates = await getRentalDate(itemID); */
           console.log("rentalDates: ", rentalDates);
 
           if (rentalDates?.rentalDate) {
