@@ -1,21 +1,9 @@
 ---
 import Calendar from "@components/Calendar";
-import { getItemByID, getRentals } from "@lib/dbFunctions";
 
-const { user_id } = Astro.props;
+const { data } = Astro.props;
 
-const item = await getItemByID(Number(user_id));
-const rentals = await getRentals();
-
-// Combina o item com seu aluguel relacionado
-const data: any = (() => {
-    const relatedRental = rentals.find(
-        (rental: any) => rental.article_id === item.id,
-    );
-    return relatedRental
-        ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
-        : { ...item, hasRental: false }; // Marca itens sem rental relacionado
-})();
+//console.log("data: ", data);
 ---
 
 <style>
