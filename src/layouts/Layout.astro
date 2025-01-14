@@ -34,12 +34,13 @@ const rentals = await getRentals();
 
 // Combina o item com seu aluguel relacionado
 const data: any[] = items.map((item: any) => {
-	const relatedRental = rentals.find(
+	const relatedRentals = rentals.filter(
 		(rental: any) => rental.article_id === item.id,
 	);
-	return relatedRental
-		? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
-		: { ...item, hasRental: false }; // Marca itens sem rental relacionado
+
+	return relatedRentals.length > 0
+		? { ...item, rental: relatedRentals, hasRental: true } // Inclui todos os rentals relacionados
+		: { ...item, rental: [], hasRental: false }; // Marca itens sem rentals
 });
 ---
 

@@ -44,7 +44,14 @@ const Calendar = ({ itemsRent }) => {
 
   const updateTotalPrice = (intervalDays) => {
     if (pricePerDay !== null) {
-      const total = pricePerDay * intervalDays;
+      let total;
+
+      if (intervalDays === 0) {
+        // Aplica o desconto de 20% para uso no mesmo dia
+        total = pricePerDay * 0.8;
+      } else {
+        total = pricePerDay * intervalDays;
+      }
 
       // Atualiza o estado do total
       setTotalPrice(total);
@@ -75,11 +82,31 @@ const Calendar = ({ itemsRent }) => {
     if (date < minDate || date > maxDate) return;
 
     if (!startDate || (startDate && endDate)) {
+      // Se não houver data de início ou se já houver um intervalo, reinicia a seleção
       setStartDate(date);
       setEndDate(null);
     } else if (startDate && date >= startDate) {
-      setEndDate(date);
+      // Verifica se o intervalo contém datas bloqueadas
+      const intervalHasBlockedDates = blockedDates.some((blockedRange) => {
+        const start = new Date(blockedRange.startDate);
+        const end = new Date(blockedRange.endDate);
+        return (
+          (date >= start && date <= end) || // A data de término está em um intervalo bloqueado
+          (startDate >= start && startDate <= end) || // A data de início está em um intervalo bloqueado
+          (startDate < start && date > end) // O intervalo cobre um período bloqueado
+        );
+      });
+
+      if (intervalHasBlockedDates) {
+        // Se houver datas bloqueadas no intervalo, reinicia a seleção
+        setStartDate(null);
+        setEndDate(null);
+      } else {
+        // Caso contrário, define a data de término
+        setEndDate(date);
+      }
     } else {
+      // Redefine a seleção caso o usuário clique em uma data anterior ao início
       setStartDate(date);
       setEndDate(null);
     }
@@ -126,20 +153,32 @@ const Calendar = ({ itemsRent }) => {
   const fetchRentalData = (itemId) => {
     const rentedItem = itemsRent.find((item) => item.id === parseInt(itemId, 10));
 
-    if (rentedItem && rentedItem.rental) {
-      const blocked = Array.isArray(rentedItem.rental)
-        ? rentedItem.rental.map((r) => ({
-          startDate: r.start_date,
-          endDate: r.end_date,
-        }))
-        : [
-          {
-            startDate: rentedItem.rental.start_date,
-            endDate: rentedItem.rental.end_date,
-          },
-        ];
+    // Limpa as datas selecionadas ao carregar um novo item
+    setStartDate(null);
+    setEndDate(null);
 
-      setBlockedDates(blocked);
+    if (rentedItem) {
+      //console.log("rentedItem: ", rentedItem)
+      if (rentedItem.rental) {
+        //console.log("rentedItem.rental: ", rentedItem.rental)
+        const blocked = Array.isArray(rentedItem.rental)
+          ? rentedItem.rental.map((r) => ({
+            startDate: r.start_date,
+            endDate: r.end_date,
+          }))
+          : [
+            {
+              startDate: rentedItem.rental.start_date,
+              endDate: rentedItem.rental.end_date,
+            },
+          ];
+
+        // Substituir por datas específicas do item atual
+        setBlockedDates(blocked);
+      } else {
+        // Caso o item não tenha nenhum aluguel, limpar as datas bloqueadas
+        setBlockedDates([]);
+      }
     }
   };
 
@@ -149,7 +188,7 @@ const Calendar = ({ itemsRent }) => {
       if (button && button.getAttribute("data-rent")) {
         const itemId = button.getAttribute("data-rent");
         setCurrentItemId(itemId); // Atualiza o estado com o itemId clicado
-        fetchRentalData(itemId); // Busca os dados de aluguel
+        fetchRentalData(itemId); // Busca os dados de aluguel do item
       }
     };
 
@@ -159,7 +198,6 @@ const Calendar = ({ itemsRent }) => {
       document.removeEventListener("click", handleButtonClick);
     };
   }, [itemsRent]);
-
 
   useEffect(() => {
     const totalPriceFromURL = getParamsFromURL("totalPrice");

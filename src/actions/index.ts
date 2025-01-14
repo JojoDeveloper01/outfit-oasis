@@ -98,7 +98,7 @@ export const server = {
     addUser: defineAction({
         accept: "form",
         input: addUserSchema,
-        handler: async (input) => {
+        handler: async (input: { email: string; profile_pic: File; name: string; password: any; user_type: any; phone: any; }) => {
 
             let errorMessage = "Failed to add user. Please try again."
             let codeError: any = "INTERNAL_SERVER_ERROR"
