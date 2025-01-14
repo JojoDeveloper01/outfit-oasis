@@ -21,6 +21,7 @@ const Calendar = ({ itemsRent }) => {
   const [pricePerDay, setPricePerDay] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [blockedDates, setBlockedDates] = useState([]);
+  const [currentItemId, setCurrentItemId] = useState(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -122,43 +123,50 @@ const Calendar = ({ itemsRent }) => {
     });
   };
 
+  const fetchRentalData = (itemId) => {
+    const rentedItem = itemsRent.find((item) => item.id === parseInt(itemId, 10));
+
+    if (rentedItem && rentedItem.rental) {
+      const blocked = Array.isArray(rentedItem.rental)
+        ? rentedItem.rental.map((r) => ({
+          startDate: r.start_date,
+          endDate: r.end_date,
+        }))
+        : [
+          {
+            startDate: rentedItem.rental.start_date,
+            endDate: rentedItem.rental.end_date,
+          },
+        ];
+
+      setBlockedDates(blocked);
+    }
+  };
+
   useEffect(() => {
-    const fetchRentalData = () => {
-      const itemID = getParamsFromURL("itemId");
-      const totalPriceFromURL = getParamsFromURL("totalPrice");
-
-      if (itemID && totalPriceFromURL) {
-        setPricePerDay(parseFloat(totalPriceFromURL) || 0);
-
-        console.log("itemID: ", itemID);
-
-        const rentedItem = itemsRent.find((item) => item.id === parseInt(itemID, 10));
-
-        console.log("rentedItem: ", rentedItem);
-
-        if (rentedItem && rentedItem.rental) {
-          // Verificar se "rental" é um objeto único ou uma lista
-          const blocked = Array.isArray(rentedItem.rental)
-            ? rentedItem.rental.map((r) => ({
-              startDate: r.start_date,
-              endDate: r.end_date,
-            }))
-            : [
-              {
-                startDate: rentedItem.rental.start_date,
-                endDate: rentedItem.rental.end_date,
-              },
-            ];
-
-          console.log("Blocked dates: ", blocked);
-
-          setBlockedDates(blocked);
-        }
+    const handleButtonClick = (event) => {
+      const button = event.target.closest("button[data-rent]");
+      if (button && button.getAttribute("data-rent")) {
+        const itemId = button.getAttribute("data-rent");
+        setCurrentItemId(itemId); // Atualiza o estado com o itemId clicado
+        fetchRentalData(itemId); // Busca os dados de aluguel
       }
     };
 
-    fetchRentalData();
+    document.addEventListener("click", handleButtonClick);
+
+    return () => {
+      document.removeEventListener("click", handleButtonClick);
+    };
   }, [itemsRent]);
+
+
+  useEffect(() => {
+    const totalPriceFromURL = getParamsFromURL("totalPrice");
+    if (totalPriceFromURL) {
+      setPricePerDay(parseFloat(totalPriceFromURL) || 0);
+    }
+  })
 
   useEffect(() => {
     // Habilita ou desabilita o botão "nextToStep2" com base em `endDate`

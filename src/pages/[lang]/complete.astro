@@ -239,10 +239,12 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
                 const { data, error } = await actions.thereIsReservation({
                     user_id,
                     item_id,
+                    start_date,
+                    end_date,
                 });
                 if (error) throw new Error("Erro ao verificar reserva.");
                 if (data) {
-                    return "O produto já foi reservado.";
+                    return "O produto já foi reservado nesse/s dia/s.";
                 }
 
                 // Confirmar o pagamento e criar a reserva
