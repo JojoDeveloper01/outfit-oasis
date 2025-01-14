@@ -6,6 +6,7 @@ import LoginRegister from "@components/LoginRegister.astro";
 import { getLangFromUrl } from "@i18n/utils";
 import { userExistsByID } from "@lib/dbFunctions";
 import Rent from "@components/Modal/Rent.astro";
+import { getItems, getRentals } from "@lib/dbFunctions";
 
 //canonical
 //const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -22,12 +23,24 @@ if (Astro.cookies.has("id")) {
 
 	$user = await userExistsByID(`${id}`);
 }
-
 const user = $user;
 const isStaff = user?.user_type === "staff" ? "block" : "hidden";
-const { title, description, canonical, keywords, hideFooter } = Astro.props;
 
+const { title, description, canonical, keywords, hideFooter } = Astro.props;
 const overflowToggle = Astro.url.pathname.includes("/dashboard");
+
+const items = await getItems();
+const rentals = await getRentals();
+
+// Combina o item com seu aluguel relacionado
+const data: any[] = items.map((item: any) => {
+	const relatedRental = rentals.find(
+		(rental: any) => rental.article_id === item.id,
+	);
+	return relatedRental
+		? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
+		: { ...item, hasRental: false }; // Marca itens sem rental relacionado
+});
 ---
 
 <style is:global>
@@ -191,7 +204,7 @@ const overflowToggle = Astro.url.pathname.includes("/dashboard");
 	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
 		<!-- Modais -->
 		<LoginRegister />
-		<Rent user_id={user.id} />
+		<Rent data={data} />
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />

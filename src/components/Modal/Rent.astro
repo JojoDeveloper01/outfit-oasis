@@ -1,21 +1,8 @@
 ---
 import Calendar from "@components/Calendar";
-import { getItemByID, getRentals } from "@lib/dbFunctions";
 
-const { user_id } = Astro.props;
-
-const item = await getItemByID(Number(user_id));
-const rentals = await getRentals();
-
-// Combina o item com seu aluguel relacionado
-const data: any = (() => {
-    const relatedRental = rentals.find(
-        (rental: any) => rental.article_id === item.id,
-    );
-    return relatedRental
-        ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
-        : { ...item, hasRental: false }; // Marca itens sem rental relacionado
-})();
+const { data } = Astro.props;
+//console.log("data: ", data);
 ---
 
 <style>
@@ -426,18 +413,9 @@ const data: any = (() => {
     </div>
 </dialog>
 
-<!-- fazer um template de um modal para rentar roupa em que terá varios passos
-Quando clicar no botão para abrir o madal, obter o id do item com data-id desse botão e obter as informações desse item
-para depois alugar
-
- mostrar os dias disponiveis para alugar o item num calendario e quadno clicar nos dias que quer ficar com a roupa,
- mandar para um passo de confirmar que quer esse item mostrando as diferentes caracteristicas das roupas e o lugar a procurar a roupa
- finalmente o ultimo passo seria o de pagamente em que vai escolher as diferentes opções para pagar online com o preço desse artigo
--->
-
 <script>
     import { getLangFromUrl } from "@i18n/utils";
-    import { stripe } from "@lib/functions";
+    import { stripe, currentItem } from "@lib/functions";
     import { actions } from "astro:actions";
     import {
         type Appearance,
@@ -475,12 +453,11 @@ para depois alugar
         ) as HTMLButtonElement;
 
         let selectedItem: Item | null = null;
-        let itemId: any;
 
-        const updateParamxInURL = (itemId: string, totalPrice: string) => {
+        const updateParamsInURL = (totalPrice: string) => {
             const url = new URL(window.location.href);
             url.searchParams.set("totalPrice", totalPrice); // Adiciona ou atualiza o parâmetro
-            url.searchParams.set("itemId", itemId); // Adiciona ou atualiza o parâmetro
+            // url.searchParams.set("itemId", itemId); // Adiciona ou atualiza o parâmetro
             window.history.pushState({}, "", url); // Atualiza a URL sem recarregar
         };
 
@@ -491,16 +468,13 @@ para depois alugar
             ) as HTMLElement;
 
             if (button && button.getAttribute("data-rent")) {
-                itemId = button.getAttribute("data-rent");
+                currentItem.itemId = button.getAttribute("data-rent") as string;
 
-                if (itemId) {
-                    selectedItem = await fetchItemById(itemId); // Buscar detalhes do item
+                if (currentItem.itemId) {
+                    selectedItem = await fetchItemById(currentItem.itemId); // Buscar detalhes do item
                     renderPaymentDetails();
                     if (selectedItem) {
-                        updateParamxInURL(
-                            itemId,
-                            selectedItem.price.toFixed(2),
-                        );
+                        updateParamsInURL(selectedItem.price.toFixed(2));
                         renderItemDetails(selectedItem);
                     }
                 }
@@ -743,7 +717,7 @@ para depois alugar
                         const { error } = await stripe.confirmPayment({
                             elements,
                             confirmParams: {
-                                return_url: `http://localhost:4321/${lang}/complete?item_id=${encodeURIComponent(itemId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&payment_amount=${encodeURIComponent(payment_amount)}`,
+                                return_url: `http://localhost:4321/${lang}/complete?item_id=${encodeURIComponent(currentItem.itemId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&payment_amount=${encodeURIComponent(payment_amount)}`,
                             },
                         });
 

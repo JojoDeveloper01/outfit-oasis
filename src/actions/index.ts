@@ -470,10 +470,18 @@ export const server = {
         input: z.object({
             user_id: z.number().min(1, "user id is required."),
             item_id: z.number().min(1, "item id is required."),
+            start_date: z.string().refine(
+                (date) => !isNaN(Date.parse(date)), // Verifica se a string pode ser convertida para uma data válida
+                { message: "start_date must be a valid date in YYYY-MM-DD format." }
+            ),
+            end_date: z.string().refine(
+                (date) => !isNaN(Date.parse(date)), // Verifica se a string pode ser convertida para uma data válida
+                { message: "end_date must be a valid date in YYYY-MM-DD format." }
+            ),
         }),
-        handler: async ({ user_id, item_id }) => {
+        handler: async ({ user_id, item_id, start_date, end_date }) => {
             try {
-                const reservation = Boolean(await thereIsReservation(user_id, item_id));
+                const reservation = Boolean(await thereIsReservation(user_id, item_id, start_date, end_date));
                 //console.log("reservation: ", reservation)
 
                 return reservation;

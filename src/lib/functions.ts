@@ -2,6 +2,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { confetti } from "tsparticles-confetti";
 
 //client
+export const currentItem = {
+    itemId: '',
+};
+
 export const stripe = await loadStripe(
     "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
 ) || null;

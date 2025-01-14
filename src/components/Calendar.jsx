@@ -6,6 +6,8 @@ const Calendar = ({ itemsRent }) => {
   const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 365);
 
+  //console.log("itemsRent: ", itemsRent);
+
   const monthNames = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -19,6 +21,7 @@ const Calendar = ({ itemsRent }) => {
   const [pricePerDay, setPricePerDay] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [blockedDates, setBlockedDates] = useState([]);
+  const [currentItemId, setCurrentItemId] = useState(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -111,62 +114,59 @@ const Calendar = ({ itemsRent }) => {
   };
 
   const isDateBlocked = (date) => {
-    if (!Array.isArray(blockedDates) || blockedDates.length === 0) return false; // Certifica-se de que é um array não vazio
+    if (!Array.isArray(blockedDates) || blockedDates.length === 0) return false;
 
     return blockedDates.some((blockedRange) => {
       const start = new Date(blockedRange.startDate);
       const end = new Date(blockedRange.endDate);
-      return date >= start && date <= end; // Verifica se a data está no intervalo bloqueado
+      return date >= start && date <= end;
     });
   };
 
-  /*   const getRentalDate = async (id) => {
-      try {
-        const { data, error } = await actions.getRentalDate({ id });
-        if (error) throw new Error("Failed to fetch item details");
-        return data;
-      } catch (error) {
-        console.error("Error fetching rental date:", error.message);
-        return null;
-      }
-    }; */
+  const fetchRentalData = (itemId) => {
+    const rentedItem = itemsRent.find((item) => item.id === parseInt(itemId, 10));
 
-  //tenho que fazer, se o itemID é igual a algum dos items do objeto "itemsRent", 
-  //ent obter o start_date e o end_data  
+    if (rentedItem && rentedItem.rental) {
+      const blocked = Array.isArray(rentedItem.rental)
+        ? rentedItem.rental.map((r) => ({
+          startDate: r.start_date,
+          endDate: r.end_date,
+        }))
+        : [
+          {
+            startDate: rentedItem.rental.start_date,
+            endDate: rentedItem.rental.end_date,
+          },
+        ];
+
+      setBlockedDates(blocked);
+    }
+  };
 
   useEffect(() => {
-    const fetchRentalData = async () => {
-      try {
-        const itemID = getParamsFromURL("itemId");
-        const totalPriceFromURL = getParamsFromURL("totalPrice");
-
-        if (itemID && totalPriceFromURL) {
-          setPricePerDay(parseFloat(totalPriceFromURL) || 0);
-
-          /* const rentalDates = await getRentalDate(itemID); */
-          console.log("rentalDates: ", rentalDates);
-
-          if (rentalDates?.rentalDate) {
-            // Garante que blockedDates é um array de objetos com startDate e endDate
-            const blocked = [
-              {
-                startDate: rentalDates.rentalDate.start_date,
-                endDate: rentalDates.rentalDate.end_date,
-              },
-            ];
-            setBlockedDates(blocked);
-          } else {
-            setBlockedDates([]); // Define como vazio se não houver dados
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching rental data:", error);
+    const handleButtonClick = (event) => {
+      const button = event.target.closest("button[data-rent]");
+      if (button && button.getAttribute("data-rent")) {
+        const itemId = button.getAttribute("data-rent");
+        setCurrentItemId(itemId); // Atualiza o estado com o itemId clicado
+        fetchRentalData(itemId); // Busca os dados de aluguel
       }
     };
 
-    fetchRentalData();
-  }, []); // Passa [] para garantir que só é executado no carregamento do componente.
+    document.addEventListener("click", handleButtonClick);
 
+    return () => {
+      document.removeEventListener("click", handleButtonClick);
+    };
+  }, [itemsRent]);
+
+
+  useEffect(() => {
+    const totalPriceFromURL = getParamsFromURL("totalPrice");
+    if (totalPriceFromURL) {
+      setPricePerDay(parseFloat(totalPriceFromURL) || 0);
+    }
+  })
 
   useEffect(() => {
     // Habilita ou desabilita o botão "nextToStep2" com base em `endDate`
@@ -211,7 +211,7 @@ const Calendar = ({ itemsRent }) => {
         {[...Array(daysInMonth)].map((_, i) => {
           const day = i + 1;
           const date = new Date(year, month, day);
-          const isDisabled = date < minDate || date > maxDate || isDateBlocked(date); // Inclui `isDateBlocked`
+          const isDisabled = date < minDate || date > maxDate || isDateBlocked(date);
           const isSelected = startDate && endDate && date >= startDate && date <= endDate;
           const isHovered = startDate && !endDate && hoverDate && date >= startDate && date <= hoverDate;
 
@@ -225,7 +225,7 @@ const Calendar = ({ itemsRent }) => {
                     ? "bg-gray-300"
                     : "bg-gray-200"
                 } ${isDisabled ? "cursor-not-allowed" : "hover:bg-blue-100"}`}
-              onClick={() => !isDisabled && handleDateClick(date)} // Bloqueia clique em datas desabilitadas
+              onClick={() => !isDisabled && handleDateClick(date)}
               onMouseEnter={(e) => handleMouseEnter(date, e)}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}

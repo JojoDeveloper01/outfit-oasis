@@ -285,15 +285,22 @@ export async function addUReservation(user_id: number, item_id: number, start_da
     return result.rowsAffected;
 }
 
-export async function thereIsReservation(user_id: number, item_id: number) {
-    // Realiza a consulta na base de dados
-    const result = await turso.execute({
-        sql: `SELECT * FROM reservations WHERE user_id = ? AND article_id = ?`,
-        args: [user_id, item_id],
+export async function createReservation(user_id: number, item_id: number, start_date: string, end_date: string) {
+    // Verifica se já existe o mesmo intervalo de reserva
+    const exists = await turso.execute({
+        sql: `
+            SELECT * 
+            FROM reservations 
+            WHERE 
+                user_id = ? AND 
+                article_id = ? AND 
+                start_date = ? AND 
+                end_date = ?
+        `,
+        args: [user_id, item_id, start_date, end_date],
     });
 
-    // Retorna `true` se a reserva existir ou `false` caso contrário
-    return result.rows.length > 0;
+    return exists.rows.length > 0
 }
 
 //Rent
