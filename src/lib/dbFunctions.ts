@@ -285,22 +285,24 @@ export async function addUReservation(user_id: number, item_id: number, start_da
     return result.rowsAffected;
 }
 
-export async function createReservation(user_id: number, item_id: number, start_date: string, end_date: string) {
-    // Verifica se já existe o mesmo intervalo de reserva
+export async function thereIsReservation(item_id: number, start_date: string, end_date: string) {
+    // Verifica se há qualquer sobreposição de datas
     const exists = await turso.execute({
         sql: `
             SELECT * 
             FROM reservations 
             WHERE 
-                user_id = ? AND 
                 article_id = ? AND 
-                start_date = ? AND 
-                end_date = ?
+                (
+                    (start_date <= ? AND end_date >= ?) OR -- Novo intervalo é englobado
+                    (start_date >= ? AND start_date <= ?) -- Novo intervalo toca no existente
+                )
         `,
-        args: [user_id, item_id, start_date, end_date],
+        args: [item_id, end_date, start_date, start_date, end_date],
     });
 
-    return exists.rows.length > 0
+    // Retorna `true` se houver sobreposição
+    return exists.rows.length > 0;
 }
 
 //Rent

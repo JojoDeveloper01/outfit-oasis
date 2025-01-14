@@ -479,9 +479,9 @@ export const server = {
                 { message: "end_date must be a valid date in YYYY-MM-DD format." }
             ),
         }),
-        handler: async ({ user_id, item_id, start_date, end_date }) => {
+        handler: async ({ item_id, start_date, end_date }) => {
             try {
-                const reservation = Boolean(await thereIsReservation(user_id, item_id, start_date, end_date));
+                const reservation = Boolean(await thereIsReservation(item_id, start_date, end_date));
                 //console.log("reservation: ", reservation)
 
                 return reservation;

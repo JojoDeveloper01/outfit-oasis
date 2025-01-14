@@ -244,7 +244,7 @@ Aqui mesmo, quando é confirmado a compra, deveria remover esse item do carrinho
                 });
                 if (error) throw new Error("Erro ao verificar reserva.");
                 if (data) {
-                    return "O produto já foi reservado.";
+                    return "O produto já foi reservado nesse/s dia/s.";
                 }
 
                 // Confirmar o pagamento e criar a reserva
