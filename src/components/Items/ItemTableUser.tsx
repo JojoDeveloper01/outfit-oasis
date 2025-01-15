@@ -21,15 +21,27 @@ export default function ItemTableForUser({ items, rentals, lang }: { items: Item
 
     useEffect(() => {
         // Cria uma lista de itens com informações do rental quando aplicável
-        const mergedData = items.map((item) => {
-            const relatedRental = rentals.find((rental: { article_id: number; }) => rental.article_id === item.id);
-            return relatedRental
-                ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
-                : { ...item, hasRental: false }; // Marca itens sem rental relacionado
-        });
+        /*   const mergedData = items.map((item) => {
+              const relatedRental = rentals.find((rental: { article_id: number; }) => rental.article_id === item.id);
+              return relatedRental
+                  ? { ...item, rental: relatedRental, hasRental: true } // Marca itens com rental relacionado
+                  : { ...item, hasRental: false }; // Marca itens sem rental relacionado
+          });
+  
+          setData(mergedData); */
 
+        const mergedData: any[] = items.map((item: any) => {
+            const relatedRentals = rentals.filter(
+                (rental: any) => rental.article_id === item.id,
+            );
+
+            return relatedRentals.length > 0
+                ? { ...item, rental: relatedRentals, hasRental: true } // Inclui todos os rentals relacionados
+                : { ...item, rental: [], hasRental: false }; // Marca itens sem rentals
+        });
         setData(mergedData);
     }, [items, rentals]);
+
 
     //console.log("data:", data)
 

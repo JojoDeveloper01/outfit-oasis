@@ -44,8 +44,6 @@
 
 - deixar que os items possam ser reservados mesmo já estando reservado uma vez ✅
 
-
-
 - Corregir que n se possa reservar em só um dia pois na vdd n é só um dia, é 0. 
 Ou que seja contado como menos de um dia e seja o mesmo preço de um dia ou 20% menos. ✅
 - Que n se possa obter o intervalo de dias quando passas por dias bloqueados, nem o hover deve ver-se. ✅
