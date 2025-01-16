@@ -106,6 +106,11 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <p
+                    id="registerNameError"
+                    class="text-red-500 text-sm hidden mt-1"
+                >
+                </p>
             </div>
             <div>
                 <label
@@ -119,6 +124,11 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <p
+                    id="registerEmailError"
+                    class="text-red-500 text-sm hidden mt-1"
+                >
+                </p>
             </div>
             <div>
                 <label
@@ -132,6 +142,11 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <p
+                    id="registerPasswordError"
+                    class="text-red-500 text-sm hidden mt-1"
+                >
+                </p>
             </div>
             <div>
                 <label
@@ -146,6 +161,11 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <p
+                    id="registerConfirmPasswordError"
+                    class="text-red-500 text-sm hidden mt-1"
+                >
+                </p>
             </div>
             <div class="flex items-center">
                 <input
@@ -278,7 +298,7 @@
 
                 // Caso seja válido (login ok), data.user deve conter o usuário:
                 const userData = data?.user;
-                console.log("userData: ", userData);
+                //console.log("userData: ", userData);
 
                 // Se quiser "simular" uma sessão:
                 document.cookie = `id=${userData?.id}; path=/; max-age=3600;`; // 60 min
@@ -294,48 +314,81 @@
         const registerForm = document.getElementById("register-form");
 
         // Referências para as mensagens de erro
-        const registerNameErrorEl =
-            document.getElementById("registerNameError");
-        const registerEmailErrorEl =
-            document.getElementById("registerEmailError");
+        const registerNameErrorEl = document.getElementById(
+            "registerNameError",
+        ) as HTMLElement;
+        const registerEmailErrorEl = document.getElementById(
+            "registerEmailError",
+        ) as HTMLElement;
         const registerPasswordErrorEl = document.getElementById(
             "registerPasswordError",
-        );
+        ) as HTMLElement;
         const registerConfirmPasswordErrorEl = document.getElementById(
             "registerConfirmPasswordError",
-        );
+        ) as HTMLElement;
 
         registerForm?.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             // Limpa mensagens de erro anteriores
-            registerNameErrorEl.textContent = "";
-            registerNameErrorEl.classList.add("hidden");
-            registerEmailErrorEl.textContent = "";
-            registerEmailErrorEl.classList.add("hidden");
-            registerPasswordErrorEl.textContent = "";
-            registerPasswordErrorEl.classList.add("hidden");
-            registerConfirmPasswordErrorEl.textContent = "";
-            registerConfirmPasswordErrorEl.classList.add("hidden");
+            if (registerNameErrorEl) {
+                registerNameErrorEl.textContent = "";
+                registerNameErrorEl.classList.add("hidden");
+            }
+            if (registerEmailErrorEl) {
+                registerEmailErrorEl.textContent = "";
+                registerEmailErrorEl.classList.add("hidden");
+            }
+            if (registerPasswordErrorEl) {
+                registerPasswordErrorEl.textContent = "";
+                registerPasswordErrorEl.classList.add("hidden");
+            }
+            if (registerConfirmPasswordErrorEl) {
+                registerConfirmPasswordErrorEl.textContent = "";
+                registerConfirmPasswordErrorEl.classList.add("hidden");
+            }
 
-            // Pega valores
-            const name = document.getElementById("registerName").value.trim();
-            const email = document.getElementById("registerEmail").value.trim();
-            const password = document
-                .getElementById("registerPassword")
-                .value.trim();
-            const confirmPassword = document
-                .getElementById("registerConfirmPassword")
-                .value.trim();
+            const formData = new FormData();
+            const nameInput = document.getElementById(
+                "registerName",
+            ) as HTMLInputElement;
+            const emailInput = document.getElementById(
+                "registerEmail",
+            ) as HTMLInputElement;
+            const passwordInput = document.getElementById(
+                "registerPassword",
+            ) as HTMLInputElement;
+            const userType = "client"; // Valor fixo ou dinâmico
+            const phoneInput = document.getElementById(
+                "registerPhone",
+            ) as HTMLInputElement; // Opcional
+
+            formData.append("name", nameInput.value.trim());
+            formData.append("email", emailInput.value.trim());
+            formData.append("password", passwordInput.value.trim());
+            formData.append("user_type", userType);
+            if (phoneInput) {
+                formData.append("phone", phoneInput.value.trim());
+            }
+
+            if (
+                passwordInput.value.trim() !==
+                (
+                    document.getElementById(
+                        "registerConfirmPassword",
+                    ) as HTMLInputElement
+                )?.value.trim()
+            ) {
+                if (registerConfirmPasswordErrorEl) {
+                    registerConfirmPasswordErrorEl.textContent =
+                        "Passwords do not match.";
+                    registerConfirmPasswordErrorEl.classList.remove("hidden");
+                }
+                return; // Não envia o formulário
+            }
 
             try {
-                // Chama a action sem rota
-                const { data, error } = await actions.register({
-                    name,
-                    email,
-                    password,
-                    confirmPassword,
-                });
+                const { data, error } = await actions.addUser(formData);
 
                 // Se "error" existir, pode ser erro de validação do Zod
                 if (error) {
@@ -355,58 +408,87 @@
                             );
                             return;
                         }
-                        // Exibe cada erro no campo correspondente
-                        zodErrors.forEach((zErr) => {
-                            const field = zErr.path[0]; // "name" | "email" | "password" | "confirmPassword" | "server", etc.
 
-                            switch (field) {
-                                case "name":
-                                    registerNameErrorEl.textContent =
-                                        zErr.message;
-                                    registerNameErrorEl.classList.remove(
-                                        "hidden",
-                                    );
-                                    break;
-                                case "email":
-                                    registerEmailErrorEl.textContent =
-                                        zErr.message;
-                                    registerEmailErrorEl.classList.remove(
-                                        "hidden",
-                                    );
-                                    break;
-                                case "password":
-                                    registerPasswordErrorEl.textContent =
-                                        zErr.message;
-                                    registerPasswordErrorEl.classList.remove(
-                                        "hidden",
-                                    );
-                                    break;
-                                case "confirmPassword":
-                                    registerConfirmPasswordErrorEl.textContent =
-                                        zErr.message;
-                                    registerConfirmPasswordErrorEl.classList.remove(
-                                        "hidden",
-                                    );
-                                    break;
-                                case "server":
-                                    // Exemplo: erro de "User with this email already exists"
-                                    alert(zErr.message); // ou exibir em outro lugar
-                                    break;
-                                default:
-                                    console.log("Outro campo ou erro:", zErr);
-                            }
-                        });
+                        // Exibe cada erro no campo correspondente
+                        zodErrors.forEach(
+                            (zErr: { path: any[]; message: string | null }) => {
+                                const field = zErr.path[0]; // Ex.: "name", "email", "password", etc.
+
+                                switch (field) {
+                                    case "name":
+                                        if (registerNameErrorEl) {
+                                            registerNameErrorEl.textContent =
+                                                zErr.message || "Invalid name.";
+                                            registerNameErrorEl.classList.remove(
+                                                "hidden",
+                                            );
+                                        }
+                                        break;
+                                    case "email":
+                                        if (registerEmailErrorEl) {
+                                            registerEmailErrorEl.textContent =
+                                                zErr.message ||
+                                                "Invalid email.";
+                                            registerEmailErrorEl.classList.remove(
+                                                "hidden",
+                                            );
+                                        }
+                                        break;
+                                    case "password":
+                                        if (registerPasswordErrorEl) {
+                                            registerPasswordErrorEl.textContent =
+                                                zErr.message ||
+                                                "Invalid password.";
+                                            registerPasswordErrorEl.classList.remove(
+                                                "hidden",
+                                            );
+                                        }
+                                        break;
+                                    case "confirmPassword":
+                                        if (registerConfirmPasswordErrorEl) {
+                                            registerConfirmPasswordErrorEl.textContent =
+                                                zErr.message ||
+                                                "Passwords do not match.";
+                                            registerConfirmPasswordErrorEl.classList.remove(
+                                                "hidden",
+                                            );
+                                        }
+                                        break;
+                                    case "server":
+                                        alert(zErr.message); // Para mensagens de erro gerais.
+                                        break;
+                                    default:
+                                        console.warn(
+                                            "Unmapped field error:",
+                                            zErr,
+                                        );
+                                }
+                            },
+                        );
+                    }
+
+                    // Verificar mensagens gerais e associá-las a campos
+                    if (
+                        error.message.includes(
+                            "A user with this email already exists",
+                        )
+                    ) {
+                        // Mostra a mensagem no campo de email
+                        if (registerEmailErrorEl) {
+                            registerEmailErrorEl.textContent =
+                                "A user with this email already exists.";
+                            registerEmailErrorEl.classList.remove("hidden");
+                        }
                     } else {
                         // Se não for "Failed to validate:", é um erro crítico
                         console.error("Erro crítico:", error);
                     }
+
                     return; // Interrompe aqui
                 }
 
-                // Se chegou até aqui, então "error" é null,
-                // e presumimos que data.valid = true (cadastro bem-sucedido)
-
                 const userData = data?.user;
+
                 if (!userData) {
                     console.error(
                         "Não veio userData no cadastro? Cheque o backend.",
@@ -415,7 +497,7 @@
                 }
 
                 // Simula “login” automático
-                document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
+                document.cookie = `id=${userData?.id}; path=/; max-age=3600;`; // 30 min
                 sessionStorage.setItem("User", JSON.stringify(userData));
                 location.reload();
             } catch (err) {

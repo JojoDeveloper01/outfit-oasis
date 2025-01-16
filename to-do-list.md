@@ -57,9 +57,9 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 
 - Em dashbora/items não mostrar os rentals dos items que tem rental_status como "completed" ✅
 
-- arranjar o sistema de Login (os campos estão todos trocados na DB)
+- Arranjar o sistema de Login (os campos estão todos trocados na DB) ✅
 
-- que o utilizadores possam mudar o seu nome, email, password e foto
+- Que o utilizadores possam mudar o seu nome, email, password e foto 
 
 -----------------
 Depois:

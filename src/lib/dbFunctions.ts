@@ -109,13 +109,16 @@ export async function registerUser(name: string, email: string, password: string
         sql: "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, 'client') RETURNING id;",
         args: [name, email, password]
     });
+
+    //console.log("result: ", result)
+
     const userId = result.rows[0]?.id; // Obtém o ID da resposta
     return { id: userId, email, name };
 }
 
 export async function getUserLogin(email: string, password: string) {
     const result = await turso.execute({
-        sql: "SELECT id, name, email, user_type, phone FROM users WHERE email = ? AND password = ?",
+        sql: "SELECT id, name, email, user_type, phone, password FROM users WHERE email = ? AND password = ?",
         args: [email, password]
     }
     );
@@ -124,7 +127,6 @@ export async function getUserLogin(email: string, password: string) {
 }
 
 // Users
-
 interface User {
     name: string,
     email: string,
@@ -143,10 +145,16 @@ export async function getUsers(): Promise<User[]> {
 
 export async function addUser(user: User) {
     const result = await turso.execute({
-        sql: 'INSERT INTO users (name, email, password, user_type, phone, profile_pic) VALUES (?, ?, ?, ?, ?, ?)',
+        sql: `
+            INSERT INTO users (name, email, password, user_type, phone, profile_pic)
+            VALUES (?, ?, ?, ?, ?, ?)
+            RETURNING id, name, email, user_type, phone, profile_pic
+        `,
         args: [user.name, user.email, user.password, user.user_type, user.phone, user.profile_pic],
     });
-    return result.rowsAffected;
+
+    // Retorna o utilizador recém-criado com o ID
+    return result.rows[0]; // Assume que `rows` contém os resultados retornados
 }
 
 export async function editUser(id: number, updates: Partial<User>): Promise<boolean> {

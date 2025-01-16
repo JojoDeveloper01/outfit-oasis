@@ -26,29 +26,6 @@ const calculateOrderAmount = (items: { id: number; amount: number }[]) => {
     }, 0) * 100; // Multiplicar por 100 para Stripe
 };
 
-const registerSchema = z.object({
-    name: z
-        .string()
-        .min(2, "Name must be at least 2 characters"),
-    email: z
-        .string()
-        .trim()
-        .toLowerCase()
-        .email("Invalid email format"),
-    password: z
-        .string()
-        .min(8, "Password must be at least 8 characters"),
-    confirmPassword: z
-        .string()
-        .min(8, "Password must be at least 8 characters"),
-}).refine(
-    (data) => data.password === data.confirmPassword,
-    {
-        message: "Passwords do not match",
-        path: ["confirmPassword"],
-    }
-);
-
 //User Schemas
 const baseUserSchema = z.object({
     name: z
@@ -69,11 +46,12 @@ const baseUserSchema = z.object({
         .optional(),
     profile_pic: z
         .instanceof(File)
+        .refine((file) => file && file.size <= 2 * 1024 * 1024, "File must be less than 2MB")
         .optional()
-        .refine((file) => file && file.size <= 2 * 1024 * 1024, "File must be less than 2MB"),
 });
 
 const addUserSchema = baseUserSchema;
+
 const editUserSchema = baseUserSchema
     .partial() // Torna todos os campos opcionais
     .extend({
@@ -129,7 +107,7 @@ export const server = {
                 // 1) Buscar usuário
                 const user = await getUserLogin(email, password);
 
-                console.log("user: ", user)
+                //console.log("user: ", user)
                 if (!user) {
                     return { valid: false, message: "Email not found" };
                 }
@@ -151,49 +129,24 @@ export const server = {
         },
     }),
 
-    register: defineAction({
-        // Usamos o schema de input
-        input: registerSchema,
-        // Handler que faz a lógica de inserir no BD
-        handler: async ({ name, email, password }) => {
-            try {
-                // (1) Verificar se já existe um usuário com o mesmo email
-                getUserByEmail(email)
-
-                // (2) Inserir no DB
-                const user = registerUser(name, email, password)
-
-                // Sucesso: retorna o objeto { valid: true, user: {...} }
-                return {
-                    valid: true,
-                    user
-                };
-            } catch (error) {
-                if (error instanceof Error) {
-                    throw error; // Lança erro caso seja outro tipo de erro
-                } else {
-                    throw new Error("Unknown error occurred");
-                }
-            }
-        },
-    }),
-
     //User Actions
     addUser: defineAction({
         accept: "form",
         input: addUserSchema,
-        handler: async (input: { name: string; email: string; password: string; user_type: "client" | "staff"; phone?: string; profile_pic?: File; }) => {
+        handler: async (input) => {
 
-            let errorMessage = "Failed to add user. Please try again."
-            let codeError: any = "INTERNAL_SERVER_ERROR"
+            //console.log("input: ", input)
 
             try {
                 // Verify if user already exist
                 const existingUser = await getUserByEmail(input.email);
+                //console.log("existingUser: ", existingUser)
 
                 if (existingUser) {
-                    errorMessage = "A user with this email already exists"
-                    codeError = "CONFLICT"
+                    throw new ActionError({
+                        code: "CONFLICT",
+                        message: "A user with this email already exists",
+                    });
                 }
 
                 const getProfilePicPath = async () => {
@@ -208,7 +161,7 @@ export const server = {
 
                 const profilePicPath = await getProfilePicPath()
 
-                await addUser({
+                const user = await addUser({
                     name: input.name,
                     email: input.email,
                     password: input.password,
@@ -216,11 +169,16 @@ export const server = {
                     phone: input.phone ? Number(input.phone) : null,
                     profile_pic: profilePicPath,
                 });
+
+                console.log("user: ", user)
+
+                return { valid: true, user }
             } catch (error) {
-                throw new ActionError({
-                    code: codeError,
-                    message: errorMessage,
-                });
+                if (error instanceof Error) {
+                    throw error; // Lança erro caso seja outro tipo de erro
+                } else {
+                    throw new Error("Unknown error occurred");
+                }
             }
         },
     }),
