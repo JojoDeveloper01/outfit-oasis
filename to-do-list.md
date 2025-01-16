@@ -53,10 +53,13 @@ Ou que seja contado como menos de um dia e seja o mesmo preço de um dia ou 20% 
 
 - Quando o item chegue ao dia final do aluguel, mostrar a opção de finalizar a reserva, 
 em seguida vai atualizar o aluguel e
-pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_status
+pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_status ✅
 
-- Em dashbora/items não mostrar os rentals dos items que tem rental_status como "completed"
+- Em dashbora/items não mostrar os rentals dos items que tem rental_status como "completed" ✅
+
 - arranjar o sistema de Login (os campos estão todos trocados na DB)
+
+- que o utilizadores possam mudar o seu nome, email, password e foto
 
 -----------------
 Depois:

@@ -26,6 +26,8 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <!-- Erro específico do email -->
+                <p id="loginEmailError" class="mt-1 text-red-500 hidden"></p>
             </div>
             <div>
                 <label
@@ -41,7 +43,10 @@
                     class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
+                <!-- Erro específico da senha -->
+                <p id="loginPasswordError" class="mt-1 text-red-500 hidden"></p>
             </div>
+
             <div class="flex items-center">
                 <input
                     id="rememberLogin"
@@ -173,98 +178,248 @@
 </dialog>
 
 <script>
+    import { actions } from "astro:actions";
+
     document.addEventListener("astro:page-load", () => {
         const loginForm = document.getElementById("login-form");
+        const loginEmailErrorEl = document.getElementById(
+            "loginEmailError",
+        ) as HTMLElement;
+        const loginPasswordErrorEl = document.getElementById(
+            "loginPasswordError",
+        ) as HTMLElement;
 
         loginForm?.addEventListener("submit", async (event: any) => {
             event.preventDefault();
 
+            // 1) Limpar mensagens de erro a cada tentativa
+            loginEmailErrorEl.textContent = "";
+            loginEmailErrorEl.classList.add("hidden");
+            loginPasswordErrorEl.textContent = "";
+            loginPasswordErrorEl.classList.add("hidden");
+
             // Coleta os dados do formulário
             const email = (
                 document.getElementById("loginEmail") as HTMLInputElement
-            )?.value;
+            )?.value.trim();
             const password = (
                 document.getElementById("loginPassword") as HTMLInputElement
-            )?.value;
+            )?.value.trim();
 
             try {
-                const response = await fetch("/api/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
+                // Chama a action diretamente (sem rota)
+                const { data, error } = await actions.login({
+                    email,
+                    password,
                 });
 
-                const result = await response.json();
-                if (response.ok) {
-                    const userData = result.user;
+                // Se há erro, pode ser erro de validação do Zod ou outro erro
+                if (error) {
+                    // Verifica se é erro "Failed to validate:"
+                    if (error.message.startsWith("Failed to validate:")) {
+                        // Extrai só a parte JSON do final da mensagem
+                        const rawJSON = error.message
+                            .replace("Failed to validate:", "")
+                            .trim();
 
-                    document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
-                    sessionStorage.setItem("User", JSON.stringify(userData));
+                        try {
+                            // Faz parse do array de erros
+                            const zodErrors = JSON.parse(rawJSON);
+                            zodErrors.forEach(
+                                (zErr: {
+                                    path: any[];
+                                    message: string | null;
+                                }) => {
+                                    const field = zErr.path[0]; // "email" ou "password"
 
-                    location.reload();
-                } else {
-                    alert(result.message || "Erro no login.");
+                                    if (field === "email") {
+                                        loginEmailErrorEl.textContent =
+                                            zErr.message;
+                                        loginEmailErrorEl.classList.remove(
+                                            "hidden",
+                                        );
+                                    } else if (field === "password") {
+                                        loginPasswordErrorEl.textContent =
+                                            zErr.message;
+                                        loginPasswordErrorEl.classList.remove(
+                                            "hidden",
+                                        );
+                                    }
+                                },
+                            );
+                        } catch (parseErr) {
+                            console.error(
+                                "Falha ao parsear erros de validação:",
+                                parseErr,
+                            );
+                        }
+                    } else {
+                        // Se não for erro de validação, é um erro crítico
+                        console.error("Erro crítico:", error);
+                    }
+                    return; // Interrompe aqui
                 }
-            } catch (error) {
-                console.error("Erro ao fazer login:", error);
-                alert("Erro no servidor.");
+
+                // Se não houve "error", pode ter data.valid = false (depende de como você retornou)
+                if (data && !data.valid && data.message) {
+                    // Caso você esteja retornando algo como: { valid: false, errors: [...] }
+                    const field = data.message.includes("email")
+                        ? "email"
+                        : "password";
+                    if (field === "email") {
+                        loginEmailErrorEl.textContent = data.message;
+                        loginEmailErrorEl.classList.remove("hidden");
+                    } else if (field === "password") {
+                        loginPasswordErrorEl.textContent = data.message;
+                        loginPasswordErrorEl.classList.remove("hidden");
+                    }
+                    return;
+                }
+
+                // Caso seja válido (login ok), data.user deve conter o usuário:
+                const userData = data?.user;
+                console.log("userData: ", userData);
+
+                // Se quiser "simular" uma sessão:
+                document.cookie = `id=${userData?.id}; path=/; max-age=3600;`; // 60 min
+                sessionStorage.setItem("User", JSON.stringify(userData));
+
+                // Ou redirecionar, recarregar, etc.
+                location.reload();
+            } catch (err) {
+                console.error("Erro ao fazer login:", err);
             }
         });
 
-        // Manipula o registro
         const registerForm = document.getElementById("register-form");
+
+        // Referências para as mensagens de erro
+        const registerNameErrorEl =
+            document.getElementById("registerNameError");
+        const registerEmailErrorEl =
+            document.getElementById("registerEmailError");
+        const registerPasswordErrorEl = document.getElementById(
+            "registerPasswordError",
+        );
+        const registerConfirmPasswordErrorEl = document.getElementById(
+            "registerConfirmPasswordError",
+        );
 
         registerForm?.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            // Coleta os dados do formulário
-            const name = (
-                document.getElementById("registerName") as HTMLInputElement
-            )?.value.trim();
-            const email = (
-                document.getElementById("registerEmail") as HTMLInputElement
-            )?.value.trim();
-            const password = (
-                document.getElementById("registerPassword") as HTMLInputElement
-            )?.value.trim();
-            const confirmPassword = (
-                document.getElementById(
-                    "registerConfirmPassword",
-                ) as HTMLInputElement
-            )?.value.trim();
+            // Limpa mensagens de erro anteriores
+            registerNameErrorEl.textContent = "";
+            registerNameErrorEl.classList.add("hidden");
+            registerEmailErrorEl.textContent = "";
+            registerEmailErrorEl.classList.add("hidden");
+            registerPasswordErrorEl.textContent = "";
+            registerPasswordErrorEl.classList.add("hidden");
+            registerConfirmPasswordErrorEl.textContent = "";
+            registerConfirmPasswordErrorEl.classList.add("hidden");
 
-            // Validações básicas
-            if (!name || !email || !password || !confirmPassword) {
-                alert("All fields are required.");
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert("The passwords don't match.");
-                return;
-            }
+            // Pega valores
+            const name = document.getElementById("registerName").value.trim();
+            const email = document.getElementById("registerEmail").value.trim();
+            const password = document
+                .getElementById("registerPassword")
+                .value.trim();
+            const confirmPassword = document
+                .getElementById("registerConfirmPassword")
+                .value.trim();
 
             try {
-                const response = await fetch("/api/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, password }),
+                // Chama a action sem rota
+                const { data, error } = await actions.register({
+                    name,
+                    email,
+                    password,
+                    confirmPassword,
                 });
 
-                const result = await response.json();
-                if (response.ok) {
-                    const userData = result.user;
+                // Se "error" existir, pode ser erro de validação do Zod
+                if (error) {
+                    // Verifica se começa com "Failed to validate:"
+                    if (error.message.startsWith("Failed to validate:")) {
+                        // Extraímos a parte JSON
+                        const rawJSON = error.message
+                            .replace("Failed to validate:", "")
+                            .trim();
+                        let zodErrors;
+                        try {
+                            zodErrors = JSON.parse(rawJSON); // array de erros
+                        } catch (parseErr) {
+                            console.error(
+                                "Falha ao parsear erros de validação:",
+                                parseErr,
+                            );
+                            return;
+                        }
+                        // Exibe cada erro no campo correspondente
+                        zodErrors.forEach((zErr) => {
+                            const field = zErr.path[0]; // "name" | "email" | "password" | "confirmPassword" | "server", etc.
 
-                    sessionStorage.setItem("user", JSON.stringify(userData));
-                    document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
-
-                    location.reload();
-                } else {
-                    alert(result.message || "Erro ao registrar.");
+                            switch (field) {
+                                case "name":
+                                    registerNameErrorEl.textContent =
+                                        zErr.message;
+                                    registerNameErrorEl.classList.remove(
+                                        "hidden",
+                                    );
+                                    break;
+                                case "email":
+                                    registerEmailErrorEl.textContent =
+                                        zErr.message;
+                                    registerEmailErrorEl.classList.remove(
+                                        "hidden",
+                                    );
+                                    break;
+                                case "password":
+                                    registerPasswordErrorEl.textContent =
+                                        zErr.message;
+                                    registerPasswordErrorEl.classList.remove(
+                                        "hidden",
+                                    );
+                                    break;
+                                case "confirmPassword":
+                                    registerConfirmPasswordErrorEl.textContent =
+                                        zErr.message;
+                                    registerConfirmPasswordErrorEl.classList.remove(
+                                        "hidden",
+                                    );
+                                    break;
+                                case "server":
+                                    // Exemplo: erro de "User with this email already exists"
+                                    alert(zErr.message); // ou exibir em outro lugar
+                                    break;
+                                default:
+                                    console.log("Outro campo ou erro:", zErr);
+                            }
+                        });
+                    } else {
+                        // Se não for "Failed to validate:", é um erro crítico
+                        console.error("Erro crítico:", error);
+                    }
+                    return; // Interrompe aqui
                 }
-            } catch (error) {
-                console.error("Erro ao fazer registro:", error);
-                alert("Erro no servidor.");
+
+                // Se chegou até aqui, então "error" é null,
+                // e presumimos que data.valid = true (cadastro bem-sucedido)
+
+                const userData = data?.user;
+                if (!userData) {
+                    console.error(
+                        "Não veio userData no cadastro? Cheque o backend.",
+                    );
+                    return;
+                }
+
+                // Simula “login” automático
+                document.cookie = `id=${userData.id}; path=/; max-age=3600;`; // 30 min
+                sessionStorage.setItem("User", JSON.stringify(userData));
+                location.reload();
+            } catch (err) {
+                console.error("Erro ao fazer registro:", err);
             }
         });
     });

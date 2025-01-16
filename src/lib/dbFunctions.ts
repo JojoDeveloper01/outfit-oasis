@@ -337,10 +337,13 @@ export async function editRentalStatus(id: number, value: string) {
         // Check and update in one query if the value is different
         const result = await turso.execute({
             sql: `
-                UPDATE rentals 
-                SET rental_status = ? 
-                WHERE rental_id = ? AND rental_status != ?`,
-            args: [value, id, value], // Only update if the current status is different
+            UPDATE rentals
+            SET rental_status = ?,
+                return_date = CASE WHEN ? = 'completed' THEN CURRENT_DATE ELSE return_date END
+            WHERE rental_id = ? AND rental_status != ?
+          `,
+            args: [value, value, id, value],
+            // Only update if the current status is different
         });
 
         if (result.rowsAffected > 0) {

@@ -13,6 +13,7 @@
     "@astrojs/tailwind": "^5.1.4",
     "@libsql/client": "^0.14.0",
     "@stripe/stripe-js": "5.4.0",
+    "@types/bcrypt": "^5.0.2",
     "astro": "^5.1.6",
     "astro-particles": "2.10.0",
     "flowbite": "2.5.2",

@@ -4,6 +4,8 @@ import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
 import { sanitizeName } from "@lib/functions"
+import type { ComponentChild, VNode } from "preact";
+import type { JSX } from "preact/jsx-runtime";
 
 interface Item {
     rentalUsers: any;
@@ -24,6 +26,8 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
     const [data, setData] = useState(items); // Estado dos itens
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState<{ [key: number]: Item }>({}); // Valores originais dos itens
+    // Estado que controla se vamos (true) ou não (false) esconder os "completed"
+    const [hideCompleted, setHideCompleted] = useState(true);
 
     /*  {
          id: 37,
@@ -240,219 +244,242 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
         return colorMap[status] || "";
     };
-
     return (
         <div className="flex flex-col gap-2 mt-8">
             {data.length === 0 ? (
                 <div className="py-3 px-4">No items available.</div>
             ) : (
-                data.map((item) => (
-                    <div
-                        key={item.id}
-                        className="flex flex-wrap items-start gap-2 p-4 pt-7 bg-white shadow-lg rounded-lg border border-gray-300"
-                    >
-                        {/* Campos */}
-                        <div className="flex flex-wrap gap-2 flex-grow px-12">
+                data.map((item) => {
+                    // Filtra os rentals específicos deste item
+                    const itemRentals = hideCompleted
+                        ? (item.rentalUsers || []).filter((r: { rental_status: string; }) => r.rental_status !== "completed")
+                        : (item.rentalUsers || []);
 
-                            {/* Imagem */}
-                            {item.image && (
-                                <div className="py-3 px-4">
-                                    < PreviewImage src={item.image} type="item" />
-                                    <img
-                                        onClick={() => {
-                                            const previewImageElement = document.getElementById(
-                                                `preview-item-image-${item.image}`
-                                            );
-                                            if (previewImageElement) {
-                                                (previewImageElement as HTMLDialogElement).showModal();
-                                            }
-                                        }}
-                                        src={item.image}
-                                        alt="Item image"
-                                        className=" w-12 h-12 rounded-full object-cover cursor-pointer"
-                                    />
-                                </div>
-                            )}
-                            {["name", "category", "type", "size", "color", "brand", "condition", "rental_price"].map((field) => (
-                                <div
-                                    key={`${item.id}-${field}`}
-                                    className={`relative flex flex-col gap-2`}
-                                >
-                                    <label className="font-bold text-sm text-gray-600" htmlFor={field}>
-                                        {field.replace("_", " ")}
-                                    </label>
 
-                                    <div className={`flex items-stretch gap-2 min-w-32 max-w-56`}>
+                    // Verifica se este item tem pelo menos um rental "completed"
+                    const hasCompletedRentals = (item.rentalUsers || []).some(
+                        (r: { rental_status: string; }) => r.rental_status === "completed"
+                    );
 
-                                        {/* Conditional rendering for input types */}
-                                        <div className="p-1 min-w-24 max-w-48 *:m-0">
-                                            {["name", "category", "brand", "rental_price"].includes(field) ? (
-                                                <input
-                                                    type="text"
-                                                    id={`${item.id}-${field}`}
-                                                    name={field}
-                                                    value={item[field as keyof Item] || ""}
-                                                    className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
-                                                    placeholder={`Enter ${field.replace("_", " ")}`}
-                                                    onInput={(e) => handleFieldChange(e, item.id, field)}
-                                                    autoComplete="off"
-                                                />
-                                            ) : (
-                                                <select
-                                                    id={`${item.id}-${field}`}
-                                                    name={field}
-                                                    value={item[field as keyof Item] || ""}
-                                                    className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
-                                                    onChange={(e) => handleFieldChange(e, item.id, field)}
-                                                >
-                                                    {/* Options for each dropdown */}
-                                                    {field === "type" && (
-                                                        <>
-                                                            <option value="">Select Type</option>
-                                                            <option value="clothing">Clothing</option>
-                                                            <option value="footwear">Footwear</option>
-                                                            <option value="other">Other</option>
-                                                        </>
-                                                    )}
-                                                    {field === "size" && (
-                                                        <>
-                                                            <option value="">Select Size</option>
-                                                            <option value="XS">XS</option>
-                                                            <option value="S">S</option>
-                                                            <option value="M">M</option>
-                                                            <option value="L">L</option>
-                                                            <option value="XL">XL</option>
-                                                            <option value="XXL">XXL</option>
-                                                        </>
-                                                    )}
-                                                    {field === "color" && (
-                                                        <>
-                                                            <option value="">Select Color</option>
-                                                            <option value="red">Red</option>
-                                                            <option value="blue">Blue</option>
-                                                            <option value="yellow">Yellow</option>
-                                                            <option value="green">Green</option>
-                                                            <option value="brown">Brown</option>
-                                                            <option value="black">Black</option>
-                                                            <option value="white">White</option>
-                                                            <option value="other">Other</option>
-                                                        </>
-                                                    )}
-                                                    {field === "condition" && (
-                                                        <>
-                                                            <option value="">Select Condition</option>
-                                                            <option value="new">New</option>
-                                                            <option value="used">Used</option>
-                                                            <option value="worn">Worn</option>
-                                                        </>
-                                                    )}
-                                                </select>
-                                            )}
-                                        </div>
+                    return (
+                        <div
+                            key={item.id}
+                            className="flex flex-wrap items-start gap-2 p-4 pt-7 bg-white shadow-lg rounded-lg border border-gray-300"
+                        >
+                            {/* Campos */}
+                            <div className="flex flex-wrap gap-2 flex-grow px-12">
 
-                                        {/* Save Button */}
-                                        <div class="w-8 *:h-full">
-                                            {!errors[`${item.id}-${field}`] &&
-                                                originalValues[item.id] && // Garante que `originalValues` existe
-                                                item[field as keyof Item] !==
-                                                originalValues[item.id][field as keyof Item] && (
-                                                    <button onClick={() => handleSave(item.id, field)}>
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="24"
-                                                            height="24"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            class="w-full icon"
-                                                        >
-                                                            <path
-                                                                stroke="none"
-                                                                d="M0 0h24v24H0z"
-                                                                fill="none"
-                                                            />
-                                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                                        </svg>
-                                                    </button>
+                                {/* Imagem */}
+                                {item.image && (
+                                    <div className="py-3 px-4">
+                                        < PreviewImage src={item.image} type="item" />
+                                        <img
+                                            onClick={() => {
+                                                const previewImageElement = document.getElementById(
+                                                    `preview-item-image-${item.image}`
+                                                );
+                                                if (previewImageElement) {
+                                                    (previewImageElement as HTMLDialogElement).showModal();
+                                                }
+                                            }}
+                                            src={item.image}
+                                            alt="Item image"
+                                            className=" w-12 h-12 rounded-full object-cover cursor-pointer"
+                                        />
+                                    </div>
+                                )}
+                                {["name", "category", "type", "size", "color", "brand", "condition", "rental_price"].map((field) => (
+                                    <div
+                                        key={`${item.id}-${field}`}
+                                        className={`relative flex flex-col gap-2`}
+                                    >
+                                        <label className="font-bold text-sm text-gray-600" htmlFor={field}>
+                                            {field.replace("_", " ")}
+                                        </label>
+
+                                        <div className={`flex items-stretch gap-2 min-w-32 max-w-56`}>
+
+                                            {/* Conditional rendering for input types */}
+                                            <div className="p-1 min-w-24 max-w-48 *:m-0">
+                                                {["name", "category", "brand", "rental_price"].includes(field) ? (
+                                                    <input
+                                                        type="text"
+                                                        id={`${item.id}-${field}`}
+                                                        name={field}
+                                                        value={item[field as keyof Item] || ""}
+                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
+                                                        placeholder={`Enter ${field.replace("_", " ")}`}
+                                                        onInput={(e) => handleFieldChange(e, item.id, field)}
+                                                        autoComplete="off"
+                                                    />
+                                                ) : (
+                                                    <select
+                                                        id={`${item.id}-${field}`}
+                                                        name={field}
+                                                        value={item[field as keyof Item] || ""}
+                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
+                                                        onChange={(e) => handleFieldChange(e, item.id, field)}
+                                                    >
+                                                        {/* Options for each dropdown */}
+                                                        {field === "type" && (
+                                                            <>
+                                                                <option value="">Select Type</option>
+                                                                <option value="clothing">Clothing</option>
+                                                                <option value="footwear">Footwear</option>
+                                                                <option value="other">Other</option>
+                                                            </>
+                                                        )}
+                                                        {field === "size" && (
+                                                            <>
+                                                                <option value="">Select Size</option>
+                                                                <option value="XS">XS</option>
+                                                                <option value="S">S</option>
+                                                                <option value="M">M</option>
+                                                                <option value="L">L</option>
+                                                                <option value="XL">XL</option>
+                                                                <option value="XXL">XXL</option>
+                                                            </>
+                                                        )}
+                                                        {field === "color" && (
+                                                            <>
+                                                                <option value="">Select Color</option>
+                                                                <option value="red">Red</option>
+                                                                <option value="blue">Blue</option>
+                                                                <option value="yellow">Yellow</option>
+                                                                <option value="green">Green</option>
+                                                                <option value="brown">Brown</option>
+                                                                <option value="black">Black</option>
+                                                                <option value="white">White</option>
+                                                                <option value="other">Other</option>
+                                                            </>
+                                                        )}
+                                                        {field === "condition" && (
+                                                            <>
+                                                                <option value="">Select Condition</option>
+                                                                <option value="new">New</option>
+                                                                <option value="used">Used</option>
+                                                                <option value="worn">Worn</option>
+                                                            </>
+                                                        )}
+                                                    </select>
                                                 )}
-                                        </div>
+                                            </div>
 
-                                        {/* Error Tooltip */}
-                                        {errors[`${item.id}-${field}`] && (
-                                            <ErrorTooltip
-                                                id={`${item.id}-${field}`}
-                                                message={errors[`${item.id}-${field}`]}
-                                            />
-                                        )}
+                                            {/* Save Button */}
+                                            <div class="w-8 *:h-full">
+                                                {!errors[`${item.id}-${field}`] &&
+                                                    originalValues[item.id] && // Garante que `originalValues` existe
+                                                    item[field as keyof Item] !==
+                                                    originalValues[item.id][field as keyof Item] && (
+                                                        <button onClick={() => handleSave(item.id, field)}>
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="24"
+                                                                height="24"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="2"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                class="w-full icon"
+                                                            >
+                                                                <path
+                                                                    stroke="none"
+                                                                    d="M0 0h24v24H0z"
+                                                                    fill="none"
+                                                                />
+                                                                <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                                                <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                                                            </svg>
+                                                        </button>
+                                                    )}
+                                            </div>
+
+                                            {/* Error Tooltip */}
+                                            {errors[`${item.id}-${field}`] && (
+                                                <ErrorTooltip
+                                                    id={`${item.id}-${field}`}
+                                                    message={errors[`${item.id}-${field}`]}
+                                                />
+                                            )}
+
+                                        </div>
 
                                     </div>
+                                ))}
+                            </div>
 
-                                </div>
-                            ))}
-                        </div>
 
-                        {/* Locações históricas */}
-                        <details className="w-full my-4 px-12">
-                            <summary className="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
-                                Historical Rents
-                                <span className="text-[#00671e] font-bold">{item.rentalUsers?.length || 0}</span>
-                            </summary>
-                            <div className="bg-gray-100 border-t border-gray-200 rounded-b-lg">
-                                {item.rentalUsers?.length ? (
-                                    item.rentalUsers.map(
-                                        (
-                                            renter: {
-                                                rental_id: number;
-                                                userName: string;
-                                                start_date: string;
-                                                end_date: string;
-                                                rental_status: string;
-                                                return_date: string | null;
-                                                total_cost: number;
-                                            },
-                                            index: number
-                                        ) => (
+                            {/* Locações históricas */}
+                            <details className="w-full my-4 px-12">
+                                <summary className="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
+                                    Historical Rents
+                                    <span className="text-[#00671e] font-bold">{itemRentals.length || 0}</span>
+
+                                    {/* Se o item tiver pelo menos 1 rental "completed", mostra o botão */}
+                                    {hasCompletedRentals && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setHideCompleted((prev) => !prev)}
+                                            className="ml-4 py-1 px-2 bg-gray-200 rounded hover:bg-gray-300 text-sm text-gray-700"
+                                        >
+                                            {hideCompleted ? "Mostrar Completados" : "Ocultar Completados"}
+                                        </button>
+                                    )}
+                                </summary>
+
+                                <div className="bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                                    {itemRentals.length ? (
+                                        itemRentals.map((renter: { rental_status: JSX.Signalish<string | number | undefined>; userName: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; start_date: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; end_date: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; rental_id: number; return_date: any; total_cost: string | number | bigint | boolean | object | VNode<any> | null | undefined; }, index: unknown) => (
                                             <div
                                                 key={index}
                                                 className={`
-                                                flex flex-wrap items-center gap-4 px-4 py-6 border-b rounded-md shadow-sm
-                                                        ${renter.rental_status === "completed" ? "bg-green-100 border-green-400"
+                                                        flex flex-wrap items-center gap-4 px-4 py-6 border-b rounded-md shadow-sm
+                                                        ${renter.rental_status === "completed"
+                                                        ? "bg-green-100 border-green-400"
                                                         : renter.rental_status === "active"
                                                             ? "bg-orange-100 border-orange-400"
-                                                            : "bg-red-100 border-red-400"}`}>
-
+                                                            : "bg-red-100 border-red-400"
+                                                    }
+                                                    `}
+                                            >
                                                 {/* Name */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Name</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
+                                                        Name
+                                                    </span>
                                                     <span className="text-gray-800 font-bold">{renter.userName}</span>
                                                 </div>
 
                                                 {/* Start Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Start Date</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                        Start Date
+                                                    </span>
                                                     <span className="text-gray-800">{renter.start_date}</span>
                                                 </div>
 
                                                 {/* End Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>End Date</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                        End Date
+                                                    </span>
                                                     <span className="text-gray-800">{renter.end_date}</span>
                                                 </div>
 
                                                 {/* Status */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Status</span>
-                                                    <div class="flex gap-2">
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                        Status
+                                                    </span>
+                                                    <div className="flex gap-2">
                                                         <select
                                                             id={`${renter.rental_id}-rental_status`}
                                                             name="rental_status"
                                                             value={renter.rental_status}
                                                             style={{ width: "7rem", paddingRight: "0.5rem", background: "transparent" }}
-                                                            className={`px-2 py-1 border rounded "border-gray-300 cursor-pointer`}
+                                                            className="px-2 py-1 border rounded border-gray-300 cursor-pointer"
                                                             onChange={(e) => handleRentalStatusChange(e, renter.rental_id, "rental_status")}
                                                         >
                                                             <option value="active">Active</option>
@@ -460,11 +487,13 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                             <option value="late">Late</option>
                                                         </select>
 
-                                                        <div class="w-8 *:h-full">
+                                                        <div className="w-8">
                                                             {!errors[`${renter.rental_id}-rental_status`] &&
-                                                                originalValues[item.id] && // Ensure `originalValues` exists
+                                                                originalValues[item.id] &&
                                                                 renter.rental_status !==
-                                                                originalValues[item.id]?.rentalUsers?.find((r: any) => r.rental_id === renter.rental_id)?.rental_status && (
+                                                                originalValues[item.id]?.rentalUsers?.find(
+                                                                    (r: any) => r.rental_id === renter.rental_id
+                                                                )?.rental_status && (
                                                                     <button onClick={() => handleSaveStatusRent(renter.rental_id, "rental_status")}>
                                                                         <svg
                                                                             xmlns="http://www.w3.org/2000/svg"
@@ -476,13 +505,9 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                                             strokeWidth="2"
                                                                             strokeLinecap="round"
                                                                             strokeLinejoin="round"
-                                                                            class="w-full icon"
+                                                                            className="w-full icon"
                                                                         >
-                                                                            <path
-                                                                                stroke="none"
-                                                                                d="M0 0h24v24H0z"
-                                                                                fill="none"
-                                                                            />
+                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                                             <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
                                                                             <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
                                                                         </svg>
@@ -494,37 +519,40 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Return */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Return</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                        Return
+                                                    </span>
                                                     <span className="text-gray-800">{renter.return_date || "Pending"}</span>
                                                 </div>
 
                                                 {/* Total Cost */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(renter.rental_status)}`}>Total Cost</span>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                        Total Cost
+                                                    </span>
                                                     <span className="text-gray-800 font-bold">${renter.total_cost}</span>
                                                 </div>
                                             </div>
-                                        )
-                                    )
-                                ) : (
-                                    <div className="p-5 text-sm text-gray-500">No rentals recorded.</div>
-                                )}
+                                        ))
+                                    ) : (
+                                        <div className="p-5 text-sm text-gray-500">No rentals recorded.</div>
+                                    )}
+                                </div>
+                            </details>
+
+                            {/* Botões de ação */}
+                            <div className="w-full flex flex-col gap-2 items-end">
+                                <Delete
+                                    name={sanitizeName(item.name)}
+                                    id={item.id}
+                                    imagePath={item.image}
+                                    type="item"
+                                    onDelete={handleDelete}
+                                />
                             </div>
-                        </details>
-
-
-                        {/* Botões de ação */}
-                        <div className="w-full flex flex-col gap-2 items-end">
-                            <Delete
-                                name={sanitizeName(item.name)}
-                                id={item.id}
-                                imagePath={item.image}
-                                type="item"
-                                onDelete={handleDelete}
-                            />
                         </div>
-                    </div>
-                ))
+                    )
+                })
             )}
         </div>
 

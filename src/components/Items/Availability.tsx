@@ -37,14 +37,14 @@ const Availability: FunctionalComponent<{ entry: Entry }> = ({ entry }) => {
             const startDate = new Date(rental.start_date!);
             const endDate = new Date(rental.end_date!);
 
-            console.log("startDate: ", startDate.getTime());
-            console.log("endDate: ", endDate.getTime());
-            console.log("currentEndDate (antes): ", currentEndDate);
+            //console.log("startDate: ", startDate.getTime());
+            //console.log("endDate: ", endDate.getTime());
+            //console.log("currentEndDate (antes): ", currentEndDate);
 
             // Caso "startDate" e "endDate" sejam iguais (reserva de um único dia)
             if (startDate.getTime() === endDate.getTime()) {
                 currentEndDate = endDate; // Atualiza currentEndDate diretamente
-                console.log("Reserva de um único dia detectada. currentEndDate atualizado para: ", currentEndDate);
+                //console.log("Reserva de um único dia detectada. currentEndDate atualizado para: ", currentEndDate);
                 continue; // Passa para a próxima iteração
             }
 
@@ -58,19 +58,19 @@ const Availability: FunctionalComponent<{ entry: Entry }> = ({ entry }) => {
                     ? new Date(Math.max(currentEndDate.getTime(), endDate.getTime())) // Mescla as reservas contínuas
                     : endDate;
 
-                console.log("currentEndDate (atualizado): ", currentEndDate);
+                //console.log("currentEndDate (atualizado): ", currentEndDate);
             } else if (currentEndDate && startDate.getTime() > currentEndDate.getTime() + 24 * 60 * 60 * 1000) {
                 // Existe um intervalo real, então paramos aqui
-                console.log("Intervalo detectado. Encerrando loop.");
+                //console.log("Intervalo detectado. Encerrando loop.");
                 break;
             }
         }
 
-        console.log("Final currentEndDate: ", currentEndDate);
+        //console.log("Final currentEndDate: ", currentEndDate);
         return currentEndDate;
     })();
 
-    console.log("lastUnavailableDate: ", lastUnavailableDate)
+    //console.log("lastUnavailableDate: ", lastUnavailableDate)
 
     return (
         <div

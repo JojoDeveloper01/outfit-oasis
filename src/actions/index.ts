@@ -2,6 +2,7 @@ import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
 import {
+    getUserLogin, registerUser,
     addUser, editUser, deleteUser, getUserByEmail,
     getUserEmailById, addItem, getItemByName, editItem,
     getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus, getRentalDateWithItemID
@@ -24,6 +25,29 @@ const calculateOrderAmount = (items: { id: number; amount: number }[]) => {
         return total + item.amount;
     }, 0) * 100; // Multiplicar por 100 para Stripe
 };
+
+const registerSchema = z.object({
+    name: z
+        .string()
+        .min(2, "Name must be at least 2 characters"),
+    email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .email("Invalid email format"),
+    password: z
+        .string()
+        .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z
+        .string()
+        .min(8, "Password must be at least 8 characters"),
+}).refine(
+    (data) => data.password === data.confirmPassword,
+    {
+        message: "Passwords do not match",
+        path: ["confirmPassword"],
+    }
+);
 
 //User Schemas
 const baseUserSchema = z.object({
@@ -94,11 +118,71 @@ const editItemSchema = baseItemSchema
 
 export const server = {
 
+    login: defineAction({
+        // 1) Validação Zod já acontece automaticamente por `input:` 
+        input: z.object({
+            email: z.string().trim().toLowerCase().email("Invalid email format"),
+            password: z.string().min(8, "Password must be at least 8 characters"),
+        }),
+        handler: async ({ email, password }) => {
+            try {
+                // 1) Buscar usuário
+                const user = await getUserLogin(email, password);
+
+                console.log("user: ", user)
+                if (!user) {
+                    return { valid: false, message: "Email not found" };
+                }
+
+                // 2) Comparar diretamente com o campo password do BD
+                if (user.password !== password) {
+                    return { valid: false, message: "Wrong password" };
+                }
+
+                // 3) Se der certo, retornar user
+                return { valid: true, user };
+            } catch (error) {
+                if (error instanceof Error) {
+                    throw error; // Lança erro caso seja outro tipo de erro
+                } else {
+                    throw new Error("Unknown error occurred");
+                }
+            }
+        },
+    }),
+
+    register: defineAction({
+        // Usamos o schema de input
+        input: registerSchema,
+        // Handler que faz a lógica de inserir no BD
+        handler: async ({ name, email, password }) => {
+            try {
+                // (1) Verificar se já existe um usuário com o mesmo email
+                getUserByEmail(email)
+
+                // (2) Inserir no DB
+                const user = registerUser(name, email, password)
+
+                // Sucesso: retorna o objeto { valid: true, user: {...} }
+                return {
+                    valid: true,
+                    user
+                };
+            } catch (error) {
+                if (error instanceof Error) {
+                    throw error; // Lança erro caso seja outro tipo de erro
+                } else {
+                    throw new Error("Unknown error occurred");
+                }
+            }
+        },
+    }),
+
     //User Actions
     addUser: defineAction({
         accept: "form",
         input: addUserSchema,
-        handler: async (input: { email: string; profile_pic: File; name: string; password: any; user_type: any; phone: any; }) => {
+        handler: async (input: { name: string; email: string; password: string; user_type: "client" | "staff"; phone?: string; profile_pic?: File; }) => {
 
             let errorMessage = "Failed to add user. Please try again."
             let codeError: any = "INTERNAL_SERVER_ERROR"
@@ -645,7 +729,6 @@ export const server = {
         },
     }),
 
-
     editRent: defineAction({
         input: z.object({
             id: z.number().min(1, "Rental ID is required."),
@@ -653,7 +736,6 @@ export const server = {
         }),
         handler: async ({ id, value }) => {
             try {
-
                 await editRentalStatus(id, value);
             } catch (error) {
                 throw new ActionError({
