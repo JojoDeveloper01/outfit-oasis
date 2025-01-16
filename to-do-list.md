@@ -49,7 +49,7 @@ Ou que seja contado como menos de um dia e seja o mesmo preço de um dia ou 20% 
 - Que n se possa obter o intervalo de dias quando passas por dias bloqueados, nem o hover deve ver-se. ✅
 
 15/01:
-- Corregir o label de disponibilidade
+- Corregir o label de disponibilidade ✅
 
 - Quando o item chegue ao dia final do aluguel, mostrar a opção de finalizar a reserva, 
 em seguida vai atualizar o aluguel e
@@ -58,6 +58,7 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 - Em dashbora/items não mostrar os rentals dos items que tem rental_status como "completed"
 - arranjar o sistema de Login (os campos estão todos trocados na DB)
 
+-----------------
 Depois:
 - fazer as analiticas de quem entrou em cada página 
 - fazer o inbox em que o user pode fazer uma perguntas sobre os items que rentou e qualquer admin pode responder 
