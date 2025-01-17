@@ -45,6 +45,11 @@ export async function saveFileToPublic(file: File, name: string, type: string): 
 //delete the images when the item or user is deleted
 export async function deleteImage(imagePath: string): Promise<void> {
   try {
+
+    if (imagePath === "/profile_users/default.webp") {
+      return;
+    }
+
     // Construct the absolute path to the file
     const filePath = path.join(process.cwd(), "public", imagePath.replace(/^\/+/, ""));
 

@@ -170,7 +170,7 @@ export const server = {
                     profile_pic: profilePicPath,
                 });
 
-                console.log("user: ", user)
+                //console.log("user: ", user)
 
                 return { valid: true, user }
             } catch (error) {

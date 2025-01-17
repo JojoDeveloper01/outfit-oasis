@@ -27,7 +27,11 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
 
             //console.log(`remove ${name} (ID: ${id}) deleted successfully.`);
 
-            if (onDelete) onDelete(id);
+            if (onDelete) {
+                onDelete(id);
+            } else {
+                window.location.reload();
+            }
 
             // Fechar o diálogo após a exclusão
             document.getElementById(`delete-${name}-${id}`)?.close();
@@ -42,7 +46,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
     if (!isClient) return null;
 
     return (
-        <div className="mx-12">
+        <div className={`${onDelete ? 'mx-12' : ''}`}>
             <button
                 onClick={() => {
                     const deleteModal = document.getElementById(

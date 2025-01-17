@@ -219,7 +219,7 @@ export async function getUserEmailById(id: number) {
 
 export async function userExistsByID(id: string): Promise<any | null> {
     const result = await turso.execute({
-        sql: `SELECT id, name, email, user_type, phone, profile_pic FROM users WHERE id = ? LIMIT 1`,
+        sql: `SELECT id, name, email, password, user_type, phone, profile_pic FROM users WHERE id = ? LIMIT 1`,
         args: [id],
     });
     return result.rows[0] || null;
