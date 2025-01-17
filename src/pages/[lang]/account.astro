@@ -1,8 +1,10 @@
 ---
 import Delete from "@components/Modal/Delete";
+import EditableField from "@components/Users/EditableField";
 import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
 import { userExistsByID } from "@lib/dbFunctions";
+import { actions } from "astro:actions";
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -21,7 +23,18 @@ if (!user) return Astro.redirect(`/${lang}/`);
  * Array de configuração para os campos "normais" do formulário.
  * Para o password, vamos criar um campo especial com isPassword = true.
  */
-const formFields = [
+
+type FieldType = "text" | "password" | "email" | "number";
+
+interface FormField {
+    label: string;
+    name: string;
+    type: FieldType; // Apenas valores válidos
+    value: string | number;
+    placeholder?: string;
+}
+
+const formFields: FormField[] = [
     {
         label: "Name",
         name: "nameAccount",
@@ -46,138 +59,198 @@ const formFields = [
         name: "passwordAccount",
         type: "password",
         value: user.password,
-        isPassword: true,
-        showPassword: false, // Adicionado para alternar a visibilidade
     },
 ];
+
+async function saveField(fieldId: number, fieldValue: any) {
+    try {
+        const { error } = await actions.editUser({
+            id: user.id,
+            [fieldId]: fieldValue,
+        });
+
+        if (error) {
+            throw new Error(error.message || "Erro ao salvar o campo.");
+        }
+
+        console.log("Campo salvo com sucesso:", fieldId, fieldValue);
+    } catch (err) {
+        console.error("Erro ao salvar:", err);
+    }
+}
+
+async function validateField(fieldId: any, fieldValue: any) {
+    console.log("fieldId: ", fieldId);
+    console.log("fieldValue: ", fieldValue);
+
+    try {
+        const { data, error } = await actions.validateUserField({
+            id: user.id,
+            value: fieldValue,
+            field: fieldId,
+        });
+
+        if (error || !data?.valid) {
+            return data?.message || "Campo inválido.";
+        }
+
+        return null;
+    } catch (err) {
+        console.error("Erro ao validar o campo:", err);
+        return "Erro inesperado ao validar.";
+    }
+}
 ---
 
 <Layout>
+    <!--    
+        <section
+                class="h-full bg-gray-100 flex items-center justify-center py-8 px-4"
+            >
+                <div class="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
+                    <h1 class="text-2xl font-bold mb-4">Account Information</h1>
+
+                    <form class="space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1"
+                    >Profile Pic</label
+                >
+                <div class="flex items-center space-x-4 mt-1">
+                    <img
+                        src={user.profile_pic}
+                        alt="Profile Picture"
+                        class="w-16 h-16 rounded-full object-cover"
+                    />
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0 file:bg-blue-600 file:text-white
+                            hover:file:bg-blue-700"
+                    />
+                </div>
+            </div>
+
+            {
+                formFields.map((field) => (
+                    <div class="relative">
+                        <label
+                            for={field.name}
+                            class="text-sm font-bold text-gray-700 mb-1"
+                        >
+                            {field.label}
+                        </label>
+
+                        <div class="w-[30rem] relative flex gap-4 justify-between items-center">
+                            {field.type !== "password" ? (
+                                <input
+                                    id={field.name}
+                                    name={field.name}
+                                    type={field.type}
+                                    value={field.value}
+                                    placeholder={field.placeholder || ""}
+                                    class="mt-1 rounded-md border-gray-300 shadow-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    style="max-width: 100%"
+                                />
+                            ) : (
+                                <div
+                                    class="w-[30rem] relative flex gap-4 justify-between items-center"
+                                    style="max-width: 100%"
+                                >
+                                    <input
+                                        id={field.name}
+                                        name={field.name}
+                                        type="password"
+                                        value={field.value}
+                                        class="mt-1 w-full rounded-md border-gray-300 shadow-sm pr-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-black toggle-password"
+                                        data-target={field.name}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4" />
+                                            <path d="M3 15l2.5 -3.8" />
+                                            <path d="M21 15l-2.5 -3.8" />
+                                            <path d="M9 17l.5 -4" />
+                                            <path d="M15 17l-.5 -4" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+
+                            <button
+                                id={`refresh-icon-${field.name}`}
+                                class="hidden bg-blue-500 text-white font-bold py-2 px-4 rounded"
+                                onclick={`updateAccountInfo('${field.name}')`}
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="icon icon-tabler icons-tabler-outline icon-tabler-refresh"
+                                >
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                    <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                ))
+            }
+        </Layout>
+
+        <div class="mt-6">
+            <Delete
+                client:idle
+                name="this Account"
+                id={user.id}
+                imagePath={user.profile_pic}
+                type="user"
+                onDelete=""
+            />
+        </div>
+
+-->
+
     <section
         class="h-full bg-gray-100 flex items-center justify-center py-8 px-4"
     >
         <div class="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
             <h1 class="text-2xl font-bold mb-4">Account Information</h1>
 
-            <form class="space-y-4">
-                <!-- Profile Pic (caso especial) -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1"
-                        >Profile Pic</label
-                    >
-                    <div class="flex items-center space-x-4 mt-1">
-                        <img
-                            src={user.profile_pic}
-                            alt="Profile Picture"
-                            class="w-16 h-16 rounded-full object-cover"
-                        />
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/*"
-                            class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
-                     file:rounded-full file:border-0 file:bg-blue-600 file:text-white
-                     hover:file:bg-blue-700"
-                        />
-                    </div>
-                </div>
-
-                <!-- Mapeia os campos do array formFields -->
-                {
-                    formFields.map((field) => (
-                        <div class="relative">
-                            <label
-                                for={field.name}
-                                class="text-sm font-bold text-gray-700 mb-1"
-                            >
-                                {field.label}
-                            </label>
-
-                            <div class="w-[30rem] relative flex gap-4 justify-between items-center">
-                                {!field.isPassword ? (
-                                    /* Se NÃO for campo de senha, apenas renderiza o input normal */
-                                    <input
-                                        id={field.name}
-                                        name={field.name}
-                                        type={field.type}
-                                        value={field.value}
-                                        placeholder={field.placeholder || ""}
-                                        class="mt-1 rounded-md border-gray-300 shadow-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                                        style="max-width: 100%"
-                                    />
-                                ) : (
-                                    /* Se for um campo de senha, inclui o ícone de olho */
-                                    <div
-                                        class="w-[30rem] relative flex gap-4 justify-between items-center"
-                                        style="max-width: 100%"
-                                    >
-                                        <input
-                                            id={field.name}
-                                            name={field.name}
-                                            type="password"
-                                            value={field.value}
-                                            class="mt-1 w-full rounded-md border-gray-300 shadow-sm pr-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-                                        />
-                                        <button
-                                            type="button"
-                                            class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-black toggle-password"
-                                            data-target={field.name}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            >
-                                                <path d="M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4" />
-                                                <path d="M3 15l2.5 -3.8" />
-                                                <path d="M21 15l-2.5 -3.8" />
-                                                <path d="M9 17l.5 -4" />
-                                                <path d="M15 17l-.5 -4" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                )}
-
-                                <button
-                                    id={`refresh-icon-${field.name}`}
-                                    class="hidden bg-blue-500 text-white font-bold py-2 px-4 rounded"
-                                    onclick={`updateAccountInfo('${field.name}')`}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-refresh"
-                                    >
-                                        <path
-                                            stroke="none"
-                                            d="M0 0h24v24H0z"
-                                            fill="none"
-                                        />
-                                        <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                }
-            </form>
-
-            <!-- Botão de Delete -->
+            {
+                formFields.map((field) => (
+                    <EditableField
+                        id={field.name}
+                        label={field.label}
+                        type={field.type}
+                        value={field.value}
+                        validateField={validateField}
+                        onSave={saveField}
+                    />
+                ))
+            }
             <div class="mt-6">
                 <Delete
                     client:idle
@@ -197,79 +270,47 @@ const formFields = [
 
     declare global {
         interface Window {
-            updateAccountInfo: () => Promise<void>;
+            updateAccountInfo: (fieldName: string) => Promise<void>;
         }
     }
 
     document.addEventListener("astro:page-load", () => {
-        let formData: { [key: string]: any } = {};
-        let hasChanges = false;
+        //see password
 
-        // Detectar mudanças nos campos do formulário
-        function handleInputChange(event: Event) {
-            const target = event.target as HTMLInputElement;
-            const { name, value } = target;
+        const toggleButtons = document.querySelectorAll(
+            ".toggle-password",
+        ) as any;
 
-            // Atualize os dados do formulário
-            formData[name] = value;
+        toggleButtons.forEach((button: any) => {
+            button.addEventListener("click", () => {
+                const target = button.getAttribute("data-target");
+                const input = document.getElementById(target) as any;
 
-            // Sinalize que houve mudanças
-            hasChanges = true;
-
-            // Mostre o botão de refresh para o campo específico
-            updateRefreshIcon(name);
-        }
-
-        // Atualizar na base de dados
-        async function updateAccountInfo(fieldName: string) {
-            try {
-                const value = formData[fieldName]; // Obtenha o valor alterado
-
-                console.log("fieldName: ", fieldName);
-
-                // Use a action do Astro
-                const { error } = await actions.editUser({
-                    id: "user_id", // Substitua pelo ID real do usuário
-                    [fieldName]: value,
-                });
-
-                if (error) {
-                    throw new Error(
-                        error.message || "Erro ao atualizar os dados",
-                    );
+                if (input) {
+                    if (input.type === "password") {
+                        input.type = "text";
+                        button.innerHTML = `
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/>
+                                                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/>
+                                            </svg>
+                                        `;
+                    } else {
+                        input.type = "password";
+                        button.innerHTML = `
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye-closed">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4"/>
+                                                <path d="M3 15l2.5 -3.8"/>
+                                                <path d="M21 14.976l-2.492 -3.776"/>
+                                                <path d="M9 17l.5 -4"/>
+                                                <path d="M15 17l-.5 -4"/>
+                                            </svg>
+                                        `;
+                    }
                 }
-
-                alert("Dados atualizados com sucesso!");
-
-                // Resetar o estado de mudanças
-                hasChanges = false;
-                updateRefreshIcon(fieldName);
-            } catch (err) {
-                console.error("Erro ao atualizar:", err);
-                alert("Erro ao atualizar os dados.");
-            }
-        }
-
-        // Adicionar listener para inputs
-        const inputs = document.querySelectorAll("input[data-field]");
-        inputs.forEach((input) => {
-            input.addEventListener("change", handleInputChange);
+            });
         });
-
-        // Controlar a exibição do ícone de refresh
-        function updateRefreshIcon(fieldName: string) {
-            const refreshIcon = document.getElementById(
-                `refresh-icon-${fieldName}`,
-            ) as HTMLElement;
-            if (hasChanges) {
-                refreshIcon.classList.remove("hidden");
-                refreshIcon.classList.add("inline-block");
-            } else {
-                refreshIcon.classList.add("hidden");
-                refreshIcon.classList.remove("inline-block");
-            }
-        }
-
-        window.updateAccountInfo = updateAccountInfo;
     });
 </script>

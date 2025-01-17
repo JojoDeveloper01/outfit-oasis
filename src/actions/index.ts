@@ -185,9 +185,9 @@ export const server = {
 
     validateUserField: defineAction({
         input: z.object({
-            field: z.enum(["name", "email", "user_type", "phone"]),
-            value: z.string().optional(),
             id: z.string().min(1, "User ID is required."),
+            value: z.string().optional(),
+            field: z.enum(["name", "email", "user_type", "phone"]),
         }),
         handler: async ({ field, value, id }) => {
             try {
