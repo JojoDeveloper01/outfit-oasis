@@ -2,35 +2,10 @@ import { useState } from "preact/hooks";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
 
-export default function EditableField({ id, label, type, value }) {
+export default function EditableField({ userID, field, label, type, value }) {
     const [fieldValue, setFieldValue] = useState(value);
     const [hasChanges, setHasChanges] = useState(false);
-    const [error, setError] = useState(null);
-
-    const validateField = async (id, value) => {
-        try {
-            const { data, error } = await actions.validateUserField({ id, field: id, value });
-            if (error || !data?.valid) {
-                return data?.message || "Erro de validação.";
-            }
-            return null;
-        } catch (err) {
-            console.error("Erro ao validar o campo:", err);
-            return "Erro inesperado ao validar.";
-        }
-    };
-
-    const saveField = async (id, value) => {
-        try {
-            const { error } = await actions.editUser({ id, [id]: value });
-            if (error) {
-                throw new Error("Erro ao salvar.");
-            }
-        } catch (err) {
-            console.error("Erro ao salvar o campo:", err);
-            throw new Error("Erro ao salvar os dados.");
-        }
-    };
+    const [errors, setErrors] = useState({}); // Estado de erros
 
     const handleInputChange = async (e) => {
         try {
@@ -38,8 +13,22 @@ export default function EditableField({ id, label, type, value }) {
             setFieldValue(newValue);
             setHasChanges(true);
 
-            const validationError = await validateField(id, newValue);
-            setError(validationError);
+            console.log("userID, field, newValue: ", field, newValue)
+
+            const { data, error } = await actions.validateUserField({ field, value: newValue });
+
+            if (error || !data.valid) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    [`${userId}-${field}`]: data?.message || error?.message || "Validation error",
+                }));
+            }
+
+            console.log("error: ", error)
+
+            //const validationError = await validateField(id, newValue);
+            setErrors(error);
+
         } catch (err) {
             console.error("Erro ao processar alteração:", err);
         }
@@ -47,9 +36,15 @@ export default function EditableField({ id, label, type, value }) {
 
     const handleSave = async () => {
         try {
-            await saveField(id, fieldValue);
+            console.log("fieldValue: ", fieldValue)
+            //await saveField(userID, fieldValue);
+            const { error } = await actions.editUser({ id: String(userID), [field]: fieldValue });
+            if (error) {
+                throw new Error("Erro ao salvar.");
+            }
+
             setHasChanges(false);
-            setError(null);
+            setErrors(null);
         } catch (err) {
             console.error("Erro ao salvar o campo:", err);
         }
@@ -57,14 +52,14 @@ export default function EditableField({ id, label, type, value }) {
 
     return (
         <div className="flex items-center gap-4">
-            <label htmlFor={id} className="text-sm font-bold text-gray-700">
+            <label htmlFor={userID} className="text-sm font-bold text-gray-700">
                 {label}
             </label>
 
-            <div className="relative">
+            <div className="w-full relative">
                 {type !== "password" ? (
                     <input
-                        id={id}
+                        name={field}
                         type={type}
                         value={fieldValue}
                         onInput={handleInputChange}
@@ -74,7 +69,7 @@ export default function EditableField({ id, label, type, value }) {
                 ) : (
                     <div className="relative flex items-center gap-4">
                         <input
-                            id={id}
+                            name={field}
                             type={type}
                             value={fieldValue}
                             onInput={handleInputChange}
@@ -106,9 +101,28 @@ export default function EditableField({ id, label, type, value }) {
             {hasChanges && !error && (
                 <button
                     onClick={handleSave}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                    className=""
                 >
-                    Salvar
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-full icon"
+                    >
+                        <path
+                            stroke="none"
+                            d="M0 0h24v24H0z"
+                            fill="none"
+                        />
+                        <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                    </svg>
                 </button>
             )}
         </div>

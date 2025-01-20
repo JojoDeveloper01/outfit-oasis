@@ -55,7 +55,7 @@ export async function editItem(id: number, updates: Partial<Item>): Promise<bool
 
         return true; // Operação bem-sucedida
     } catch (error) {
-        console.error("Error updating user:", error);
+        console.error("Error updating item:", error);
         return false; // Operação falhou
     }
 }
@@ -159,6 +159,9 @@ export async function addUser(user: User) {
 
 export async function editUser(id: number, updates: Partial<User>): Promise<boolean> {
     try {
+
+        console.log("id, updates: ", id, updates)
+
         // Criar os campos dinâmicos para a query
         const fields = Object.entries(updates)
             .filter(([_, value]) => value !== undefined && value !== null) // Ignorar valores indefinidos ou nulos

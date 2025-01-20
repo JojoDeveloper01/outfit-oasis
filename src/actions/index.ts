@@ -185,12 +185,14 @@ export const server = {
 
     validateUserField: defineAction({
         input: z.object({
-            id: z.string().min(1, "User ID is required."),
             value: z.string().optional(),
             field: z.enum(["name", "email", "user_type", "phone"]),
         }),
-        handler: async ({ field, value, id }) => {
+        handler: async ({ field, value }) => {
             try {
+
+                console.log("field, value: ", field, value)
+
                 // Valida o valor com base no campo específico
                 const validationSchemas: Record<string, z.ZodSchema> = {
                     name: baseUserSchema.shape.name,
@@ -230,6 +232,8 @@ export const server = {
                 if (input.name) updates.name = input.name;
                 if (input.user_type) updates.user_type = input.user_type;
                 if (input.phone) updates.phone = Number(input.phone);
+
+                console.log("updates: ", updates)
 
                 // Verifica email duplicado
                 if (input.email) {

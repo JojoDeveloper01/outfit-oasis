@@ -37,54 +37,30 @@ interface FormField {
 const formFields: FormField[] = [
     {
         label: "Name",
-        name: "nameAccount",
+        name: "name",
         type: "text",
         value: user.name,
     },
     {
         label: "Email",
-        name: "emailAccount",
+        name: "email",
         type: "text",
         value: user.email,
     },
     {
         label: "Phone",
-        name: "phoneAccount",
+        name: "phone",
         type: "number",
         value: user.phone,
         placeholder: "Enter your phone number",
     },
     {
         label: "Password",
-        name: "passwordAccount",
+        name: "password",
         type: "password",
         value: user.password,
     },
 ];
-
-// Validação
-async function validateField(id: any, value: any) {
-    const { data, error } = await actions.validateUserField({
-        id: user.id,
-        field: id,
-        value,
-    });
-    if (error || !data?.valid) {
-        return data?.message || "Erro de validação.";
-    }
-    return null;
-}
-
-// Salvamento
-async function saveField(id: any, value: any) {
-    const { error } = await actions.editUser({
-        id: user.id,
-        [id]: value,
-    });
-    if (error) {
-        throw new Error("Erro ao salvar.");
-    }
-}
 ---
 
 <Layout>
@@ -94,17 +70,20 @@ async function saveField(id: any, value: any) {
         <div class="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
             <h1 class="text-2xl font-bold mb-4">Account Information</h1>
 
-            {
-                formFields.map((field) => (
-                    <EditableField
-                        client:idle
-                        id={field.name}
-                        label={field.label}
-                        type={field.type}
-                        value={field.value}
-                    />
-                ))
-            }
+            <div>
+                {
+                    formFields.map((field) => (
+                        <EditableField
+                            client:idle
+                            userID={user.id}
+                            field={field.name}
+                            label={field.label}
+                            type={field.type}
+                            value={field.value}
+                        />
+                    ))
+                }
+            </div>
             <div class="mt-6">
                 <Delete
                     client:idle
