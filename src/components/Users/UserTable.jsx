@@ -61,7 +61,6 @@ export default function UserTable({ users, activeFilters }) {
         try {
             const { data, error } = await actions.validateUserField({
                 field,
-                id: String(userId),
                 value,
             });
 

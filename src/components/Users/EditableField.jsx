@@ -12,47 +12,43 @@ export default function EditableField({ userID, field, label, type, value }) {
             const newValue = e.target.value;
             setFieldValue(newValue);
             setHasChanges(true);
+            setErrors(null); // Limpa erros ao alterar o valor
 
             console.log("userID, field, newValue: ", field, newValue)
 
             const { data, error } = await actions.validateUserField({ field, value: newValue });
 
-            if (error || !data.valid) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    [`${userId}-${field}`]: data?.message || error?.message || "Validation error",
-                }));
+            if (error || !data?.valid) {
+                setErrors(data?.message || error?.message || "Erro de validação.");
             }
-
-            console.log("error: ", error)
-
-            //const validationError = await validateField(id, newValue);
-            setErrors(error);
-
         } catch (err) {
-            console.error("Erro ao processar alteração:", err);
+            console.error("Erro ao validar o campo:", err);
+            setErrors(err);
         }
     };
 
     const handleSave = async () => {
         try {
-            console.log("fieldValue: ", fieldValue)
-            //await saveField(userID, fieldValue);
-            const { error } = await actions.editUser({ id: String(userID), [field]: fieldValue });
+            const { error } = await actions.editUser({
+                id: String(userID),
+                [field]: fieldValue,
+            });
+
             if (error) {
                 throw new Error("Erro ao salvar.");
             }
 
-            setHasChanges(false);
-            setErrors(null);
+            setHasChanges(false); // Marca como salvo
+            setErrors(null); // Limpa erros
         } catch (err) {
             console.error("Erro ao salvar o campo:", err);
+            setErrors(err);
         }
     };
 
     return (
         <div className="flex items-center gap-4">
-            <label htmlFor={userID} className="text-sm font-bold text-gray-700">
+            <label htmlFor={`${userID}-${field}`} className="text-sm font-bold text-gray-700">
                 {label}
             </label>
 
@@ -63,7 +59,7 @@ export default function EditableField({ userID, field, label, type, value }) {
                         type={type}
                         value={fieldValue}
                         onInput={handleInputChange}
-                        className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${error ? "border-red-500" : ""
+                        className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors ? "border-red-500" : ""
                             }`}
                     />
                 ) : (
@@ -73,7 +69,7 @@ export default function EditableField({ userID, field, label, type, value }) {
                             type={type}
                             value={fieldValue}
                             onInput={handleInputChange}
-                            className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${error ? "border-red-500" : ""
+                            className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors ? "border-red-500" : ""
                                 }`}
                         />
                         <button
@@ -95,10 +91,15 @@ export default function EditableField({ userID, field, label, type, value }) {
                         </button>
                     </div>
                 )}
-                {error && <ErrorTooltip message={error} />}
+                {errors && (
+                    <ErrorTooltip
+                        id={`${userID}-${field}`}
+                        message={typeof errors === "string" ? errors : JSON.stringify(errors)}
+                    />
+                )}
             </div>
 
-            {hasChanges && !error && (
+            {hasChanges && !errors && (
                 <button
                     onClick={handleSave}
                     className=""
