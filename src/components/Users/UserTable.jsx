@@ -152,7 +152,7 @@ export default function UserTable({ users, activeFilters }) {
                                             key={`${user.id}-${field}`}
                                             className="py-3 px-4 text-sm text-gray-600 relative"
                                         >
-                                            <div className="flex items-stretch gap-2 min-w-32 max-w-64">
+                                            <div className="relative flex items-stretch gap-2 min-w-32 max-w-64">
                                                 {/* Campo editável */}
                                                 <div className="w-4/5 *:m-0">
                                                     {field === "user_type" ? (

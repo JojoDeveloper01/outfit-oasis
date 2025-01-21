@@ -297,7 +297,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                             {field.replace("_", " ")}
                                         </label>
 
-                                        <div className={`flex items-stretch gap-2 min-w-32 max-w-56`}>
+                                        <div className={`relative flex items-stretch gap-2 min-w-32 max-w-56`}>
 
                                             {/* Conditional rendering for input types */}
                                             <div className="p-1 min-w-24 max-w-48 *:m-0">
