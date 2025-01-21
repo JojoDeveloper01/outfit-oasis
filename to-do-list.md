@@ -59,17 +59,16 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 
 - Arranjar o sistema de Login (os campos estão todos trocados na DB) ✅
 
-- Que o utilizadores possam mudar o seu nome, email, password e foto 
+- Que o utilizadores possam mudar o seu nome, email, password e foto ✅
 
 -----------------
-Depois:
 - fazer as analiticas de quem entrou em cada página 
 - fazer o inbox em que o user pode fazer uma perguntas sobre os items que rentou e qualquer admin pode responder 
 - fazer a página inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente
-- fazer documentação
 - pôr a página bonita 
     - fazer a landing page mostrando as diferentes roupas
     - fazer um fundo movivel, que se mexa com o scroll, como um video/imagens e a cada pixel que seja mmovido para baixo, umas milesimas de segundos ou alguma imagens s\ao mostradas
+- fazer documentação
 
 - Pôr a página em en, pt e es (de preferência em todas as linguagens)
 

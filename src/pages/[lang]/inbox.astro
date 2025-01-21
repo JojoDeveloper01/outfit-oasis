@@ -1,0 +1,18 @@
+---
+import Layout from "@layouts/Layout.astro";
+import { getItems } from "@lib/dbFunctions";
+
+const items = await getItems();
+---
+
+<Layout
+    title="Inbox"
+    description="O teu relevante lugar de aluguer de roupa"
+    keywords="aluguer, duvidas"
+    canonical="https://outfit-oasis.com/inbox"
+>
+    <section>
+        <h1>Inbox</h1>
+        <p>Speak with us!</p>
+    </section>
+</Layout>

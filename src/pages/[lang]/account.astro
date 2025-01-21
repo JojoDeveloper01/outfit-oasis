@@ -24,7 +24,7 @@ if (!user) return Astro.redirect(`/${lang}/`);
  * Para o password, vamos criar um campo especial com isPassword = true.
  */
 
-type FieldType = "text" | "password" | "email" | "number";
+type FieldType = "text" | "password" | "email" | "number" | "file";
 
 interface FormField {
     label: string;
@@ -35,6 +35,12 @@ interface FormField {
 }
 
 const formFields: FormField[] = [
+    {
+        label: "Profile Picture",
+        name: "profile_pic",
+        type: "file",
+        value: user.profile_pic,
+    },
     {
         label: "Name",
         name: "name",
@@ -67,10 +73,14 @@ const formFields: FormField[] = [
     <section
         class="h-full bg-gray-100 flex items-center justify-center py-8 px-4"
     >
-        <div class="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
-            <h1 class="text-2xl font-bold mb-4">Account Information</h1>
+        <div
+            class="w-full h-[29rem] max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl bg-white rounded-lg shadow-md p-6"
+        >
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-8">
+                Account Information
+            </h1>
 
-            <div>
+            <div class="grid grid-cols-1 gap-4">
                 {
                     formFields.map((field) => (
                         <EditableField

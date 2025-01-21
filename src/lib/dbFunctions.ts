@@ -167,7 +167,8 @@ export async function editUser(id: number, updates: Partial<User>): Promise<bool
 
         const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
 
-        //console.log("values: ", values)
+        //console.log("id, updates: ", id, updates)
+        //console.log("values and fields: ", fields, values)
 
         // Verificar se há campos para atualizar
         if (fields.length === 0) {
@@ -208,13 +209,13 @@ export async function getUserByEmail(email: string) {
     return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
 }
 
-export async function getUserEmailById(id: number) {
+export async function getUserColById(col: string, id: number) {
     const result = await turso.execute({
-        sql: `SELECT email FROM users WHERE id = ?`,
+        sql: `SELECT ${col} FROM users WHERE id = ?`,
         args: [id],
     });
     //console.log("user", result)
-    return result.rows.length > 0 ? result.rows[0] : null;
+    return result.rows.length > 0 ? result.rows[0][col] : null;
 }
 
 export async function userExistsByID(id: string): Promise<any | null> {

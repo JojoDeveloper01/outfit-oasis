@@ -2,9 +2,9 @@ import { defineAction, ActionError } from "astro:actions";
 import { z } from "astro:schema";
 import { saveFileToPublic, deleteImage, sendEmail } from "@lib/utils";
 import {
-    getUserLogin, registerUser,
+    getUserLogin,
     addUser, editUser, deleteUser, getUserByEmail,
-    getUserEmailById, addItem, getItemByName, editItem,
+    getUserColById, addItem, getItemByName, editItem,
     getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus, getRentalDateWithItemID
 } from "@lib/dbFunctions";
 
@@ -45,8 +45,7 @@ const baseUserSchema = z.object({
         .min(9, "Phone number must be at least 9 digits")
         .optional(),
     profile_pic: z
-        .instanceof(File)
-        .refine((file) => file && file.size <= 2 * 1024 * 1024, "File must be less than 2MB")
+        .any()
         .optional()
 });
 
@@ -185,8 +184,8 @@ export const server = {
 
     validateUserField: defineAction({
         input: z.object({
-            value: z.string().optional(),
-            field: z.enum(["name", "email", "user_type", "phone"]),
+            value: z.any().optional(),
+            field: z.enum(["name", "email", "user_type", "phone", "password"]),
         }),
         handler: async ({ field, value }) => {
             try {
@@ -199,6 +198,7 @@ export const server = {
                     email: baseUserSchema.shape.email,
                     user_type: baseUserSchema.shape.user_type,
                     phone: baseUserSchema.shape.phone,
+                    password: baseUserSchema.shape.password,
                 };
 
                 if (!validationSchemas[field]) {
@@ -224,16 +224,59 @@ export const server = {
         },
     }),
 
+    addProfilePic: defineAction({
+        accept: "form",
+        input: z.object({
+            id: z.number().min(1, "User ID is required."),
+            profile_pic: z
+                .instanceof(File)
+                .refine((file) => file.size > 0, "An image file is required.")
+                .refine((file) => file.size <= 2 * 1024 * 1024, "The file size must be less than 2MB."),
+
+        }),
+        handler: async ({ id, profile_pic }) => {
+            try {
+                //console.log("profile_pic: ", profile_pic)
+
+                const name = await getUserColById("name", Number(id));
+
+                const getImagePath = async () => {
+                    try {
+                        return await saveFileToPublic(profile_pic, String(name), "profile");
+                    } catch (error) {
+                        console.error("Error saving image to public path:", error);
+                        throw new ActionError({
+                            code: "INTERNAL_SERVER_ERROR",
+                            message: "Failed to save profile picture.",
+                        });
+                    }
+                };
+
+                const imagePath = await getImagePath();
+
+                // Atualiza o caminho da imagem no banco de dados
+                await editUser(id, { profile_pic: imagePath });
+            } catch (error) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to save profile picture.",
+                });
+            }
+        },
+    }),
+
     editUser: defineAction({
         input: editUserSchema,
         handler: async (input) => {
+
+            console.log("input: ", input)
+
             try {
                 const updates: Record<string, any> = {};
                 if (input.name) updates.name = input.name;
                 if (input.user_type) updates.user_type = input.user_type;
                 if (input.phone) updates.phone = Number(input.phone);
-
-                //console.log("updates: ", updates)
+                if (input.password) updates.password = input.password;
 
                 // Verifica email duplicado
                 if (input.email) {
@@ -247,16 +290,13 @@ export const server = {
                     updates.email = input.email;
                 }
 
-                // Atualiza a imagem do perfil
-                if (input.profile_pic) {
-                    updates.profile_pic = `/uploads/${input.name}_updated.png`;
-                }
+                console.log("updates: ", updates)
 
                 await editUser(Number(input.id), updates);
-            } catch (error) {
+            } catch (error: any) {
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
-                    message: "Failed to edit user. Please try again.",
+                    message: error,
                 });
             }
         },
@@ -574,7 +614,7 @@ export const server = {
                 }
 
                 //ober email do utilizador
-                const email = await getUserEmailById(user_id);
+                const email = await getUserColById("email", user_id);
                 if (!email) {
                     throw new ActionError({
                         code: "NOT_FOUND",

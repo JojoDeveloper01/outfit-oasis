@@ -1,17 +1,18 @@
+import PreviewImage from "@components/Modal/PreviewImage";
 import { useState } from "preact/hooks";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
 
 export default function EditableField({ userID, field, name, type, value }) {
     const [fieldValue, setFieldValue] = useState(value);
-    const [hasChanges, setHasChanges] = useState(false);
-    const [errors, setErrors] = useState({}); // Estado de erros
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false); // Alternância de senha
+    const [originalValue, setOriginalValue] = useState(value); // Valor original para comparação
+    const [errors, setErrors] = useState({});
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     const handleInputChange = async (e) => {
         const newValue = e.target.value.trim();
         setFieldValue(newValue);
-        setHasChanges(true);
 
         try {
             const { data, error } = await actions.validateUserField({ field, value: newValue });
@@ -38,22 +39,39 @@ export default function EditableField({ userID, field, name, type, value }) {
 
     const handleSave = async () => {
         try {
-            const { error } = await actions.editUser({
-                id: String(userID),
-                [field]: fieldValue,
-            });
+            let action;
+            //console.log("fieldValue", fieldValue);
+
+            if (fieldValue instanceof File) {
+                // Se o fieldValue for um arquivo, cria e envia como FormData
+                const formData = new FormData();
+                formData.append("id", String(userID));
+                formData.append(field, fieldValue);
+
+                action = actions.addProfilePic(formData); // Envia o FormData diretamente
+            } else {
+                // Caso contrário, envia como JSON normal
+                action = actions.editUser({
+                    id: String(userID),
+                    [field]: fieldValue,
+                });
+            }
+
+            const { error } = await action;
 
             if (error) {
+                console.error("Error saving field:", error);
                 setErrors((prevErrors) => ({
                     ...prevErrors,
                     [`${userID}-${field}`]: error.message,
                 }));
             } else {
-                setHasChanges(false); // Marca como salvo
                 setErrors((prevErrors) => ({
                     ...prevErrors,
                     [`${userID}-${field}`]: null,
                 }));
+                setOriginalValue(fieldValue); // Atualiza o valor original após salvar
+                if (fieldValue instanceof File) location.reload()
             }
         } catch (err) {
             setErrors((prevErrors) => ({
@@ -64,23 +82,14 @@ export default function EditableField({ userID, field, name, type, value }) {
     };
 
     return (
-        <div className="flex items-center gap-4">
-            <label htmlFor={`${userID}-${field}`} className="text-sm font-bold text-gray-700">
+        <div className="w-3/4 flex items-center gap-4">
+            <label htmlFor={`${userID}-${field}`} className="w-20 text-sm font-bold text-gray-700">
                 {name}
             </label>
 
             <div className="w-full relative">
-                {type !== "password" ? (
-                    <input
-                        id={`${userID}-${field}`}
-                        name={field}
-                        type={type}
-                        value={fieldValue}
-                        onInput={handleInputChange}
-                        className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
-                            }`}
-                    />
-                ) : (
+                {type === "password" ? (
+                    // Campo de Senha
                     <div className="relative flex items-center gap-2">
                         <input
                             id={`${userID}-${field}`}
@@ -88,13 +97,15 @@ export default function EditableField({ userID, field, name, type, value }) {
                             type={isPasswordVisible ? "text" : "password"}
                             value={fieldValue}
                             onInput={handleInputChange}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
                             className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                                 }`}
                         />
                         <button
                             type="button"
                             onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                            className="text-gray-500 hover:text-black"
+                            className="absolute right-1 mt-1 text-gray-500 hover:text-black"
                         >
                             {isPasswordVisible ? (
                                 <svg
@@ -132,10 +143,51 @@ export default function EditableField({ userID, field, name, type, value }) {
                             )}
                         </button>
                     </div>
+                ) : type === "file" ? (
+                    // Campo de Arquivo
+                    <div className="flex items-center gap-4">
+                        <PreviewImage
+                            src={fieldValue}
+                            type="account"
+                        />
+                        <img
+                            onClick={() => document.getElementById(`preview-account-image-${fieldValue}`).showModal()}
+                            src={value}
+                            alt={field}
+                            class="w-14 h-12 rounded-full border border-gray-300 cursor-pointer object-cover"
+                        />
+                        <input
+                            id={`${userID}-${field}`}
+                            name={field}
+                            type={type}
+                            onChange={(e) => {
+                                const file = e.target.files[0]; // Obtém o primeiro arquivo selecionado
+                                if (file) {
+                                    setFieldValue(file); // Atualiza o estado com o arquivo
+                                }
+                            }}
+                            accept="image/*" // Aceita apenas imagens
+                            className={`block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                                }`}
+                        />
+                    </div>
+                ) : (
+                    // Outros Tipos de Input
+                    <input
+                        id={`${userID}-${field}`}
+                        name={field}
+                        type={type}
+                        value={fieldValue}
+                        onInput={handleInputChange}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
+                        className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                            }`}
+                    />
                 )}
 
                 {/* Error Tooltip */}
-                {errors[`${userID}-${field}`] && (
+                {errors[`${userID}-${field}`] && isFocused && (
                     <ErrorTooltip
                         id={`${userID}-${field}`}
                         message={errors[`${userID}-${field}`]}
@@ -143,10 +195,10 @@ export default function EditableField({ userID, field, name, type, value }) {
                 )}
             </div>
 
-            {hasChanges && !errors[`${userID}-${field}`] && (
+
+            {fieldValue !== originalValue && !errors[`${userID}-${field}`] && (
                 <button
                     onClick={handleSave}
-                    className=""
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
