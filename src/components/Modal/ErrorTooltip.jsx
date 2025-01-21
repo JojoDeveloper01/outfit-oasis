@@ -11,7 +11,7 @@ export default function ErrorTooltip({ id, message }) {
 
   return (
     <div id={`tooltip-${id}`}
-      ref={tooltipRef} class="absolute bottom-[-80%] w-56 rounded bg-[#e57272] p-3 text-xs text-white shadow-md before:absolute before:-top-[10px] before:left-[10px] before:border-[5px] before:border-transparent before:border-b-red-500/80 z-10">
+      ref={tooltipRef} class="absolute w-56 rounded bg-[#e57272] p-3 text-xs text-white shadow-md before:absolute before:-top-[10px] before:left-[10px] before:border-[5px] before:border-transparent before:border-b-red-500/80 z-10">
       {/* Tooltip de erro */}
       {message}
     </div>

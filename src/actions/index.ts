@@ -233,7 +233,7 @@ export const server = {
                 if (input.user_type) updates.user_type = input.user_type;
                 if (input.phone) updates.phone = Number(input.phone);
 
-                console.log("updates: ", updates)
+                //console.log("updates: ", updates)
 
                 // Verifica email duplicado
                 if (input.email) {
