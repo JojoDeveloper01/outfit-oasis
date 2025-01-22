@@ -1,18 +1,124 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { getItems } from "@lib/dbFunctions";
+import { getMessagesForUser, userExistsByID } from "@lib/dbFunctions";
+import { actions } from "astro:actions";
 
-const items = await getItems();
+let $user: any;
+
+if (Astro.cookies.has("id")) {
+    const getCookie = Astro.cookies.get("id");
+    const id = Number(getCookie?.value);
+
+    $user = await userExistsByID(`${id}`);
+}
+const user = $user;
+
+const messages = await getMessagesForUser(user.id);
 ---
 
 <Layout
     title="Inbox"
-    description="O teu relevante lugar de aluguer de roupa"
-    keywords="aluguer, duvidas"
-    canonical="https://outfit-oasis.com/inbox"
+    description="Sistema de mensagens"
+    keywords="mensagens, chat"
 >
-    <section>
-        <h1>Inbox</h1>
-        <p>Speak with us!</p>
+    <section
+        class="bg-gray-100 max-w-md mx-auto p-4 rounded-lg shadow-lg flex flex-col gap-4"
+    >
+        <h1 class="text-2xl font-bold text-center">Inbox</h1>
+
+        <div
+            class="chat-box overflow-y-auto border border-gray-300 rounded-lg bg-white p-4 h-96"
+        >
+            <ul id="messages" class="space-y-4">
+                {
+                    messages?.map((msg: any) => (
+                        <li
+                            class={`chat-message ${
+                                msg.sender_id === user.id
+                                    ? "bg-blue-500 text-white self-end"
+                                    : "bg-gray-200 text-black self-start"
+                            } p-3 rounded-lg max-w-[70%]`}
+                        >
+                            <strong class="block font-medium">
+                                {msg.sender_id === user.id
+                                    ? "Você"
+                                    : msg.sender_name}
+                                :
+                            </strong>
+                            <span class="block">{msg.content}</span>
+                            <em class="text-xs text-gray-500 mt-2 block">
+                                {msg.created_at
+                                    ? new Date(
+                                          Date.parse(msg.created_at),
+                                      ).toLocaleTimeString()
+                                    : ""}
+                            </em>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <form id="sendMessageForm" class="flex items-center gap-2">
+            <textarea
+                id="messageInput"
+                class="flex-1 border border-gray-300 rounded-lg p-2 text-sm focus:outline-none focus:ring focus:ring-blue-300"
+                placeholder="Digite sua mensagem..."
+                required></textarea>
+            <input type="hidden" id="userId" value={user.id} />
+            <input type="hidden" id="receiverId" value="62" />
+            <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+            >
+                Enviar
+            </button>
+        </form>
     </section>
 </Layout>
+
+<script>
+    import { actions } from "astro:actions";
+
+    document.addEventListener("astro:page-load", () => {
+        const form = document.querySelector("#sendMessageForm");
+
+        async function handleSendMessage(e: any) {
+            e.preventDefault();
+            const content = (
+                document.querySelector("#messageInput") as HTMLInputElement
+            )?.value;
+            const receiverId = Number(
+                (document.querySelector("#receiverId") as HTMLInputElement)
+                    .value,
+            );
+            const userID = Number(
+                (document.querySelector("#userId") as HTMLInputElement).value,
+            );
+
+            const { data, error } = await actions.sendMessage({
+                senderId: userID, // ID do remetente
+                receiverId,
+                content,
+            });
+
+            if (data?.success) {
+                const messagesList = document.querySelector(
+                    "#messages",
+                ) as HTMLElement;
+                const newMessage = document.createElement("li") as HTMLElement;
+                newMessage.innerHTML = `<strong>Você:</strong> ${content}`;
+                messagesList.appendChild(newMessage);
+
+                (
+                    document.querySelector("#messageInput") as HTMLInputElement
+                ).value = ""; // Limpar campo
+            } else {
+                alert("Erro ao enviar mensagem");
+                console.error(error);
+            }
+        }
+
+        (global as any).handleSendMessage = handleSendMessage;
+    });
+</script>

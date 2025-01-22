@@ -38,7 +38,7 @@ let $user;
 
 if (Astro.cookies.has("id")) {
     const getCookie = Astro.cookies.get("id");
-    const user_id = Number(getCookie?.value); // Converte o valor do cookie para número, se necessário
+    const user_id = Number(getCookie?.value);
 
     $user = await userExistsByID(`${user_id}`);
     // console.log($user);

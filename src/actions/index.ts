@@ -5,7 +5,8 @@ import {
     getUserLogin,
     addUser, editUser, deleteUser, getUserByEmail,
     getUserColById, addItem, getItemByName, editItem,
-    getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus, getRentalDateWithItemID
+    getItemByID, deleteItem, thereIsReservation, addUReservation, editRentalStatus, getRentalDateWithItemID,
+    getMessagesForUser, insertMessage
 } from "@lib/dbFunctions";
 
 import Stripe from "stripe";
@@ -743,6 +744,55 @@ export const server = {
                 throw new ActionError({
                     code: "INTERNAL_SERVER_ERROR",
                     message: "Failed to edit rental rental. Please try again.",
+                });
+            }
+        },
+    }),
+
+    //inbox
+
+    // Obter mensagens
+    getMessages: defineAction({
+        input: z.object({
+            userId: z.number(),
+        }),
+        handler: async (input) => {
+            try {
+                console.log("obter: ", input)
+
+                const result = await getMessagesForUser(input.userId);
+                console.log("result: ", result)
+
+                return result;
+            } catch (error) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to get message. Please try again.",
+                });
+            }
+        }
+    }),
+
+    // Enviar mensagem
+    sendMessage: defineAction({
+        input: z.object({
+            senderId: z.number(),
+            receiverId: z.number(),
+            content: z.string().min(1),
+        }),
+        handler: async (input) => {
+            try {
+                console.log("enviada: ", input)
+
+                const result = await insertMessage(input.senderId, input.receiverId, input.content);
+                console.log("result: ", result)
+
+                return { success: result };
+
+            } catch (error) {
+                throw new ActionError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to send message. Please try again.",
                 });
             }
         },
