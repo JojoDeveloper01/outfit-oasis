@@ -81,44 +81,59 @@ const messages = await getMessagesForUser(user.id);
     import { actions } from "astro:actions";
 
     document.addEventListener("astro:page-load", () => {
-        const form = document.querySelector("#sendMessageForm");
+        const form = document.querySelector("#sendMessageForm") as HTMLElement;
+        const messagesList = document.querySelector("#messages");
 
-        async function handleSendMessage(e: any) {
-            e.preventDefault();
-            const content = (
-                document.querySelector("#messageInput") as HTMLInputElement
-            )?.value;
-            const receiverId = Number(
-                (document.querySelector("#receiverId") as HTMLInputElement)
-                    .value,
-            );
-            const userID = Number(
-                (document.querySelector("#userId") as HTMLInputElement).value,
-            );
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault(); // Impede o recarregamento da página
+
+            const messageInput = document.querySelector(
+                "#messageInput",
+            ) as HTMLInputElement;
+            const receiverIdInput = document.querySelector(
+                "#receiverId",
+            ) as HTMLInputElement;
+            const userIdInput = document.querySelector(
+                "#userId",
+            ) as HTMLInputElement;
+
+            const content = messageInput.value.trim();
+            const receiverId = Number(receiverIdInput.value);
+            const senderId = Number(userIdInput.value);
+
+            if (!content) {
+                alert("Por favor, digite uma mensagem.");
+                return;
+            }
 
             const { data, error } = await actions.sendMessage({
-                senderId: userID, // ID do remetente
+                senderId,
                 receiverId,
                 content,
             });
 
             if (data?.success) {
-                const messagesList = document.querySelector(
-                    "#messages",
-                ) as HTMLElement;
-                const newMessage = document.createElement("li") as HTMLElement;
-                newMessage.innerHTML = `<strong>Você:</strong> ${content}`;
-                messagesList.appendChild(newMessage);
+                // Adiciona a mensagem à lista de mensagens
+                const messageContent = document.createElement("div");
+                messageContent.className = "flex justify-start";
 
-                (
-                    document.querySelector("#messageInput") as HTMLInputElement
-                ).value = ""; // Limpar campo
+                const newMessage = document.createElement("li");
+                newMessage.className =
+                    "chat-message bg-blue-500 text-white self-end p-3 rounded-lg max-w-[70%]";
+                newMessage.innerHTML = `
+                <strong>Você:</strong>
+                <span>${content}</span>
+                <em class="text-xs text-gray-500 mt-2 block">${new Date().toLocaleTimeString()}</em>
+            `;
+                messagesList?.appendChild(messageContent);
+                messagesList?.appendChild(newMessage);
+
+                // Limpa o campo de entrada
+                messageInput.value = "";
             } else {
-                alert("Erro ao enviar mensagem");
+                alert("Erro ao enviar mensagem.");
                 console.error(error);
             }
-        }
-
-        (global as any).handleSendMessage = handleSendMessage;
+        });
     });
 </script>
