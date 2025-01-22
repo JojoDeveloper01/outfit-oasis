@@ -1,17 +1,20 @@
 ---
+import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
 import { getMessagesForUser, userExistsByID } from "@lib/dbFunctions";
-import { actions } from "astro:actions";
+
+const lang = getLangFromUrl(Astro.url);
 
 let $user: any;
 
 if (Astro.cookies.has("id")) {
     const getCookie = Astro.cookies.get("id");
     const id = Number(getCookie?.value);
-
     $user = await userExistsByID(`${id}`);
 }
+
 const user = $user;
+if (!user) return Astro.redirect(`/${lang}/`);
 
 const messages = await getMessagesForUser(user.id);
 ---
@@ -32,28 +35,30 @@ const messages = await getMessagesForUser(user.id);
             <ul id="messages" class="space-y-4">
                 {
                     messages?.map((msg: any) => (
-                        <li
-                            class={`chat-message ${
-                                msg.sender_id === user.id
-                                    ? "bg-blue-500 text-white self-end"
-                                    : "bg-gray-200 text-black self-start"
-                            } p-3 rounded-lg max-w-[70%]`}
-                        >
-                            <strong class="block font-medium">
-                                {msg.sender_id === user.id
-                                    ? "Você"
-                                    : msg.sender_name}
-                                :
-                            </strong>
-                            <span class="block">{msg.content}</span>
-                            <em class="text-xs text-gray-500 mt-2 block">
-                                {msg.created_at
-                                    ? new Date(
-                                          Date.parse(msg.created_at),
-                                      ).toLocaleTimeString()
-                                    : ""}
-                            </em>
-                        </li>
+                        <div class="w-full flex justify-start">
+                            <li
+                                class={`chat-message ${
+                                    msg.sender_id === user.id
+                                        ? "bg-blue-500 text-white self-end"
+                                        : "bg-gray-200 text-black self-start"
+                                } w-1/2 p-3 rounded-lg max-w-[70%]`}
+                            >
+                                <strong class="block font-medium">
+                                    {msg.sender_id === user.id
+                                        ? "Você"
+                                        : msg.sender_name}
+                                    :
+                                </strong>
+                                <span class="block">{msg.content}</span>
+                                <em class="text-xs text-gray-500 mt-2 block">
+                                    {msg.created_at
+                                        ? new Date(
+                                              Date.parse(msg.created_at),
+                                          ).toLocaleTimeString()
+                                        : ""}
+                                </em>
+                            </li>
+                        </div>
                     ))
                 }
             </ul>
@@ -115,18 +120,18 @@ const messages = await getMessagesForUser(user.id);
             if (data?.success) {
                 // Adiciona a mensagem à lista de mensagens
                 const messageContent = document.createElement("div");
-                messageContent.className = "flex justify-start";
+                messageContent.className = "w-full flex justify-start";
 
                 const newMessage = document.createElement("li");
                 newMessage.className =
-                    "chat-message bg-blue-500 text-white self-end p-3 rounded-lg max-w-[70%]";
+                    "chat-message w-1/2 bg-blue-500 text-white self-end p-3 rounded-lg max-w-[70%]";
                 newMessage.innerHTML = `
                 <strong>Você:</strong>
                 <span>${content}</span>
                 <em class="text-xs text-gray-500 mt-2 block">${new Date().toLocaleTimeString()}</em>
             `;
+                messageContent.appendChild(newMessage);
                 messagesList?.appendChild(messageContent);
-                messagesList?.appendChild(newMessage);
 
                 // Limpa o campo de entrada
                 messageInput.value = "";
