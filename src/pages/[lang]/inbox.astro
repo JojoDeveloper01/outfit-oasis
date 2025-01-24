@@ -103,6 +103,9 @@ const messages = await getMessagesForUser(user.id);
     document.addEventListener("astro:page-load", () => {
         const form = document.querySelector("#sendMessageForm") as HTMLElement;
         const messagesList = document.querySelector("#messages");
+        const chatbox = document.querySelector(".chat-box");
+
+        chatbox?.scrollTo(0, chatbox.scrollHeight);
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault(); // Impede o recarregamento da página
@@ -154,13 +157,13 @@ const messages = await getMessagesForUser(user.id);
                                             isSender
                                                 ? "bg-green-500 text-white"
                                                 : "bg-gray-200 text-black"
-                                        } px-4 py-2 rounded-lg max-w-[70%] ${
+                                        } relative w-auto max-w-[70%] px-4 py-2 rounded-lg ${
                                             isSender
                                                 ? "rounded-br-none"
                                                 : "rounded-bl-none"
                                         }`;
                 newMessage.innerHTML = `
-                                        <span class="max-w-56 block break-words">${content}</span>
+                                        <span class="max-w-56 block break-words mr-8 mb-2">${content}</span>
                                         <em class="text-sm text-white opacity-70 absolute bottom-1 right-2">
                                             ${date}
                                         </em>
@@ -168,12 +171,12 @@ const messages = await getMessagesForUser(user.id);
 
                 // Adiciona o li ao div
                 messageContent.appendChild(newMessage);
-
                 // Adiciona o div à lista de mensagens
                 messagesList?.appendChild(messageContent);
 
                 // Limpa o campo de entrada
                 messageInput.value = "";
+                chatbox?.scrollTo(0, chatbox.scrollHeight);
             } else {
                 alert("Erro ao enviar mensagem.");
                 console.error(error);
