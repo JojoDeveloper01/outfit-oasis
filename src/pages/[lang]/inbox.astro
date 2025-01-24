@@ -34,30 +34,41 @@ const messages = await getMessagesForUser(user.id);
         >
             <ul id="messages" class="space-y-4">
                 {
-                    messages && messages.length > 0 ? (
+                    messages?.length > 0 ? (
                         messages.map((msg: any) => (
-                            <li
-                                class={`chat-message ${
+                            <div
+                                class={`w-full flex ${
                                     msg.sender_id === user.id
-                                        ? "bg-blue-500 text-white self-end"
-                                        : "bg-gray-200 text-black self-start"
-                                } w-1/2 p-3 rounded-lg max-w-[70%]`}
+                                        ? "justify-end"
+                                        : "justify-start"
+                                }`}
                             >
-                                <strong class="block font-medium">
-                                    {msg.sender_id === user.id
-                                        ? "Você"
-                                        : msg.sender_name}
-                                    :
-                                </strong>
-                                <span class="block">{msg.content}</span>
-                                <em class="text-xs text-gray-500 mt-2 block">
-                                    {msg.created_at
-                                        ? new Date(
-                                              Date.parse(msg.created_at),
-                                          ).toLocaleTimeString()
-                                        : ""}
-                                </em>
-                            </li>
+                                <li
+                                    class={`chat-message ${
+                                        msg.sender_id === user.id
+                                            ? "bg-green-500 text-white"
+                                            : "bg-gray-200 text-black"
+                                    } relative w-auto max-w-[70%] px-4 py-2 rounded-lg ${
+                                        msg.sender_id === user.id
+                                            ? "rounded-br-none"
+                                            : "rounded-bl-none"
+                                    }`}
+                                >
+                                    <span class="max-w-56 block break-words mr-8 mb-2">
+                                        {msg.content}
+                                    </span>
+                                    <em class="text-sm text-white opacity-70 absolute bottom-1 right-2">
+                                        {msg.created_at
+                                            ? new Date(
+                                                  Date.parse(msg.created_at),
+                                              ).toLocaleTimeString([], {
+                                                  hour: "numeric",
+                                                  minute: "2-digit",
+                                              })
+                                            : ""}
+                                    </em>
+                                </li>
+                            </div>
                         ))
                     ) : (
                         <p class="text-gray-500 text-center">
@@ -121,6 +132,11 @@ const messages = await getMessagesForUser(user.id);
                 content,
             });
 
+            const date = new Date().toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit",
+            });
+
             if (data?.success) {
                 // Determina se a mensagem é enviada ou recebida
                 const isSender = senderId === Number(userIdInput.value);
@@ -134,16 +150,21 @@ const messages = await getMessagesForUser(user.id);
                 // Cria o item da mensagem
                 const newMessage = document.createElement("li");
                 newMessage.className = `
-                    chat-message w-1/2 ${
-                        isSender
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-200 text-black"
-                    } p-3 rounded-lg max-w-[70%]`;
+                                        chat-message ${
+                                            isSender
+                                                ? "bg-green-500 text-white"
+                                                : "bg-gray-200 text-black"
+                                        } px-4 py-2 rounded-lg max-w-[70%] ${
+                                            isSender
+                                                ? "rounded-br-none"
+                                                : "rounded-bl-none"
+                                        }`;
                 newMessage.innerHTML = `
-                    <strong>${isSender ? "Você" : "Outro Usuário"}:</strong>
-                    <span>${content}</span>
-                    <em class="text-xs text-gray-500 mt-2 block">${new Date().toLocaleTimeString()}</em>
-                `;
+                                        <span class="max-w-56 block break-words">${content}</span>
+                                        <em class="text-sm text-white opacity-70 absolute bottom-1 right-2">
+                                            ${date}
+                                        </em>
+                                    `;
 
                 // Adiciona o li ao div
                 messageContent.appendChild(newMessage);
