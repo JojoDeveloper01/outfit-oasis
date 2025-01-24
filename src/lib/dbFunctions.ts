@@ -1,4 +1,5 @@
 import { turso } from "@turso";
+import type { MessageRow } from "./functions";
 
 /* Items */
 
@@ -379,7 +380,7 @@ export async function getMessagesForUser(userId: number) {
         ORDER BY m.created_at ASC`,
         args: [userId, userId],
     });
-    return result.rows;
+    return result.rows as unknown as MessageRow[];
 }
 
 export async function insertMessage(senderId: number, receiverId: number, content: string) {

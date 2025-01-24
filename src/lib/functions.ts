@@ -2,6 +2,20 @@ import { loadStripe } from '@stripe/stripe-js';
 import { confetti } from "tsparticles-confetti";
 
 //client
+
+export interface MessageRow {
+    id: number;
+    content: string;
+    sender_id: number;
+    created_at: string;
+}
+
+export interface ChatBoxProps {
+    user: { id: number };
+    initialMessages?: MessageRow[];
+    receiverId: number;
+}
+
 export const currentItem = {
     itemId: '',
 };

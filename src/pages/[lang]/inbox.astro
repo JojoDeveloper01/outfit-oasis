@@ -1,7 +1,9 @@
 ---
+import { ChatBox } from "@components/chatBox";
 import { getLangFromUrl } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
 import { getMessagesForUser, userExistsByID } from "@lib/dbFunctions";
+import type { MessageRow } from "@lib/functions";
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -29,7 +31,7 @@ const messages = await getMessagesForUser(user.id);
     >
         <h1 class="text-2xl font-bold text-center">Inbox</h1>
 
-        <div
+        <!-- <div
             class="chat-box overflow-y-auto border border-gray-300 rounded-lg bg-white p-4 h-96"
         >
             <ul id="messages" class="space-y-4">
@@ -93,11 +95,18 @@ const messages = await getMessagesForUser(user.id);
             >
                 Enviar
             </button>
-        </form>
+        </form> -->
+
+        <ChatBox
+            client:idle
+            user={user}
+            initialMessages={messages}
+            receiverId={Number(62)}
+        />
     </section>
 </Layout>
 
-<script>
+<!-- <script>
     import { actions } from "astro:actions";
 
     document.addEventListener("astro:page-load", () => {
@@ -184,3 +193,4 @@ const messages = await getMessagesForUser(user.id);
         });
     });
 </script>
+ -->
