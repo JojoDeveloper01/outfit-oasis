@@ -1,5 +1,4 @@
 import { turso } from "@turso";
-import type { MessageRow } from "./functions";
 
 /* Items */
 
@@ -367,28 +366,49 @@ export async function editRentalStatus(id: number, value: string) {
     }
 }
 
-//Messages
+//Analytics
 
-export async function getMessagesForUser(userId: number) {
-    const result = await turso.execute({
-        sql: `
-        SELECT m.id, m.content, m.sender_id, m.receiver_id, m.created_at, 
-               u.name AS sender_name 
-        FROM messages m 
-        JOIN users u ON m.sender_id = u.id 
-        WHERE m.receiver_id = ? OR m.sender_id = ?
-        ORDER BY m.created_at ASC`,
-        args: [userId, userId],
-    });
-    return result.rows as unknown as MessageRow[];
-}
+export async function getAnalyticsData() {
+    // Quantos utilizadores compraram um produto
+    const usersWhoPurchased = await turso.execute(`
+      SELECT COUNT(DISTINCT user_id) AS total FROM payments
+    `);
 
-export async function insertMessage(senderId: number, receiverId: number, content: string) {
-    const result = await turso.execute({
-        sql: `
-        INSERT INTO messages (sender_id, receiver_id, content) 
-        VALUES (?, ?, ?)`,
-        args: [senderId, receiverId, content],
-    });
-    return result.rowsAffected > 0;
+    // Produtos mais comprados
+    const topPurchasedProducts = await turso.execute(`
+      SELECT articles.name, COUNT(payments.reservation_id) AS count
+      FROM payments
+      JOIN reservations ON payments.reservation_id = reservations.id
+      JOIN articles ON reservations.article_id = articles.id
+      GROUP BY articles.name
+      ORDER BY count DESC
+      LIMIT 5
+    `);
+
+    // Utilizadores com mais aluguéis
+    const topRenters = await turso.execute(`
+      SELECT users.name, COUNT(rentals.user_id) AS count
+      FROM rentals
+      JOIN users ON rentals.user_id = users.id
+      GROUP BY users.name
+      ORDER BY count DESC
+      LIMIT 5
+    `);
+
+    // Ganho total de aluguéis
+    const totalRentalEarnings = await turso.execute(`
+      SELECT SUM(rentals.total_cost) AS total FROM rentals
+    `);
+
+    /*  console.log("usersWhoPurchased: ", usersWhoPurchased)
+     console.log("topPurchasedProducts: ", topPurchasedProducts)
+     console.log("topRenters: ", topRenters)
+     console.log("totalRentalEarnings: ", totalRentalEarnings) */
+
+    return {
+        usersWhoPurchased: usersWhoPurchased.rows[0]?.total || 0,
+        topPurchasedProducts: topPurchasedProducts.rows,
+        topRenters: topRenters.rows,
+        totalRentalEarnings: totalRentalEarnings.rows[0]?.total || 0,
+    };
 }

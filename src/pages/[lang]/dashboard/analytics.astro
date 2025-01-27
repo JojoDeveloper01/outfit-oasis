@@ -1,7 +1,115 @@
 ---
+import { getLangFromUrl } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
+import { getAnalyticsData } from "@lib/dbFunctions";
+const lang = getLangFromUrl(Astro.url);
+
+// Busca dados para exibição
+const analyticsData = await getAnalyticsData();
+const {
+    usersWhoPurchased,
+    topPurchasedProducts,
+    topRenters,
+    totalRentalEarnings,
+} = analyticsData;
+
+console.log("usersWhoPurchased: ", usersWhoPurchased);
+console.log("topPurchasedProducts: ", topPurchasedProducts);
+console.log("topRenters: ", topRenters);
+console.log("totalRentalEarnings: ", totalRentalEarnings);
 ---
 
 <Dashboard>
     <h1>Analytics</h1>
+
+    <section
+        class="grid gap-4 mt-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+        <!-- Produtos mais comprados -->
+        <div
+            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+        >
+            <h2 class="text-lg font-semibold mb-8">Produtos Mais Comprados</h2>
+            <table
+                class="max-h-[30rem] overflow-y-auto w-full text-sm text-left text-gray-200"
+            >
+                <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                    <tr>
+                        <th scope="col" class="px-4 py-2">Produto</th>
+                        <th scope="col" class="px-4 py-2 text-right">Vendas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        Array.isArray(topPurchasedProducts) &&
+                            topPurchasedProducts.map((product: any) => (
+                                <tr class="border-b border-gray-600">
+                                    <td class="px-4 py-2">{product.name}</td>
+                                    <td class="px-4 py-2 text-right">
+                                        {product.count}
+                                    </td>
+                                </tr>
+                            ))
+                    }
+                </tbody>
+            </table>
+            <div class="mt-4">
+                <a
+                    href={`/${lang}/dashboard/items`}
+                    class="text-blue-400 hover:underline"
+                >
+                    Go to items
+                </a>
+            </div>
+        </div>
+
+        <!-- Utilizadores com mais aluguéis -->
+        <div
+            class="max-h-[30rem] overflow-y-auto h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+        >
+            <h2 class="text-lg font-semibold mb-8">
+                Top Utilizadores (Aluguéis)
+            </h2>
+            <ul class="space-y-1">
+                {
+                    Array.from(Array.isArray(topRenters) ? topRenters : []).map(
+                        (renter: any) => (
+                            <li class="flex justify-between">
+                                <span>{renter.name}</span>
+                                <span class="font-bold">
+                                    {renter.count} aluguéis
+                                </span>
+                            </li>
+                        ),
+                    )
+                }
+            </ul>
+            <div class="mt-4">
+                <a
+                    href={`/${lang}/dashboard/users`}
+                    class="text-blue-400 hover:underline"
+                >
+                    Go to users
+                </a>
+            </div>
+        </div>
+
+        <!-- Número de utilizadores que compraram -->
+        <div
+            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+        >
+            <h2 class="text-lg font-semibold mb-8">
+                Utilizadores que compraram
+            </h2>
+            <p class="text-3xl font-bold">{usersWhoPurchased}</p>
+        </div>
+
+        <!-- Ganhos totais de aluguéis -->
+        <div
+            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+        >
+            <h2 class="text-lg font-semibold mb-8">Ganho Total (Aluguéis)</h2>
+            <p class="text-3xl font-bold">€ {totalRentalEarnings}</p>
+        </div>
+    </section>
 </Dashboard>

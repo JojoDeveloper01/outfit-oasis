@@ -40,14 +40,6 @@ const { image, name, email, lang, t } = Astro.props;
         <ul aria-labelledby="profile-menu-button">
             <li>
                 <a
-                    href=`/${lang}/inbox`
-                    id="inbox"
-                    class="block p-3 hover:bg-gray-100 text-gray-700 text-sm"
-                    >{t("nav.inbox")}</a
-                >
-            </li>
-            <li>
-                <a
                     id="logout"
                     class="block p-3 hover:bg-gray-100 text-gray-700 text-sm"
                     >{t("nav.logout")}</a
