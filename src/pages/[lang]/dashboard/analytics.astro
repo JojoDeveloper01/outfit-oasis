@@ -13,46 +13,60 @@ const {
     totalRentalEarnings,
 } = analyticsData;
 
-console.log("usersWhoPurchased: ", usersWhoPurchased);
+/* console.log("usersWhoPurchased: ", usersWhoPurchased);
 console.log("topPurchasedProducts: ", topPurchasedProducts);
 console.log("topRenters: ", topRenters);
-console.log("totalRentalEarnings: ", totalRentalEarnings);
+console.log("totalRentalEarnings: ", totalRentalEarnings); */
 ---
 
 <Dashboard>
     <h1>Analytics</h1>
 
-    <section
-        class="grid gap-4 mt-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
+    <section class="flex flex-wrap gap-4 mt-16">
         <!-- Produtos mais comprados -->
         <div
-            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+            class="min-w-[300px] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
         >
             <h2 class="text-lg font-semibold mb-8">Produtos Mais Comprados</h2>
-            <table
-                class="max-h-[30rem] overflow-y-auto w-full text-sm text-left text-gray-200"
-            >
-                <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                    <tr>
-                        <th scope="col" class="px-4 py-2">Produto</th>
-                        <th scope="col" class="px-4 py-2 text-right">Vendas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        Array.isArray(topPurchasedProducts) &&
-                            topPurchasedProducts.map((product: any) => (
-                                <tr class="border-b border-gray-600">
-                                    <td class="px-4 py-2">{product.name}</td>
-                                    <td class="px-4 py-2 text-right">
-                                        {product.count}
-                                    </td>
-                                </tr>
-                            ))
-                    }
-                </tbody>
-            </table>
+            <div class="max-h-[25rem] overflow-y-auto">
+                <table class="w-full text-sm text-left text-gray-200">
+                    <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-4 py-2">Produto</th>
+                            <th scope="col" class="px-4 py-2 text-right"
+                                >Vendas</th
+                            >
+                            <th scope="col" class="px-4 py-2 text-right"
+                                >Total</th
+                            >
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            Array.isArray(topPurchasedProducts) &&
+                                topPurchasedProducts.map((product: any) => (
+                                    <tr class="border-b border-gray-600">
+                                        <td class="px-4 py-2">
+                                            {product.name}
+                                        </td>
+                                        <td class="px-4 py-2 text-right">
+                                            {product.count}
+                                        </td>
+                                        <td class="flex gap-1 px-4 py-2 text-right">
+                                            {product.rental_price
+                                                ? (
+                                                      product.count *
+                                                      product.rental_price
+                                                  ).toFixed(2)
+                                                : "-"}
+                                            <span>€</span>
+                                        </td>
+                                    </tr>
+                                ))
+                        }
+                    </tbody>
+                </table>
+            </div>
             <div class="mt-4">
                 <a
                     href={`/${lang}/dashboard/items`}
@@ -65,12 +79,12 @@ console.log("totalRentalEarnings: ", totalRentalEarnings);
 
         <!-- Utilizadores com mais aluguéis -->
         <div
-            class="max-h-[30rem] overflow-y-auto h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+            class="min-w-[200px] max-w-[300px] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
         >
             <h2 class="text-lg font-semibold mb-8">
                 Top Utilizadores (Aluguéis)
             </h2>
-            <ul class="space-y-1">
+            <ul class="max-h-[25rem] overflow-y-auto my-4">
                 {
                     Array.from(Array.isArray(topRenters) ? topRenters : []).map(
                         (renter: any) => (
@@ -96,17 +110,17 @@ console.log("totalRentalEarnings: ", totalRentalEarnings);
 
         <!-- Número de utilizadores que compraram -->
         <div
-            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+            class="max-w-[300px] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
         >
             <h2 class="text-lg font-semibold mb-8">
-                Utilizadores que compraram
+                Utilizadores que compraram em total
             </h2>
             <p class="text-3xl font-bold">{usersWhoPurchased}</p>
         </div>
 
         <!-- Ganhos totais de aluguéis -->
         <div
-            class="h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+            class="min-w-[200px] max-w-[300px] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
         >
             <h2 class="text-lg font-semibold mb-8">Ganho Total (Aluguéis)</h2>
             <p class="text-3xl font-bold">€ {totalRentalEarnings}</p>

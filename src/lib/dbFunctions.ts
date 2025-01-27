@@ -376,7 +376,7 @@ export async function getAnalyticsData() {
 
     // Produtos mais comprados
     const topPurchasedProducts = await turso.execute(`
-      SELECT articles.name, COUNT(payments.reservation_id) AS count
+      SELECT articles.name, articles.rental_price, COUNT(payments.reservation_id) AS count
       FROM payments
       JOIN reservations ON payments.reservation_id = reservations.id
       JOIN articles ON reservations.article_id = articles.id
