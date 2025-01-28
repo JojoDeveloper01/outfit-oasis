@@ -48,7 +48,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
     //console.log("data:", data)
 
     return (
-        <div className={`grid ${layoutDirection === "vertical" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}  gap-8 mt-8`}>
+        <div className={`grid ${layoutDirection === "vertical" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"} gap-8`}>
             {data.length === 0 ? (
                 <div className="py-3 px-4 text-center">No items available.</div>
             ) : (
