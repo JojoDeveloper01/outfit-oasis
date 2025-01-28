@@ -2,9 +2,15 @@
 import BestSeller from "@components/BestSeller.astro";
 import ItemList from "@components/Items/ItemList";
 import ItemTableUser from "@components/Items/ItemTableUser";
+import UsersList from "@components/Users/UserList";
 import { getLangFromUrl } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
-import { getAnalyticsData, getItems, getRentals } from "@lib/dbFunctions";
+import {
+    getAnalyticsData,
+    getItems,
+    getRentals,
+    getUsers,
+} from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -26,6 +32,8 @@ let items = rows.map((row: any) => ({
 const rentals = await getRentals();
 
 const analyticsData = await getAnalyticsData();
+let users = await getUsers();
+
 const { topPurchasedProducts } = analyticsData;
 ---
 
@@ -33,7 +41,7 @@ const { topPurchasedProducts } = analyticsData;
     <h1>Bem-vindo ao Dashboard</h1>
     <p>Esta página é protegida por autenticação.</p>
 
-    <section class="flex flex-wrap gap-4 mt-16">
+    <section class="flex flex-wrap gap-4 mt-8">
         <div
             class="relative min-w-[19rem] max-w-[41rem] h-[35rem] mb-4 overflow-y-auto"
         >
@@ -45,7 +53,9 @@ const { topPurchasedProducts } = analyticsData;
                 layoutDirection="vertical"
             />
             <div class="sticky flex justify-center bottom-6">
-                <span class="*:size-10 opacity-70 text-black *:drop-shadow-lg">
+                <span
+                    class="*:size-10 opacity-70 text-black *:drop-shadow-[0_35px_35px_rgba(255,255,255,1)] z-50"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -64,5 +74,7 @@ const { topPurchasedProducts } = analyticsData;
             </div>
         </div>
         <BestSeller lang={lang} topPurchasedProducts={topPurchasedProducts} />
+
+        <UsersList client:load users={users} />
     </section>
 </Dashboard>
