@@ -1,8 +1,50 @@
 ---
+import BestSeller from "@components/BestSeller.astro";
+import ItemList from "@components/Items/ItemList";
+import ItemTableUser from "@components/Items/ItemTableUser";
+import { getLangFromUrl } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
+import { getAnalyticsData, getItems, getRentals } from "@lib/dbFunctions";
+
+const lang = getLangFromUrl(Astro.url);
+
+let rows = await getItems();
+let items = rows.map((row: any) => ({
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    type: row.type,
+    size: row.size,
+    color: row.color,
+    brand: row.brand,
+    image: row.image,
+    condition: row.condition,
+    rental_price: row.rental_price,
+    availability: row.availability,
+    // map other properties as needed
+}));
+const rentals = await getRentals();
+
+const analyticsData = await getAnalyticsData();
+const { topPurchasedProducts } = analyticsData;
 ---
 
 <Dashboard>
     <h1>Bem-vindo ao Dashboard</h1>
     <p>Esta página é protegida por autenticação.</p>
+
+    <section class="flex flex-wrap gap-4 mt-16">
+        <div
+            class="max-w-[41rem] min-w-[38rem] max-h-[90dvh] mb-4 overflow-y-auto"
+        >
+            <ItemTableUser
+                client:load
+                items={items}
+                rentals={rentals}
+                lang={lang}
+                layoutDirection="vertical"
+            />
+        </div>
+        <BestSeller lang={lang} topPurchasedProducts={topPurchasedProducts} />
+    </section>
 </Dashboard>

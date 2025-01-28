@@ -16,8 +16,10 @@ interface Item {
     availability: number;
 }
 
-export default function ItemTableForUser({ items, rentals, lang }: { items: Item[], rentals: any, lang: string }) {
+export default function ItemTableForUser({ items, rentals, lang, layoutDirection }: { items: Item[], rentals: any, lang: string, layoutDirection: any }) {
     const [data, setData] = useState<any[]>([]);
+
+    //console.log("items:", items)
 
     useEffect(() => {
         // Cria uma lista de itens com informações do rental quando aplicável
@@ -46,14 +48,14 @@ export default function ItemTableForUser({ items, rentals, lang }: { items: Item
     //console.log("data:", data)
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+        <div className={`grid ${layoutDirection === "vertical" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}  gap-8 mt-8`}>
             {data.length === 0 ? (
                 <div className="py-3 px-4 text-center">No items available.</div>
             ) : (
                 data.map((entry) => (
                     <div
                         key={entry.id}
-                        className="relative w-full h-[34rem] max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300"
+                        className={`relative w-full h-[34rem] ${layoutDirection === "vertical" ? "mx-0" : "mx-auto"} max-w-sm bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                     >
                         {/* Image Section */}
                         {entry.image && (
@@ -63,7 +65,7 @@ export default function ItemTableForUser({ items, rentals, lang }: { items: Item
                                         <img
                                             src={entry.image}
                                             alt="Item image"
-                                            className="w-full h-full object-cover overflow-hidden hover:scale-110 hover:saturate-150 hover:translate-y-[25px] transition-transform duration-200 ease-in-out"
+                                            className={`w-full h-full object-cover overflow-hidden ${layoutDirection === "vertical" ? "hover:scale-110 hover:saturate-150 hover:translate-y-[25px]" : "hover:scale-105 hover:saturate-150"} transition-transform duration-200 ease-in-out`}
                                         />
                                     </a>
 

@@ -1,4 +1,5 @@
 ---
+import BestSeller from "@components/BestSeller.astro";
 import { getLangFromUrl } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import { getAnalyticsData } from "@lib/dbFunctions";
@@ -23,59 +24,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
     <h1>Analytics</h1>
 
     <section class="flex flex-wrap gap-4 mt-16">
-        <!-- Produtos mais comprados -->
-        <div
-            class="min-w-[300px] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
-        >
-            <h2 class="text-lg font-semibold mb-8">Produtos Mais Comprados</h2>
-            <div class="max-h-[25rem] overflow-y-auto">
-                <table class="w-full text-sm text-left text-gray-200">
-                    <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                        <tr>
-                            <th scope="col" class="px-4 py-2">Produto</th>
-                            <th scope="col" class="px-4 py-2 text-right"
-                                >Vendas</th
-                            >
-                            <th scope="col" class="px-4 py-2 text-right"
-                                >Total</th
-                            >
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Array.isArray(topPurchasedProducts) &&
-                                topPurchasedProducts.map((product: any) => (
-                                    <tr class="border-b border-gray-600">
-                                        <td class="px-4 py-2">
-                                            {product.name}
-                                        </td>
-                                        <td class="px-4 py-2 text-right">
-                                            {product.count}
-                                        </td>
-                                        <td class="flex gap-1 px-4 py-2 text-right">
-                                            {product.rental_price
-                                                ? (
-                                                      product.count *
-                                                      product.rental_price
-                                                  ).toFixed(2)
-                                                : "-"}
-                                            <span>€</span>
-                                        </td>
-                                    </tr>
-                                ))
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4">
-                <a
-                    href={`/${lang}/dashboard/items`}
-                    class="text-blue-400 hover:underline"
-                >
-                    Go to items
-                </a>
-            </div>
-        </div>
+        <BestSeller lang={lang} topPurchasedProducts={topPurchasedProducts} />
 
         <!-- Utilizadores com mais aluguéis -->
         <div
@@ -98,7 +47,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                     )
                 }
             </ul>
-            <div class="mt-4">
+            <div class="mt-4 ml-2">
                 <a
                     href={`/${lang}/dashboard/users`}
                     class="text-blue-400 hover:underline"
