@@ -75,6 +75,6 @@ const { topPurchasedProducts } = analyticsData;
         </div>
         <BestSeller lang={lang} topPurchasedProducts={topPurchasedProducts} />
 
-        <UsersList client:load users={users} />
+        <UsersList client:load userType="client" users={users} />
     </section>
 </Dashboard>

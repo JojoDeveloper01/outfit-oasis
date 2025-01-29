@@ -162,7 +162,7 @@ if (addUserResult?.error) {
         </div>
     </details>
 
-    <UsersList client:load users={users} />
+    <UsersList client:load userType="staff" users={users} />
 </Dashboard>
 
 <script is:inline>

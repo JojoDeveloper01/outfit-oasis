@@ -62,7 +62,7 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 - Que o utilizadores possam mudar o seu nome, email, password e foto ✅
 
 ----------------- 
-- fazer as analiticas de quem entrou em cada página 
+- fazer as analiticas de quem entrou em cada página ✅
 - fazer a página inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente
 - pôr a página bonita 
     - fazer a landing page mostrando as diferentes roupas

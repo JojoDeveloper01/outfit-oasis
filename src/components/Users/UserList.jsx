@@ -1,8 +1,9 @@
 import { useState } from "preact/hooks";
 import UserFilter from "./UserFilter";
 import UserTable from "./UserTable";
+import ShowUsers from "./ShowUsers";
 
-export default function UsersList({ users }) {
+export default function UsersList({ users, userType }) {
     // Estado para usuários filtrados
     const [filteredUsers, setFilteredUsers] = useState(users);
     const [filters, setFilters] = useState({});
@@ -10,14 +11,22 @@ export default function UsersList({ users }) {
     return (
         <section>
             {/* Filtro */}
-            <UserFilter
-                users={users}
-                setFilteredUsers={setFilteredUsers}
-                setFilters={setFilters}
-            />
+            {userType === "staff" ? (
+                <UserFilter
+                    users={users}
+                    setFilteredUsers={setFilteredUsers}
+                    setFilters={setFilters}
+                />
+            ) : (
+                null
+            )}
 
             {/* Tabela */}
-            <UserTable users={filteredUsers} activeFilters={filters} />
+            {userType === "staff" ? (
+                <UserTable users={filteredUsers} activeFilters={filters} />
+            ) : (
+                <ShowUsers users={filteredUsers} />
+            )}
         </section>
     );
 }
