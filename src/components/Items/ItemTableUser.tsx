@@ -48,14 +48,14 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
     //console.log("data:", data)
 
     return (
-        <div className={`grid ${layoutDirection === "vertical" ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"} gap-8`}>
+        <div className={layoutDirection === "horizontal" ? "overflow-x-auto whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}>
             {data.length === 0 ? (
-                <div className="py-3 px-4 text-center">No items available.</div>
+                <div className="py-3 px-4 text-center h-[34rem]">No items available.</div>
             ) : (
                 data.map((entry) => (
                     <div
                         key={entry.id}
-                        className={`relative w-full h-[34rem] ${layoutDirection === "vertical" ? "mx-0" : "mx-auto"} max-w-sm bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
+                        className={`relative ${layoutDirection === "horizontal" ? "inline-block w-80 mx-2" : "w-full mx-auto max-w-sm"} h-[34rem] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                     >
                         {/* Image Section */}
                         {entry.image && (
@@ -78,7 +78,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                                     <div className="px-3 py-1 bg-black text-white rounded-full text-xs">{entry.size}</div>
 
                                     {/* Color*/}
-                                    <div className=" right-2 flex gap-1">
+                                    <div className="right-2 flex gap-1">
                                         <div
                                             className="w-4 h-4 rounded-full"
                                             style={{

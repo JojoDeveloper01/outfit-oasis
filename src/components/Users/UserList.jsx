@@ -1,7 +1,6 @@
 import { useState } from "preact/hooks";
 import UserFilter from "./UserFilter";
 import UserTable from "./UserTable";
-import ShowUsers from "./ShowUsers";
 
 export default function UsersList({ users, userType }) {
     // Estado para usuários filtrados
@@ -9,7 +8,7 @@ export default function UsersList({ users, userType }) {
     const [filters, setFilters] = useState({});
 
     return (
-        <section>
+        <section class="h-fit">
             {/* Filtro */}
             {userType === "staff" ? (
                 <UserFilter
@@ -22,11 +21,7 @@ export default function UsersList({ users, userType }) {
             )}
 
             {/* Tabela */}
-            {userType === "staff" ? (
-                <UserTable users={filteredUsers} activeFilters={filters} />
-            ) : (
-                <ShowUsers users={filteredUsers} />
-            )}
+            <UserTable users={filteredUsers} userType={userType} activeFilters={filters} />
         </section>
     );
 }

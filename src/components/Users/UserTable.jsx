@@ -13,7 +13,7 @@ import { sanitizeName } from "@lib/functions"
         .toLowerCase();
 } */
 
-export default function UserTable({ users, activeFilters }) {
+export default function UserTable({ users, activeFilters, userType }) {
     const [data, setData] = useState(users); // Estado dos usuários
     const [errors, setErrors] = useState({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState({}); // Para valores originais
@@ -122,7 +122,7 @@ export default function UserTable({ users, activeFilters }) {
                         <th>Email</th>
                         <th>User Type</th>
                         <th>Phone</th>
-                        <th></th>
+                        {userType === 'staff' && (<th></th>)}
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -155,7 +155,7 @@ export default function UserTable({ users, activeFilters }) {
                                             <div className="relative flex items-stretch gap-2 min-w-32 max-w-64">
                                                 {/* Campo editável */}
                                                 <div className="w-4/5 *:m-0">
-                                                    {field === "user_type" ? (
+                                                    {field === "user_type" && userType === "staff" ? (
                                                         <select
                                                             id={`${user.id}-${field}`}
                                                             value={user[field] || ""}
@@ -175,7 +175,7 @@ export default function UserTable({ users, activeFilters }) {
                                                                 Staff
                                                             </option>
                                                         </select>
-                                                    ) : (
+                                                    ) : userType === "staff" ? (
                                                         <input
                                                             id={`${user.id}-${field}`}
                                                             type="text"
@@ -190,6 +190,10 @@ export default function UserTable({ users, activeFilters }) {
                                                                 )
                                                             }
                                                         />
+                                                    ) : (
+                                                        <p id={`${user.id}-${field}`}>
+                                                            {user[field] || ""}
+                                                        </p>
                                                     )}
                                                 </div>
                                                 {/* Botão salvar */}
@@ -239,11 +243,13 @@ export default function UserTable({ users, activeFilters }) {
                                     )
                                 )}
 
-                                <td>
-                                    <div className="p-4">
-                                        <Delete id={user.id} name={sanitizeName(user.name)} imagePath={user.profile_pic} type="user" onDelete={handleDelete} />
-                                    </div>
-                                </td>
+                                {userType === 'staff' && (
+                                    <td>
+                                        <div className="p-4">
+                                            <Delete id={user.id} name={sanitizeName(user.name)} imagePath={user.profile_pic} type="user" onDelete={handleDelete} />
+                                        </div>
+                                    </td>
+                                )}
                             </tr>
                         ))
                     )}
