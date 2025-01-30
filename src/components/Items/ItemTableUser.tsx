@@ -16,7 +16,7 @@ interface Item {
     availability: number;
 }
 
-export default function ItemTableForUser({ items, rentals, lang, layoutDirection }: { items: Item[], rentals: any, lang: string, layoutDirection: any }) {
+export default function ItemTableForUser({ items, rentals, lang, layoutDirection, width }: { items: Item[], rentals: any, lang: string, layoutDirection: any, width: any }) {
     const [data, setData] = useState<any[]>([]);
 
     //console.log("items:", items)
@@ -48,14 +48,17 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
     //console.log("data:", data)
 
     return (
-        <div className={layoutDirection === "horizontal" ? "overflow-x-auto whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}>
+        <div className={`h-full ${layoutDirection === "horizontal" ? "overflow-x-auto whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}`}>
             {data.length === 0 ? (
-                <div className="py-3 px-4 text-center h-[34rem]">No items available.</div>
+                <div
+                    style={`width: ${width}`}
+                    className={`py-3 px-4 text-center h-full`}>No items available.</div>
             ) : (
                 data.map((entry) => (
                     <div
                         key={entry.id}
-                        className={`relative ${layoutDirection === "horizontal" ? "inline-block w-80 mx-2" : "w-full mx-auto max-w-sm"} h-[34rem] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
+                        style={`width: ${width}`}
+                        className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2" : "mx-auto max-w-sm"} h-full bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                     >
                         {/* Image Section */}
                         {entry.image && (

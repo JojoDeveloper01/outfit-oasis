@@ -112,149 +112,116 @@ export default function UserTable({ users, activeFilters, userType }) {
     };
 
     return (
-        <div className="mt-4">
-            {/* Tabela de usuários */}
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                <thead className="bg-gray-50">
-                    <tr className="*:py-2 *:px-4 *:text-left *:text-sm *:font-semibold *:text-gray-600 *:border-b *:border-gray-200">
-                        <th>Profile Picture</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>User Type</th>
-                        <th>Phone</th>
-                        {userType === 'staff' && (<th></th>)}
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                    {data.length === 0 ? (
-                        <div className="py-3 px-4 ml-4">No Users available.</div>
-                    ) : (
-                        data.map((user) => (
-                            <tr key={user.id} className="hover:bg-gray-100">
+        <div>
+            {/* Cabeçalho */}
+            <div className="bg-gray-50 p-4 rounded-t-lg grid grid-cols-5 gap-4 text-sm font-semibold text-gray-600">
+                <div>Profile Picture</div>
+                <div>Name</div>
+                <div>Email</div>
+                <div>User Type</div>
+                <div>Phone</div>
+                {userType === 'staff' && <div></div>}
+            </div>
 
-                                <td className="py-3 px-4">
-                                    <PreviewImage src={user.profile_pic} type="profile" />
-                                    <img
-                                        onClick={() =>
-                                            document.getElementById(
-                                                `preview-profile-image-${user.profile_pic}`
-                                            ).showModal()
-                                        }
-                                        src={user.profile_pic}
-                                        alt="Profile"
-                                        className="h-10 w-10 rounded-full object-cover cursor-pointer"
-                                    />
-                                </td>
+            {/* Lista de usuários */}
+            <div className="bg-white divide-y divide-gray-200 rounded-b-lg">
+                {data.length === 0 ? (
+                    <div className="py-3 px-4">No Users available.</div>
+                ) : (
+                    data.map((user) => (
+                        <div key={user.id} className="hover:bg-gray-100 p-4 grid grid-cols-5 gap-4 items-center">
+                            {/* Profile Picture */}
+                            <div className="flex items-center justify-center w-12">
+                                <PreviewImage src={user.profile_pic} type="profile" />
+                                <img
+                                    onClick={() =>
+                                        document.getElementById(
+                                            `preview-profile-image-${user.profile_pic}`
+                                        ).showModal()
+                                    }
+                                    src={user.profile_pic}
+                                    alt="Profile"
+                                    className="h-10 w-10 rounded-full object-cover cursor-pointer"
+                                />
+                            </div>
 
-                                {["name", "email", "user_type", "phone"].map(
-                                    (field) => (
-                                        <td
-                                            key={`${user.id}-${field}`}
-                                            className="py-3 px-4 text-sm text-gray-600 relative"
-                                        >
-                                            <div className="relative flex items-stretch gap-2 min-w-32 max-w-64">
-                                                {/* Campo editável */}
-                                                <div className="w-4/5 *:m-0">
-                                                    {field === "user_type" && userType === "staff" ? (
-                                                        <select
-                                                            id={`${user.id}-${field}`}
-                                                            value={user[field] || ""}
-                                                            className={`${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
-                                                            onChange={(e) =>
-                                                                handleFieldChange(
-                                                                    e,
-                                                                    user.id,
-                                                                    field
-                                                                )
-                                                            }
-                                                        >
-                                                            <option value="client">
-                                                                Client
-                                                            </option>
-                                                            <option value="staff">
-                                                                Staff
-                                                            </option>
-                                                        </select>
-                                                    ) : userType === "staff" ? (
-                                                        <input
-                                                            id={`${user.id}-${field}`}
-                                                            type="text"
-                                                            value={user[field] || ""}
-                                                            className={`${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
-                                                            placeholder={`Enter ${field.replace("_", " ")}`}
-                                                            onInput={(e) =>
-                                                                handleFieldChange(
-                                                                    e,
-                                                                    user.id,
-                                                                    field
-                                                                )
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        <p id={`${user.id}-${field}`}>
-                                                            {user[field] || ""}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                {/* Botão salvar */}
-                                                <div className="w-1/5 *:h-full">
-                                                    {!errors[`${user.id}-${field}`] &&
-                                                        originalValues[user.id] && // Garante que `originalValues` existe
-                                                        user[field] !==
-                                                        originalValues[user.id][field] && (
-                                                            <button
-                                                                onClick={() => handleSave(user.id, field)}
-                                                            >
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    width="24"
-                                                                    height="24"
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth="2"
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    className="w-full icon"
-                                                                >
-                                                                    <path
-                                                                        stroke="none"
-                                                                        d="M0 0h24v24H0z"
-                                                                        fill="none"
-                                                                    />
-                                                                    <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                                                    <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                                                </svg>
-                                                            </button>
-                                                        )}
-                                                </div>
-
-                                                {/* Error Tooltip */}
-                                                {
-                                                    errors[`${user.id}-${field}`] && (
-                                                        <ErrorTooltip
-                                                            id={`${user.id}-${field}`}
-                                                            message={errors[`${user.id}-${field}`]}
-                                                        />
-                                                    )
-                                                }
-                                            </div>
-                                        </td>
-                                    )
-                                )}
-
-                                {userType === 'staff' && (
-                                    <td>
-                                        <div className="p-4">
-                                            <Delete id={user.id} name={sanitizeName(user.name)} imagePath={user.profile_pic} type="user" onDelete={handleDelete} />
+                            {/* Name, Email, User Type, Phone */}
+                            {["name", "email", "user_type", "phone"].map((field) => (
+                                <div key={`${user.id}-${field}`} className="text-sm text-gray-600">
+                                    <div className="relative flex items-stretch gap-2 min-w-32 max-w-64">
+                                        {/* Campo editável */}
+                                        <div className="w-4/5 *:m-0">
+                                            {field === "user_type" && userType === "staff" ? (
+                                                <select
+                                                    value={user[field] || ""}
+                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
+                                                    onChange={(e) => handleFieldChange(e, user.id, field)}
+                                                >
+                                                    <option value="client">Client</option>
+                                                    <option value="staff">Staff</option>
+                                                </select>
+                                            ) : userType === "staff" ? (
+                                                <input
+                                                    type="text"
+                                                    value={user[field] || ""}
+                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
+                                                    placeholder={`Enter ${field.replace("_", " ")}`}
+                                                    onInput={(e) => handleFieldChange(e, user.id, field)}
+                                                />
+                                            ) : (
+                                                <p title={user[field] || ""}>
+                                                    {user[field]?.length > 15 ? user[field].slice(0, 15) + "..." : user[field]}
+                                                </p>
+                                            )}
                                         </div>
-                                    </td>
-                                )}
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </table >
-        </div >
+
+                                        {/* Botão salvar */}
+                                        <div className="w-1/5 *:h-full">
+                                            {!errors[`${user.id}-${field}`] &&
+                                                originalValues[user.id] && // Garante que `originalValues` existe
+                                                user[field] !== originalValues[user.id][field] && (
+                                                    <button onClick={() => handleSave(user.id, field)}>
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="24"
+                                                            height="24"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            className="w-full icon"
+                                                        >
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                                                        </svg>
+                                                    </button>
+                                                )}
+                                        </div>
+
+                                        {/* Error Tooltip */}
+                                        {errors[`${user.id}-${field}`] && (
+                                            <ErrorTooltip
+                                                id={`${user.id}-${field}`}
+                                                message={errors[`${user.id}-${field}`]}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Botão de deletar para staff */}
+                            {userType === 'staff' && (
+                                <div>
+                                    <Delete id={user.id} name={sanitizeName(user.name)} imagePath={user.profile_pic} type="user" onDelete={handleDelete} />
+                                </div>
+                            )}
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
     );
 }
