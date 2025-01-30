@@ -3,13 +3,13 @@ import ItemTableUser from "@components/Items/ItemTableUser";
 import ItemTableStaff from "@components/Items/ItemTableStaff";
 import { useState } from "preact/hooks";
 
-export default function ItemList({ items, users, rentals, userType, lang }) {
+export default function ItemList({ items, users, rentals, userType, lang, layoutDirection, width }) {
     // Estado para usuários filtrados
     const [filteredItems, setFilteredItems] = useState(items);
     const [filters, setFilters] = useState({});
 
     return (
-        <section>
+        <section className="h-full">
             {/* Filtro */}
 
             {items.length > 0 && (
@@ -20,7 +20,7 @@ export default function ItemList({ items, users, rentals, userType, lang }) {
             {userType === "staff" ? (
                 <ItemTableStaff items={filteredItems} users={users} rentals={rentals} activeFilters={filters} />
             ) : (
-                <ItemTableUser items={filteredItems} rentals={rentals} lang={lang} />
+                <ItemTableUser items={filteredItems} rentals={rentals} lang={lang} layoutDirection={layoutDirection} width={width} />
             )}
         </section>
     );

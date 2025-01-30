@@ -63,7 +63,7 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 
 ----------------- 
 - fazer as analiticas de quem entrou em cada página ✅
-- fazer a página inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente
+- fazer a página inicial de dashboaard que seria todo o dashboard só que resumido e com links a cada página correspondente ✅
 - pôr a página bonita 
     - fazer a landing page mostrando as diferentes roupas
     - fazer um fundo movivel, que se mexa com o scroll, como um video/imagens e a cada pixel que seja mmovido para baixo, umas milesimas de segundos ou alguma imagens s\ao mostradas
@@ -74,4 +74,5 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 - Ver se dá para optimizar o max possível (mais rapido, mais simples, escalavel)
       
 - Publicar ou em vercel ou em railway (de preferencia railway)
+  
 - enviar o trabalho

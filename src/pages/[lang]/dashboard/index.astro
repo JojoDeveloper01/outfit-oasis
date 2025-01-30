@@ -1,6 +1,5 @@
 ---
 import BestSeller from "@components/BestSeller.astro";
-import ItemList from "@components/Items/ItemList";
 import ItemTableUser from "@components/Items/ItemTableUser";
 import UsersList from "@components/Users/UserList";
 import { getLangFromUrl } from "@i18n/utils";
@@ -40,8 +39,13 @@ const { topPurchasedProducts } = analyticsData;
 <Dashboard>
     <h1>Bem-vindo ao Dashboard</h1>
 
-    <section class="flex flex-wrap gap-8 mt-16">
+    <section class="mt-16">
         <div class=`relative w-full h-[15rem] mb-4`>
+            <div class="mb-3 ml-2">
+                <a href={`/${lang}/clothes`} class="text-gray-600 underline">
+                    Go to Clothes
+                </a>
+            </div>
             <ItemTableUser
                 client:load
                 items={items}
@@ -77,13 +81,31 @@ const { topPurchasedProducts } = analyticsData;
             </div>
         </div>
 
-        <div class="w-full flex flex-wrap gap-4">
-            <BestSeller
-                lang={lang}
-                topPurchasedProducts={topPurchasedProducts}
-            />
+        <div class="w-full flex flex-wrap gap-4 mt-16">
+            <div>
+                <div class="mb-3 ml-2">
+                    <a
+                        href={`/${lang}/dashboard/items`}
+                        class="text-gray-600 underline"
+                    >
+                        Go to items
+                    </a>
+                </div>
+                <BestSeller
+                    lang={lang}
+                    topPurchasedProducts={topPurchasedProducts}
+                />
+            </div>
 
-            <div class="min-w-[26rem] max-w-[35rem]">
+            <div class="min-w-[26rem]">
+                <div class="mb-3 ml-2">
+                    <a
+                        href={`/${lang}/dashboard/users`}
+                        class="text-gray-600 underline"
+                    >
+                        Go to Users
+                    </a>
+                </div>
                 <UsersList client:load userType="client" users={users} />
             </div>
         </div>

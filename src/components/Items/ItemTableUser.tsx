@@ -45,10 +45,10 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
     }, [items, rentals]);
 
 
-    //console.log("data:", data)
+    console.log("data:", data)
 
     return (
-        <div className={`h-full ${layoutDirection === "horizontal" ? "overflow-x-auto whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}`}>
+        <div className={`h-full ${layoutDirection === "horizontal" ? "overflow-x-auto overflow-y-hidden whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}`}>
             {data.length === 0 ? (
                 <div
                     style={`width: ${width}`}
