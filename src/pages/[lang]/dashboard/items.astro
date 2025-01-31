@@ -90,7 +90,7 @@ const rentals = await getRentals();
         class="max-w-screen-desktop my-16 group border border-gray-200 rounded-lg"
     >
         <summary
-            class="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white rounded-t-lg hover:bg-gray-100"
+            class="flex items-center justify-between cursor-pointer p-5 .font-medium text-gray-500 rounded-t-lg hover:bg-gray-100"
         >
             <span>Add New Item</span>
             <svg
@@ -108,7 +108,7 @@ const rentals = await getRentals();
             </svg>
         </summary>
 
-        <div class="p-5 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+        <div class="p-5 border-t border-gray-200 rounded-b-lg">
             <form
                 action={actions.addItem}
                 method="POST"
@@ -225,7 +225,7 @@ const rentals = await getRentals();
                     <div class="col-span-1 md:col-span-2 lg:col-span-1">
                         <label
                             for="image"
-                            class="block text-sm font-medium text-gray-700 mb-1"
+                            class="block text-sm .font-medium text-gray-700 mb-1"
                         >
                             image
                         </label>
@@ -241,7 +241,7 @@ const rentals = await getRentals();
                 <div class="flex justify-end">
                     <button
                         type="submit"
-                        class="px-5 py-2.5 bg-[--gold] text-[--color-white] font-medium rounded-lg shadow hover:bg-[--color2] focus:ring-4 focus:ring-[--color-white]"
+                        class="px-5 py-2.5 bg-[--gold] text-[--color-white] .font-medium rounded-lg shadow hover:bg-[--color2] focus:ring-4 focus:ring-[--color-white]"
                     >
                         Create Item
                     </button>

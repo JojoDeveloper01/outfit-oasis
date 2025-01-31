@@ -48,83 +48,112 @@ const dasboardItems = [
             opacity: 1;
             transform: translateY(0);
         }
+
+        svg {
+            transform: rotate(0deg);
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        &:hover svg,
+        &:focus-within svg {
+            transform: rotate(180deg);
+        }
     }
 </style>
 
-<header class="capitalize">
-    <nav class="px-8">
+<header transition:persist="header" class="capitalize">
+    <nav class="w-4/5 m-auto border-b-2 border-[#ffffff3d]">
         <div
-            class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"
+            class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto py-8"
         >
             <a
                 href={`/${lang}/`}
                 class="flex items-center space-x-3 rtl:space-x-reverse"
             >
-                <img src="" class="h-8" alt="Outfit Oasis Logo" />
+                <!-- <img src="" class="h-8" alt="Outfit Oasis Logo" /> -->
                 <span
                     class="self-center text-2xl font-semibold whitespace-nowrap"
                     >OutFit Oasis</span
                 >
             </a>
 
+            <ul
+                class="flex flex-col p-4 md:p-0 mt-4 border rounded-lg rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 *:flex *:items-center"
+            >
+                <li>
+                    <a
+                        href={`/${lang}/`}
+                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
+                        aria-current="page">{t("nav.home")}</a
+                    >
+                </li>
+                <li>
+                    <a
+                        href=`/${lang}/clothes/`
+                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
+                        >{t("nav.clothes")}</a
+                    >
+                </li>
+                <li class=`${user === undefined ? 'hidden' : ''}`>
+                    <a
+                        href=`/${lang}/historical/`
+                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
+                        >{t("nav.historical")}</a
+                    >
+                </li>
+                <li class=`${isStaff}`>
+                    <ul
+                        class="dashboard-dropdown relative flex items-center rounded-lg cursor-pointer px-4 py-2 text-white hover:bg-[#dadada3a]"
+                    >
+                        <a
+                            href={`/${lang}/dashboard/`}
+                            class="hover:text-white mr-2"
+                            >{t("nav.dashboard")}</a
+                        >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            class="text-white opacity-80"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"
+                            ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                            ></path><path d="M6 9l6 6l6 -6"></path></svg
+                        >
+
+                        <!-- dashboard Dropdown -->
+                        <ul
+                            class="dashboard-menu mt-4 absolute top-full right-0 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000]"
+                            aria-label="submenu dropdown"
+                        >
+                            {
+                                dasboardItems.map((item) => (
+                                    <li>
+                                        <a
+                                            href={item.href}
+                                            class="w-36 block p-3 hover:bg-gray-100 text-gray-700 text-sm text-center"
+                                        >
+                                            {item.label}
+                                        </a>
+                                    </li>
+                                ))
+                            }
+                        </ul>
+                    </ul>
+                </li>
+            </ul>
+
             <div
                 class="gap-4 items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
                 id="navbar-user"
             >
-                <ul
-                    class="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
-                >
-                    <li>
-                        <a
-                            href={`/${lang}/`}
-                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
-                            aria-current="page">{t("nav.home")}</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href=`/${lang}/clothes/`
-                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
-                            >{t("nav.clothes")}</a
-                        >
-                    </li>
-                    <li class=`${user === undefined ? 'hidden' : ''}`>
-                        <a
-                            href=`/${lang}/historical/`
-                            class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
-                            >{t("nav.historical")}</a
-                        >
-                    </li>
-                    <li class=`${isStaff}`>
-                        <ul class="dashboard-dropdown relative inline-block">
-                            <a
-                                href={`/${lang}/dashboard/`}
-                                class="text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:text-white hover:bg-[#dadada3a]"
-                                >{t("nav.dashboard")}</a
-                            >
-
-                            <!-- dashboard Dropdown -->
-                            <ul
-                                class="dashboard-menu mt-4 absolute top-full right-0 bg-white border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000]"
-                                aria-label="submenu dropdown"
-                            >
-                                {
-                                    dasboardItems.map((item) => (
-                                        <li>
-                                            <a
-                                                href={item.href}
-                                                class="w-36 block p-3 hover:bg-gray-100 text-gray-700 text-sm text-center"
-                                            >
-                                                {item.label}
-                                            </a>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </ul>
-                    </li>
-                </ul>
-
                 <LanguagePicker
                     languages={languages}
                     lang={lang}
@@ -142,7 +171,7 @@ const dasboardItems = [
                             t={t}
                         />
                     ) : (
-                        <div class="flex gap-4 font-medium bg-[--color2] px-4 py-2 rounded-2xl ">
+                        <div class="flex gap-4 bg-[--color2] px-4 py-2 rounded-2xl ">
                             <button
                                 id="modalLogin"
                                 onclick="document.getElementById('modalLogin').showModal()"

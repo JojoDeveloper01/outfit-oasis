@@ -16,7 +16,7 @@ interface Item {
     availability: number;
 }
 
-export default function ItemTableForUser({ items, rentals, lang, layoutDirection, width }: { items: Item[], rentals: any, lang: string, layoutDirection: any, width: any }) {
+export default function ItemTableForUser({ items, rentals, lang, layoutDirection, width, height }: { items: Item[], rentals: any, lang: string, layoutDirection: any, width: string, height?: any }) {
     const [data, setData] = useState<any[]>([]);
 
     //console.log("items:", items)
@@ -45,10 +45,10 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
     }, [items, rentals]);
 
 
-    console.log("data:", data)
+    //console.log("data:", data)
 
     return (
-        <div className={`h-full ${layoutDirection === "horizontal" ? "overflow-x-auto overflow-y-hidden whitespace-nowrap" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"}`}>
+        <div className={`${layoutDirection === "horizontal" ? "overflow-x-auto overflow-y-hidden whitespace-nowrap h-full" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-9"}`}>
             {data.length === 0 ? (
                 <div
                     style={`width: ${width}`}
@@ -57,8 +57,8 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                 data.map((entry) => (
                     <div
                         key={entry.id}
-                        style={`width: ${width}`}
-                        className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2" : "mx-auto max-w-sm"} h-full bg-white shadow-lg rounded-lg overflow-hidden border border-gray-300`}
+                        style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`}`}
+                        className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2 h-full" : "mx-auto max-w-sm"}  shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                     >
                         {/* Image Section */}
                         {entry.image && (
@@ -105,7 +105,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                             {/* Cart Button */}
                             <button
                                 id={`add-to-cart-${entry.id}`}
-                                className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover:bg-white hover:text-[--color2] transition-colors duration-200 ease-in-out"
+                                className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover: hover:text-[--color2] transition-colors duration-200 ease-in-out"
                                 aria-label="Add to Cart"
                             >
                                 <svg

@@ -33,7 +33,7 @@ export default function UserFilter({ users, setFilteredUsers, setFilters }) {
     }, [search, type]); // Reexecuta ao alterar `search` ou `type`
 
     return (
-        <div className="grid gap-4 bg-white p-4 rounded-lg shadow-md">
+        <div className="grid gap-4  p-4 rounded-lg shadow-md">
             <div className="flex gap-4">
                 <input
                     id="user-search"

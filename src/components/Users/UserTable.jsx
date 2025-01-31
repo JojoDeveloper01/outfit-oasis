@@ -124,7 +124,7 @@ export default function UserTable({ users, activeFilters, userType }) {
             </div>
 
             {/* Lista de usuários */}
-            <div className="bg-white divide-y divide-gray-200 rounded-b-lg">
+            <div className=" divide-y divide-gray-200 rounded-b-lg">
                 {data.length === 0 ? (
                     <div className="py-3 px-4">No Users available.</div>
                 ) : (

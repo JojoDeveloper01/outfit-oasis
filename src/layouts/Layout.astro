@@ -55,6 +55,7 @@ const data: any[] = items.map((item: any) => {
 		--color4: #a99c5e;
 		--color5: #849474;
 		--teal: #008080;
+		--green: #89b5a1;
 		--greenCake: #5bff6f;
 		--blush: #e99a8b;
 		--gold: #e8b904;
@@ -78,19 +79,47 @@ const data: any[] = items.map((item: any) => {
 
 	html,
 	body {
-		background-color: var(--background);
-		color: var(--color-black);
+		/* background: radial-gradient(
+				circle at top left,
+				rgba(255, 255, 255, 0.1) 0%,
+				rgba(0, 0, 0, 0) 60%
+			),
+			radial-gradient(
+				circle at bottom right,
+				rgba(255, 255, 255, 0.05) 0%,
+				rgba(0, 0, 0, 0) 60%
+			),
+			linear-gradient(135deg, #2d3c2f 0%, #1f2a1c 100%); */
+		/* color: var(--color-black); */
+
+		background: linear-gradient(135deg, #0d0d0d, #1c1c1c, #2d3c2f, #304237);
+		background-size: 300% 300%;
+		animation: gradientMove 7s infinite alternate;
+		color: #e1c16e;
 
 		margin: 0;
 		width: 100%;
 		height: 100%;
 		overflow-y: auto;
 
-		font-family: system-ui, sans-serif;
+		font-family: "Lexend Giga", serif;
+		font-weight: 100;
+
 		scrollbar-color: var(--color-black), var(--color);
 		transition:
-			background-color 0.3s ease,
-			color 0.3s ease;
+			background-color 0.2s ease,
+			color 0.2s ease;
+	}
+	@keyframes gradientMove {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 
 	h1,
@@ -115,7 +144,6 @@ const data: any[] = items.map((item: any) => {
 		font-size: x-large;
 	}
 
-	header,
 	footer {
 		background-color: var(--color5);
 		height: 5rem;
@@ -145,12 +173,6 @@ const data: any[] = items.map((item: any) => {
 		text-align: left;
 		line-height: 1.7em;
 		text-wrap: pretty;
-	}
-
-	button {
-		/* 	&:hover {
-			color: var(--color-white);
-		} */
 	}
 
 	[type="text"],
@@ -196,6 +218,15 @@ const data: any[] = items.map((item: any) => {
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="canonical" href={canonical} />
+
+		<!-- Google Font -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&display=swap"
+			rel="stylesheet"
+		/>
+
 		<!-- <link rel="canonical" href={canonicalURL} />
 		<meta property="og:image" content={socialImageURL} /> -->
 

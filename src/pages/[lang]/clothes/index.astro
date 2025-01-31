@@ -30,7 +30,7 @@ const rentals = await getRentals();
     keywords="aluguer, roupa, "
     canonical="https://outfit-oasis.com"
 >
-    <section class="container m-auto py-8 h-80">
+    <section class="container m-auto my-8">
         <ItemList
             client:load
             items={items}
@@ -39,7 +39,8 @@ const rentals = await getRentals();
             lang={lang}
             userType="client"
             layoutDirection="vertical"
-            width="18rem"
+            width="23rem"
+            height="34rem"
         />
     </section>
 </Layout>

@@ -264,7 +264,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                     return (
                         <div
                             key={item.id}
-                            className="flex flex-wrap items-start gap-2 p-4 pt-7 bg-white shadow-lg rounded-lg border border-gray-300"
+                            className="flex flex-wrap items-start gap-2 p-4 pt-7  shadow-lg rounded-lg border border-gray-300"
                         >
                             {/* Campos */}
                             <div className="flex flex-wrap gap-2 flex-grow px-12">
@@ -413,7 +413,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                             {/* Locações históricas */}
                             <details className="w-full my-4 px-12">
-                                <summary className="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 bg-white border border-gray-200 rounded-lg hover:bg-gray-100">
+                                <summary className="flex items-center justify-between cursor-pointer p-5  .font-medium text-gray-500  border border-gray-200 rounded-lg hover:bg-gray-100">
                                     Historical Rents
                                     <span className="text-[#00671e] font-bold">{itemRentals.length || 0}</span>
 
@@ -446,7 +446,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                             >
                                                 {/* Name */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
                                                         Name
                                                     </span>
                                                     <span className="text-gray-800 font-bold">{renter.userName}</span>
@@ -454,7 +454,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Start Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Start Date
                                                     </span>
                                                     <span className="text-gray-800">{renter.start_date}</span>
@@ -462,7 +462,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* End Date */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         End Date
                                                     </span>
                                                     <span className="text-gray-800">{renter.end_date}</span>
@@ -470,7 +470,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Status */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Status
                                                     </span>
                                                     <div className="flex gap-2">
@@ -519,7 +519,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Return */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Return
                                                     </span>
                                                     <span className="text-gray-800">{renter.return_date || "Pending"}</span>
@@ -527,7 +527,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Total Cost */}
                                                 <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Total Cost
                                                     </span>
                                                     <span className="text-gray-800 font-bold">${renter.total_cost}</span>

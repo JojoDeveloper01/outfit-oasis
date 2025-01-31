@@ -8,7 +8,7 @@ export default function UsersList({ users, userType }) {
     const [filters, setFilters] = useState({});
 
     return (
-        <section class="h-fit">
+        <section class="grid gap-8 h-fit">
             {/* Filtro */}
             {userType === "staff" ? (
                 <UserFilter

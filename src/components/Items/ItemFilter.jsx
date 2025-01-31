@@ -82,7 +82,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
     const hasActiveFilters = Object.values(filters).some((value) => value);
 
     return (
-        <div className="grid gap-4 bg-white p-4 rounded-lg shadow-md">
+        <div className="grid gap-4  p-4 rounded-lg shadow-md">
             <div className="flex flex-wrap gap-2">
                 {/* Search Input */}
                 <div>

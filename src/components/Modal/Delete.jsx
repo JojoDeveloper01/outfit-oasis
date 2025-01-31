@@ -65,7 +65,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                 className="backdrop:bg-black/50 shadow-lg max-w-md w-full m-auto p-4 text-red-800 border border-red-300 rounded-lg bg-red-50"
             >
                 <div className="flex items-center mb-4">
-                    <h3 className="text-xl font-medium">
+                    <h3 className="text-xl  .font-medium">
                         Are you sure you want to remove {name}?
                     </h3>
                 </div>
@@ -81,7 +81,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                     <button
                         onClick={remove}
                         disabled={isDeleting}
-                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-lg px-3 py-1.5 me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300  .font-medium rounded-lg text-lg px-3 py-1.5 me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {isDeleting ? "Deleting..." : "Delete"}
@@ -90,7 +90,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         onClick={() =>
                             document.getElementById(`delete-${name}-${id}`)?.close()
                         }
-                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-lg px-3 py-1.5"
+                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  .font-medium rounded-lg text-lg px-3 py-1.5"
                     >
                         Cancel
                     </button>
