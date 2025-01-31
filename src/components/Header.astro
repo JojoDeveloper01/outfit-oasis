@@ -41,6 +41,17 @@ const dasboardItems = [
         }
     }
 
+    .hvLi {
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #dadada3a;
+        }
+    }
+
     .dashboard-dropdown {
         &:hover .dashboard-menu,
         &:focus-within .dashboard-menu {
@@ -83,30 +94,22 @@ const dasboardItems = [
                 class="flex flex-col p-4 md:p-0 mt-4 border rounded-lg rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 *:flex *:items-center"
             >
                 <li>
-                    <a
-                        href={`/${lang}/`}
-                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
-                        aria-current="page">{t("nav.home")}</a
+                    <a href={`/${lang}/`} class="hvLi" aria-current="page"
+                        >{t("nav.home")}</a
                     >
                 </li>
                 <li>
-                    <a
-                        href=`/${lang}/clothes/`
-                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
+                    <a href=`/${lang}/clothes/` class="hvLi"
                         >{t("nav.clothes")}</a
                     >
                 </li>
                 <li class=`${user === undefined ? 'hidden' : ''}`>
-                    <a
-                        href=`/${lang}/historical/`
-                        class="text-white px-4 py-2 rounded-lg cursor-pointer hover:text-white hover:bg-[#dadada3a]"
+                    <a href=`/${lang}/historical/` class="hvLi"
                         >{t("nav.historical")}</a
                     >
                 </li>
                 <li class=`${isStaff}`>
-                    <ul
-                        class="dashboard-dropdown relative flex items-center rounded-lg cursor-pointer px-4 py-2 text-white hover:bg-[#dadada3a]"
-                    >
+                    <ul class="dashboard-dropdown relative flex items-center">
                         <a
                             href={`/${lang}/dashboard/`}
                             class="hover:text-white mr-2"
@@ -130,7 +133,7 @@ const dasboardItems = [
 
                         <!-- dashboard Dropdown -->
                         <ul
-                            class="dashboard-menu mt-4 absolute top-full right-0 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000]"
+                            class="dashboard-menu mt-4 absolute top-full right-0 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000] bg-gray-100"
                             aria-label="submenu dropdown"
                         >
                             {
@@ -138,7 +141,7 @@ const dasboardItems = [
                                     <li>
                                         <a
                                             href={item.href}
-                                            class="w-36 block p-3 hover:bg-gray-100 text-gray-700 text-sm text-center"
+                                            class="w-36 block p-3 hover:bg-gray-200 text-gray-700 text-sm text-center"
                                         >
                                             {item.label}
                                         </a>
@@ -171,15 +174,17 @@ const dasboardItems = [
                             t={t}
                         />
                     ) : (
-                        <div class="flex gap-4 bg-[--color2] px-4 py-2 rounded-2xl ">
+                        <div class="flex gap-4 text-white">
                             <button
                                 id="modalLogin"
+                                class="hvLi"
                                 onclick="document.getElementById('modalLogin').showModal()"
                             >
                                 Login
                             </button>
                             <button
                                 id="modalRegister"
+                                class="hvLi"
                                 onclick="document.getElementById('modalRegister').showModal()"
                             >
                                 Register
