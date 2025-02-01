@@ -42,7 +42,6 @@ const dasboardItems = [
     }
 
     .hvLi {
-        color: #fff;
         padding: 0.5rem 1rem;
         border-radius: 0.5rem;
         cursor: pointer;
@@ -110,9 +109,7 @@ const dasboardItems = [
                 </li>
                 <li class=`${isStaff}`>
                     <ul class="dashboard-dropdown relative flex items-center">
-                        <a
-                            href={`/${lang}/dashboard/`}
-                            class="hover:text-white mr-2"
+                        <a href={`/${lang}/dashboard/`} class="hover: mr-2"
                             >{t("nav.dashboard")}</a
                         >
                         <svg
@@ -121,7 +118,7 @@ const dasboardItems = [
                             height="24"
                             viewBox="0 0 24 24"
                             fill="none"
-                            class="text-white opacity-80"
+                            class="opacity-80"
                             stroke="currentColor"
                             stroke-width="2"
                             stroke-linecap="round"
@@ -174,7 +171,7 @@ const dasboardItems = [
                             t={t}
                         />
                     ) : (
-                        <div class="flex gap-4 text-white">
+                        <div class="flex gap-4 ">
                             <button
                                 id="modalLogin"
                                 class="hvLi"

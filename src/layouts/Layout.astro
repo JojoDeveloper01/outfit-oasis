@@ -50,8 +50,8 @@ const data: any[] = items.map((item: any) => {
 		--color-black: #252420;
 		--color-white: #fff;
 		--color: #f7b785;
-		--color2: #efb577;
-		--color3: #dfb25c;
+		--color2: #dfb25c;
+		--color3: #efb577;
 		--color4: #a99c5e;
 		--color5: #849474;
 		--teal: #008080;
@@ -79,9 +79,10 @@ const data: any[] = items.map((item: any) => {
 
 	html,
 	body {
-		background: linear-gradient(135deg, #0d0d0d, #1c1c1c, #2d3c2f, #304237);
+		background: linear-gradient(135deg, #000000, #0d0d0d, #2e2e2e);
 		background-size: 300% 300%;
 		animation: gradientMove 7s infinite alternate;
+		color: var(--color-white);
 
 		margin: 0;
 		width: 100%;
@@ -142,7 +143,6 @@ const data: any[] = items.map((item: any) => {
 
 	a,
 	button {
-		color: var(--color-white);
 		text-decoration: none;
 		font-weight: bolder;
 		cursor: pointer;
@@ -160,6 +160,14 @@ const data: any[] = items.map((item: any) => {
 		text-align: left;
 		line-height: 1.7em;
 		text-wrap: pretty;
+	}
+
+	svg {
+		fill: var(--color-white);
+
+		&:hover {
+			fill: var(--color-black);
+		}
 	}
 
 	[type="text"],
