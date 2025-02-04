@@ -58,7 +58,7 @@ const data: any[] = items.map((item: any) => {
 		--green: #89b5a1;
 		--greenCake: #5bff6f;
 		--blush: #e99a8b;
-		--gold: #e8b904;
+		--gold: #ffca00;
 		--gray: #dfdfdf;
 	}
 
@@ -146,10 +146,6 @@ const data: any[] = items.map((item: any) => {
 		text-decoration: none;
 		font-weight: bolder;
 		cursor: pointer;
-
-		&:hover {
-			color: var(--color-black);
-		}
 	}
 
 	.link {
@@ -243,7 +239,7 @@ const data: any[] = items.map((item: any) => {
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />
-		<main class=`${overflowToggle ? 'overflow-y-hidden' : ''}`>
+		<main class=`w-4/5 m-auto ${overflowToggle ? 'overflow-y-hidden' : ''}`>
 			<slot />
 		</main>
 

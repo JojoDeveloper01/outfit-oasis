@@ -1,34 +1,41 @@
 <section
     id="hero"
-    class="h-[calc(100dvh-5rem)] flex items-center justify-center relative overflow-hidden"
+    class="h-[calc(100dvh-5rem)] flex items-center relative overflow-hidden *:h-full"
 >
-    <!-- Content -->
-    <div class="grid gap-8 relative text-center z-10">
-        <!-- Headline -->
-        <h1 class="text-7xl font-bold text-white mb-6">
-            Revolutionize Your Wardrobe
+    <div class="w-[60%] justify-between px-4 py-24">
+        <!-- Content -->
+        <h1 class="text-7xl leading-[5rem] font-extrabold text-[--gold]">
+            The Smart Way to Wear Luxury
         </h1>
 
         <!-- Subheading -->
-        <p class="text-xl text-center text-[--color4] mb-8">
-            Find the perfect outfit for any occasion with ease and elegance.
+        <p class="w-full my-12 text-lg font-extralight leading-[3rem]">
+            Rent designer fashion for any occasion at an affordable price, enjoy
+            luxury without the commitment, and always stay in style.
         </p>
 
         <!-- Call-to-Action Buttons -->
-        <div class="flex justify-center space-x-4">
-            <!-- Main CTA Button -->
-            <button
-                class="px-6 py-3 text-lg font-semibold text-[--color-white] bg-[--teal] rounded-lg hover:bg-[--color3] transition transform hover:scale-105"
-            >
-                Rent Your Outfit Now
-            </button>
+
+        <button
+            class="mb-8 px-6 py-3 text-lg font-semibold text-black bg-[--gold] rounded-full hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
+        >
+            Discover
+        </button>
+
+        <!-- Secondary Link -->
+        <div class="flex *:size-20 *:rounded-full">
+            <img src="/hero-reviews.png" alt="" class="-ml-2 first:ml-0" />
+            <img src="/hero-reviews.png" alt="" class="-ml-2" />
+            <img src="/hero-reviews.png" alt="" class="-ml-2" />
         </div>
     </div>
-    <!-- Secondary Link -->
-    <a
-        href="#benefits"
-        class="absolute bottom-[4%] text-lg .font-medium text-[--color3] underline hover:text-[--gold] transition"
-    >
-        Explore Our Style Journey
-    </a>
+
+    <div class="w-[40%]">
+        <img
+            src="/items_images/hero-image.png"
+            class="h-[89rem] relative -bottom-[3rem] left-0"
+            alt=""
+        />
+    </div>
 </section>
+<div></div>

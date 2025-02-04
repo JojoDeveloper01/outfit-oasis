@@ -9,11 +9,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/preact": "^4.0.1",
-    "@astrojs/tailwind": "^5.1.4",
+    "@astrojs/preact": "^4.0.3",
+    "@astrojs/tailwind": "^6.0.0",
     "@libsql/client": "^0.14.0",
     "@stripe/stripe-js": "5.4.0",
-    "astro": "^5.1.6",
+    "astro": "^5.2.3",
     "astro-particles": "2.10.0",
     "flowbite": "2.5.2",
     "googleapis": "144.0.0",
