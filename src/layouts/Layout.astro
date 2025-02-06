@@ -24,7 +24,7 @@ if (Astro.cookies.has("id")) {
 	$user = await userExistsByID(`${id}`);
 }
 const user = $user;
-const isStaff = user?.user_type === "staff" ? "block" : "hidden";
+const isStaff = user?.user_type === "staff" ? "flex" : "none";
 
 const { title, description, canonical, keywords, hideFooter } = Astro.props;
 const overflowToggle = Astro.url.pathname.includes("/dashboard");
@@ -230,7 +230,9 @@ const data: any[] = items.map((item: any) => {
 		<title>{title}</title>
 		<ClientRouter />
 	</head>
-	<body class="grid min-h-screen grid-rows-[auto_1fr_auto]">
+	<body
+		class="grid min-h-screen grid-rows-[auto_1fr_auto] max-[1500px]:w-[80%] max-[1000px]:w-[85%] mx-auto"
+	>
 		<!-- Modais -->
 		<LoginRegister />
 		<Rent data={data} />
@@ -238,7 +240,7 @@ const data: any[] = items.map((item: any) => {
 
 		<Header user={user} isStaff={isStaff} />
 		<main
-			class=`w-[70%] relative m-auto max-[1500px]:w-[80%] ${overflowToggle ? 'overflow-y-hidden' : ''}`
+			class=`relative m-auto ${overflowToggle ? 'overflow-y-hidden' : ''}`
 		>
 			<slot />
 		</main>
