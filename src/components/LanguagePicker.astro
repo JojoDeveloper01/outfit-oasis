@@ -40,7 +40,7 @@ const { languages, lang } = Astro.props as {
         id="language-button"
         class="hvLi lang-button flex items-center justify-between"
     >
-        <div class="*:w-3/4 *:h-3/4" id={`flag-${lang}`}>
+        <div class="*:w-[1.5vw] *:h-[1.5vw]" id={`flag-${lang}`}>
             <!-- Exibir apenas a bandeira do idioma atual -->
             <img class="text-white" src="/icons/language.svg" alt="" />
         </div>
@@ -48,7 +48,7 @@ const { languages, lang } = Astro.props as {
 
     <!-- Menu Dropdown -->
     <ul
-        class="lang-menu mt-4 absolute top-full right-0 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000] bg-gray-100"
+        class="lang-menu w-[8vw] mt-4 absolute top-full right-0 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000] bg-gray-100"
         aria-label="submenu"
         id="language-dropdown-menu"
     >
@@ -56,7 +56,7 @@ const { languages, lang } = Astro.props as {
             Object.entries(languages).map(([code, { label }]) => (
                 <li>
                     <a
-                        class="w-28 block p-3 hover:bg-gray-200 text-gray-700 text-sm text-center"
+                        class="block px-4 py-3 text-gray-700 text-[.8vw] text-center hover:bg-gray-200"
                         data-lang-code={code}
                         data-lang-label={label}
                     >

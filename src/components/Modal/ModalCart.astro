@@ -5,11 +5,11 @@
   <!-- Cart Button -->
   <label
     for="cartToggle"
-    class="relative size-11 rounded-full flex items-center justify-center bg-[--color3] text-black cursor-pointer"
+    class="relative size-[2.2vw] rounded-full flex items-center justify-center bg-[--color3] text-black cursor-pointer"
   >
     <span
       id="cartCounter"
-      class="absolute w-7 h-4 -top-[0.3rem] -right-[0.9rem] rounded-full text-black font-bold text-xs text-center z-10 bg-white"
+      class="absolute w-[60%] h-[40%] grid items-center -top-[14%] -right-[26%] rounded-full text-black font-bold text-[.6vw] text-center z-10 bg-white"
     >
       0
     </span>
@@ -23,36 +23,34 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart-plus"
+      class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart-plus size-[70%]"
+      ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+        d="M4 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path><path
+        d="M12.5 17h-6.5v-14h-2"></path><path
+        d="M6 5l14 1l-.86 6.017m-2.64 .983h-10.5"></path><path d="M16 19h6"
+      ></path><path d="M19 16v6"></path></svg
     >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-      <path d="M4 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
-      <path d="M12.5 17h-6.5v-14h-2"></path>
-      <path d="M6 5l14 1l-.86 6.017m-2.64 .983h-10.5"></path>
-      <path d="M16 19h6"></path>
-      <path d="M19 16v6"></path>
-    </svg>
   </label>
 
   <!-- Dropdown (Cart Modal) -->
   <div
-    class="absolute top-full right-0 mt-2 w-80 rounded-lg shadow-lg border border-gray-300 opacity-0 pointer-events-none peer-checked:opacity-100 peer-checked:pointer-events-auto transition-opacity duration-200 z-20 bg-gray-100"
+    class="min-h-[10vw] max-h-[28vw] absolute flex flex-col justify-between top-full right-0 mt-2 w-80 rounded-lg shadow-lg border border-gray-300 opacity-0 pointer-events-none peer-checked:opacity-100 peer-checked:pointer-events-auto transition-opacity duration-200 z-20 bg-gray-100"
   >
     <!-- Header -->
     <div class="p-4 border-b">
-      <h3 class="text-lg font-semibold">Shopping Cart</h3>
+      <h3 class="text-[1vw] text-black font-semibold">Shopping Cart</h3>
     </div>
 
     <!-- Items (Initially Empty) -->
-    <div id="cart-container" class="max-h-60 overflow-y-auto">
+    <div id="cart-container" class="h-full overflow-y-auto">
       <!-- Dynamically inserted items will go here -->
     </div>
 
     <!-- Footer -->
     <div class="p-4 border-t">
       <div class="flex justify-between items-center">
-        <span class="text-sm .font-medium">Total:</span>
-        <div class="text-lg font-bold text-[--color2]">
+        <span class="text-[.8] .font-medium">Total:</span>
+        <div class="text-[1vw] font-bold text-[--color2]">
           <span class="text-[--color2]" id="total-value"> </span>
           €
         </div>
@@ -115,20 +113,20 @@
           availabilityElement?.getAttribute("data-availability") === "true";
 
         const cartItemHTML = `
-                <div class="flex items-center p-2 hover:bg-gray-100">
+                <div class="flex items-center p-2 hover:bg-gray-200">
                     <a href="/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}">
-                      <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg border" />
+                      <img src="${item.image}" alt="${item.name}" class="w-16 h-full object-cover rounded-lg border" />
                     </a>
                     <div class="relative ml-4 flex-1">
                         <span class="absolute top-2 right-1 w-3 h-3 ${availabilityValue ? "bg-[--color2]" : "bg-[--teal]"} rounded-full shadow-lg"></span>
 
-                        <a href="/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}" class="pr-4 text-sm  .font-medium text-black">${item.name}</a>
-                        <p class="text-xs text-gray-500">${item.size} | ${item.color}</p>
+                        <a href="/${lang}/clothes/${sanitizeName(item.name)}?id=${item.id}" class="pr-4 text-[.8vw] font-medium text-black">${item.name}</a>
+                        <p class="text-[.7vw] text-gray-900 font-extralight">${item.size} | ${item.color}</p>
                         <div class="flex items-center justify-between mt-1">
-                            <span class="item-value text-sm font-bold text-black">${item.price.toFixed(2)} €/day</span>
+                            <span class="item-value text-[.8vw] font-bold text-black">${item.price.toFixed(2)} €/day</span>
                             <div class="flex items-center gap-2">
                                 <button
-                                    class="remove-item text-red-500 text-sm px-2 py-1 border rounded hover:bg-red-100 flex items-center justify-center"
+                                    class="remove-item text-red-500 text-[.8vw] px-2 py-1 border rounded hover:bg-red-100 flex items-center justify-center"
                                     data-id="${item.id}"
                                 >
                                     <svg
@@ -150,7 +148,7 @@
                                 </button>
                                 <button
                                     onclick="document.getElementById('${isUser}').showModal()"
-                                    class="rent-item text-green-500 text-sm px-2 py-1 border rounded hover:bg-green-100"
+                                    class="rent-item text-green-500 text-[.8vw] px-2 py-1 border rounded hover:bg-green-100"
                                     data-rent="${item.id}"
                                     title="Click to rent"
                                 >

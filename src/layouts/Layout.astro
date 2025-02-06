@@ -151,7 +151,7 @@ const data: any[] = items.map((item: any) => {
 	}
 
 	.hvLi {
-		font-size: clamp(0.3rem, 1vw, 1rem);
+		font-size: 1vw;
 		padding: 0.3rem min(0.6rem, 1rem);
 		border-radius: 0.5rem;
 		cursor: pointer;
@@ -167,13 +167,13 @@ const data: any[] = items.map((item: any) => {
 		text-wrap: pretty;
 	}
 
-	svg {
+	/* 	svg {
 		fill: var(--color-white);
 
 		&:hover {
 			fill: var(--color-black);
 		}
-	}
+	} */
 
 	[type="text"],
 	[type="email"],
@@ -211,7 +211,7 @@ const data: any[] = items.map((item: any) => {
 	.blurred-background {
 		background: rgba(56, 56, 56, 0.6);
 		backdrop-filter: blur(32px);
-		padding: 20px;
+		padding: 1vw;
 		border-radius: 10px;
 		color: #ffffff;
 	}

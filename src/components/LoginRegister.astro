@@ -22,12 +22,16 @@
 <!-- Modal de Login -->
 <dialog
     id="modalLogin"
-    class="blurred-background p-0 rounded-lg shadow-lg w-full max-w-md"
+    class="blurred-background p-0 rounded-lg shadow-lg w-[28vw] h-[23vw]"
 >
-    <form method="dialog" id="login-form" class="rounded-lg">
+    <form
+        method="dialog"
+        id="login-form"
+        class="h-full flex flex-col rounded-lg"
+    >
         <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b">
-            <h2 class="text-xl font-semibold text-white">Sign in</h2>
+        <div class="flex justify-between items-center p-[.9vw] border-b">
+            <h2 class="text-[1vw] font-semibold text-white">Sign in</h2>
             <button
                 type="button"
                 onclick="document.getElementById('modalLogin').close()"
@@ -37,9 +41,11 @@
             </button>
         </div>
         <!-- Corpo do Modal -->
-        <div class="p-4 space-y-4">
+        <div class="h-full flex flex-col justify-around p-[.9vw]">
             <div>
-                <label for="loginEmail" class="block text-sm text-white mb-1"
+                <label
+                    for="loginEmail"
+                    class="block text-[.7vw] text-white mb-[.4vw]"
                     >Your Email</label
                 >
                 <input
@@ -58,7 +64,9 @@
                 </p>
             </div>
             <div>
-                <label for="loginPassword" class="block text-sm text-white mb-1"
+                <label
+                    for="loginPassword"
+                    class="block text-[.7vw] text-white mb-1"
                     >Your password</label
                 >
                 <input
@@ -84,7 +92,7 @@
                     type="checkbox"
                     class="w-4 h-4 border-gray-300 rounded"
                 />
-                <label for="rememberLogin" class="ml-2 text-sm text-white"
+                <label for="rememberLogin" class="ml-2 text-[.7vw] text-white"
                     >Remember me</label
                 >
             </div>
@@ -94,11 +102,11 @@
             >
                 Login to your account
             </button>
-            <p class="text-sm text-white text-center">
+            <p class="text-[.7vw] text-white text-center">
                 Not registered?
                 <button
                     type="button"
-                    class="text-yellow-500 hover:underline"
+                    class="px-[0.5vw] py-[.1vw] text-yellow-500 rounded-lg hover:underline"
                     onclick="document.getElementById('modalLogin').close(); document.getElementById('modalRegister').showModal();"
                 >
                     Create account
@@ -113,10 +121,14 @@
     id="modalRegister"
     class="blurred-background p-0 rounded-lg shadow-lg w-full max-w-md"
 >
-    <form method="dialog" id="register-form" class="rounded-lg">
+    <form
+        method="dialog"
+        id="register-form"
+        class="h-full flex flex-col justify-around rounded-lg"
+    >
         <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b">
-            <h2 class="text-xl font-semibold text-gray-800">Register</h2>
+        <div class="flex justify-between items-center p-[.9vw] border-b">
+            <h2 class="text-[1vw] font-semibold text-gray-800">Register</h2>
             <button
                 type="button"
                 onclick="document.getElementById('modalRegister').close()"
@@ -126,10 +138,11 @@
             </button>
         </div>
         <!-- Corpo do Modal -->
-        <div class="p-4 space-y-4">
+        <div class="p-[.9vw] space-y-4">
             <div>
-                <label for="registerName" class="block text-sm text-white mb-1"
-                    >Name</label
+                <label
+                    for="registerName"
+                    class="block text-[.7vw] text-white mb-1">Name</label
                 >
                 <input
                     type="text"
@@ -140,13 +153,14 @@
                 />
                 <p
                     id="registerNameError"
-                    class="text-red-500 text-sm hidden mt-1"
+                    class="text-red-500 text-[.7vw] hidden mt-1"
                 >
                 </p>
             </div>
             <div>
-                <label for="registerEmail" class="block text-sm text-white mb-1"
-                    >Your email</label
+                <label
+                    for="registerEmail"
+                    class="block text-[.7vw] text-white mb-1">Your email</label
                 >
                 <input
                     type="email"
@@ -157,14 +171,14 @@
                 />
                 <p
                     id="registerEmailError"
-                    class="text-red-500 text-sm hidden mt-1"
+                    class="text-red-500 text-[.7vw] hidden mt-1"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="registerPassword"
-                    class="block text-sm text-white mb-1">Password</label
+                    class="block text-[.7vw] text-white mb-1">Password</label
                 >
                 <input
                     type="password"
@@ -175,14 +189,14 @@
                 />
                 <p
                     id="registerPasswordError"
-                    class="text-red-500 text-sm hidden mt-1"
+                    class="text-red-500 text-[.7vw] hidden mt-1"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="registerConfirmPassword"
-                    class="block text-sm text-white mb-1"
+                    class="block text-[.7vw] text-white mb-1"
                     >Confirm password</label
                 >
                 <input
@@ -194,7 +208,7 @@
                 />
                 <p
                     id="registerConfirmPasswordError"
-                    class="text-red-500 text-sm hidden mt-1"
+                    class="text-red-500 text-[.7vw] hidden mt-1"
                 >
                 </p>
             </div>
@@ -204,8 +218,9 @@
                     type="checkbox"
                     class="w-4 h-4 border-gray-300 rounded"
                 />
-                <label for="rememberRegister" class="ml-2 text-sm text-white"
-                    >Remember me</label
+                <label
+                    for="rememberRegister"
+                    class="ml-2 text-[.7vw] text-white">Remember me</label
                 >
             </div>
             <button
@@ -214,7 +229,7 @@
             >
                 Register
             </button>
-            <p class="text-sm text-white text-center">
+            <p class="text-[.7vw] text-white text-center">
                 Already have an account?
                 <button
                     type="button"
