@@ -118,7 +118,7 @@ const data: any[] = items.map((item: any) => {
 	}
 
 	h1 {
-		font-size: 4em;
+		font-size: clamp(1.8rem, calc(4vw + 0.7rem), 4vw);
 	}
 
 	h2 {
@@ -238,7 +238,7 @@ const data: any[] = items.map((item: any) => {
 
 		<Header user={user} isStaff={isStaff} />
 		<main
-			class=`w-[70%] m-auto ${overflowToggle ? 'overflow-y-hidden' : ''}`
+			class=`w-[70%] relative m-auto max-[1500px]:w-[80%] ${overflowToggle ? 'overflow-y-hidden' : ''}`
 		>
 			<slot />
 		</main>
