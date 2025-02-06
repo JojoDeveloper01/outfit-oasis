@@ -38,26 +38,11 @@ const { languages, lang } = Astro.props as {
         type="button"
         aria-haspopup="true"
         id="language-button"
-        class="lang-button flex items-center justify-between text-white px-4 py-2 rounded-lg cursor-pointer text-sm hover:bg-[#dadada3a]"
+        class="hvLi lang-button flex items-center justify-between"
     >
-        <div id={`flag-${lang}`}>
+        <div class="*:w-3/4 *:h-3/4" id={`flag-${lang}`}>
             <!-- Exibir apenas a bandeira do idioma atual -->
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-language ml-2"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                    d="M4 5h7"></path><path d="M9 3v2c0 4.418 -2.239 8 -5 8"
-                ></path><path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path><path
-                    d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"></path>
-            </svg>
+            <img class="text-white" src="/icons/language.svg" alt="" />
         </div>
     </button>
 

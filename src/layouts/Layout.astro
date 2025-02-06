@@ -150,6 +150,17 @@ const data: any[] = items.map((item: any) => {
 		color: #0088ff;
 	}
 
+	.hvLi {
+		font-size: clamp(0.3rem, 1vw, 1rem);
+		padding: 0.3rem min(0.6rem, 1rem);
+		border-radius: 0.5rem;
+		cursor: pointer;
+
+		&:hover {
+			background-color: #dadada3a;
+		}
+	}
+
 	p {
 		text-align: left;
 		line-height: 1.7em;
