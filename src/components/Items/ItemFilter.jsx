@@ -82,8 +82,8 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
     const hasActiveFilters = Object.values(filters).some((value) => value);
 
     return (
-        <div className="grid gap-4  p-4 rounded-lg shadow-md">
-            <div className="flex flex-wrap gap-2">
+        <div className="grid gap-[1vw] py-[1vw] rounded-lg shadow-md">
+            <div className="flex flex-wrap gap-[.7vw]">
                 {/* Search Input */}
                 <div>
                     <input
@@ -92,7 +92,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         placeholder="Search by name, category, brand, or rental price..."
                         value={filters.search}
                         onInput={(e) => updateFilter("search", e.target.value)}
-                        className={`border p-2 rounded w-full ${filters.search ? "border-blue-500" : "border-gray-300"
+                        className={`border p-[.7vw] rounded w-full h-4/5 ${filters.search ? "border-blue-500" : "border-gray-300"
                             }`}
                         autoComplete={"off"}
                     />
@@ -104,7 +104,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         id="item-type-search"
                         value={filters.type}
                         onChange={(e) => updateFilter("type", e.target.value)}
-                        className={`border p-2 rounded ${filters.type ? "border-blue-500" : "border-gray-300"
+                        className={`border p-[.7vw] rounded ${filters.type ? "border-blue-500" : "border-gray-300"
                             }`}
                     >
                         <option value="">Type</option>
@@ -120,7 +120,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         id="item-size-search"
                         value={filters.size}
                         onChange={(e) => updateFilter("size", e.target.value)}
-                        className={`border p-2 rounded`}
+                        className={`border p-[.7vw] rounded`}
                     >
                         <option value="">Size</option>
                         <option value="XS">XS</option>
@@ -138,7 +138,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         id="item-color-search"
                         value={filters.color}
                         onChange={(e) => updateFilter("color", e.target.value)}
-                        className={`border p-2 rounded`}
+                        className={`border p-[.7vw] rounded`}
                     >
                         <option value="">Colors</option>
                         <option value="red">red</option>
@@ -160,7 +160,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         onChange={(e) =>
                             updateFilter("condition", e.target.value)
                         }
-                        className={`border p-2 rounded ${filters.condition
+                        className={`border p-[.7vw] rounded ${filters.condition
                             ? "border-blue-500"
                             : "border-gray-300"
                             }`}
@@ -180,7 +180,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         onChange={(e) =>
                             updateFilter("rentalPrice", e.target.value)
                         }
-                        className={`border p-2 rounded ${filters.rentalPrice
+                        className={`border p-[.7vw] rounded ${filters.rentalPrice
                             ? "border-blue-500"
                             : "border-gray-300"
                             }`}
@@ -195,7 +195,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                 {hasActiveFilters && (
                     <button
                         onClick={clearFilters}
-                        className="ml-8"
+                        className="mt-[1vw] ml-8"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-reload"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19.933 13.041a8 8 0 1 1 -9.925 -8.788c3.899 -1 7.935 1.007 9.425 4.747" /><path d="M20 4v5h-5" /></svg>
                     </button>

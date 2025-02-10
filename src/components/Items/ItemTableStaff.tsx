@@ -245,9 +245,9 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
         return colorMap[status] || "";
     };
     return (
-        <div className="flex flex-col gap-2 mt-8">
+        <div className="flex flex-col gap-[.7vw] mt-8">
             {data.length === 0 ? (
-                <div className="py-3 px-4">No items available.</div>
+                <div className="py-[.8vw] px-[1vw]">No items available.</div>
             ) : (
                 data.map((item) => {
                     // Filtra os rentals específicos deste item
@@ -264,14 +264,14 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                     return (
                         <div
                             key={item.id}
-                            className="flex flex-wrap items-start gap-2 p-4 pt-7  shadow-lg rounded-lg border border-gray-300"
+                            className="flex flex-wrap items-start gap-[.7vw] p-[1vw] pt-7  shadow-lg rounded-lg border border-gray-300"
                         >
                             {/* Campos */}
-                            <div className="flex flex-wrap gap-2 flex-grow px-12">
+                            <div className="flex flex-wrap gap-[.7vw] flex-grow px-12">
 
                                 {/* Imagem */}
                                 {item.image && (
-                                    <div className="py-3 px-4">
+                                    <div className="py-[.8vw] px-[1vw]">
                                         < PreviewImage src={item.image} type="item" />
                                         <img
                                             onClick={() => {
@@ -291,13 +291,13 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                 {["name", "category", "type", "size", "color", "brand", "condition", "rental_price"].map((field) => (
                                     <div
                                         key={`${item.id}-${field}`}
-                                        className={`relative flex flex-col gap-2`}
+                                        className={`relative flex flex-col gap-[.7vw]`}
                                     >
-                                        <label className="font-bold text-sm text-gray-600" htmlFor={field}>
+                                        <label className="font-bold text-[1vw] text-gray-600" htmlFor={field}>
                                             {field.replace("_", " ")}
                                         </label>
 
-                                        <div className={`relative flex items-stretch gap-2 min-w-32 max-w-56`}>
+                                        <div className={`relative flex items-stretch gap-[.7vw] min-w-32 max-w-56`}>
 
                                             {/* Conditional rendering for input types */}
                                             <div className="p-1 min-w-24 max-w-48 *:m-0">
@@ -413,7 +413,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                             {/* Locações históricas */}
                             <details className="w-full my-4 px-12">
-                                <summary className="flex items-center justify-between cursor-pointer p-5  .font-medium text-gray-500  border border-gray-200 rounded-lg hover:bg-gray-100">
+                                <summary className="flex items-center justify-between cursor-pointer p-5  font-medium text-gray-500  border border-gray-200 rounded-lg hover:bg-gray-100">
                                     Historical Rents
                                     <span className="text-[#00671e] font-bold">{itemRentals.length || 0}</span>
 
@@ -422,7 +422,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                         <button
                                             type="button"
                                             onClick={() => setHideCompleted((prev) => !prev)}
-                                            className="ml-4 py-1 px-2 bg-gray-200 rounded hover:bg-gray-300 text-sm text-gray-700"
+                                            className="ml-4 py-[.3vw] px-2 bg-gray-200 rounded hover:bg-gray-300 text-[1vw] text-gray-700"
                                         >
                                             {hideCompleted ? "Mostrar Completados" : "Ocultar Completados"}
                                         </button>
@@ -435,7 +435,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                             <div
                                                 key={index}
                                                 className={`
-                                                        flex flex-wrap items-center gap-4 px-4 py-6 border-b rounded-md shadow-sm
+                                                        flex flex-wrap items-center gap-[1vw] px-[1vw] py-6 border-b rounded-md shadow-sm
                                                         ${renter.rental_status === "completed"
                                                         ? "bg-green-100 border-green-400"
                                                         : renter.rental_status === "active"
@@ -445,41 +445,41 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                     `}
                                             >
                                                 {/* Name */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
                                                         Name
                                                     </span>
                                                     <span className="text-gray-800 font-bold">{renter.userName}</span>
                                                 </div>
 
                                                 {/* Start Date */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Start Date
                                                     </span>
                                                     <span className="text-gray-800">{renter.start_date}</span>
                                                 </div>
 
                                                 {/* End Date */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         End Date
                                                     </span>
                                                     <span className="text-gray-800">{renter.end_date}</span>
                                                 </div>
 
                                                 {/* Status */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Status
                                                     </span>
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-[.7vw]">
                                                         <select
                                                             id={`${renter.rental_id}-rental_status`}
                                                             name="rental_status"
                                                             value={renter.rental_status}
                                                             style={{ width: "7rem", paddingRight: "0.5rem", background: "transparent" }}
-                                                            className="px-2 py-1 border rounded border-gray-300 cursor-pointer"
+                                                            className="px-2 py-[.3vw] border rounded border-gray-300 cursor-pointer"
                                                             onChange={(e) => handleRentalStatusChange(e, renter.rental_id, "rental_status")}
                                                         >
                                                             <option value="active">Active</option>
@@ -518,16 +518,16 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 </div>
 
                                                 {/* Return */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Return
                                                     </span>
                                                     <span className="text-gray-800">{renter.return_date || "Pending"}</span>
                                                 </div>
 
                                                 {/* Total Cost */}
-                                                <div className="flex flex-col gap-2">
-                                                    <span className={`px-4 py-1 text-black-600 text-sm  .font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                <div className="flex flex-col gap-[.7vw]">
+                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
                                                         Total Cost
                                                     </span>
                                                     <span className="text-gray-800 font-bold">${renter.total_cost}</span>
@@ -535,13 +535,13 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="p-5 text-sm text-gray-500">No rentals recorded.</div>
+                                        <div className="p-5 text-[1vw] text-gray-500">No rentals recorded.</div>
                                     )}
                                 </div>
                             </details>
 
                             {/* Botões de ação */}
-                            <div className="w-full flex flex-col gap-2 items-end">
+                            <div className="w-full flex flex-col gap-[.7vw] items-end">
                                 <Delete
                                     name={sanitizeName(item.name)}
                                     id={item.id}

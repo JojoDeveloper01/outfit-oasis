@@ -33,21 +33,21 @@ export default function UserFilter({ users, setFilteredUsers, setFilters }) {
     }, [search, type]); // Reexecuta ao alterar `search` ou `type`
 
     return (
-        <div className="grid gap-4  p-4 rounded-lg shadow-md">
-            <div className="flex gap-4">
+        <div className="grid gap-[1vw]  p-[1vw] rounded-lg shadow-md">
+            <div className="flex gap-[1vw]">
                 <input
                     id="user-search"
                     type="text"
                     placeholder="Search..."
                     value={search}
                     onInput={(e) => setSearch(e.target.value)}
-                    className="border p-2"
+                    className="border p-[.7vw]"
                 />
                 <select
                     id="userType-search"
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="border p-2"
+                    className="border p-[.7vw]"
                 >
                     <option value="">All Types</option>
                     <option value="client">Client</option>

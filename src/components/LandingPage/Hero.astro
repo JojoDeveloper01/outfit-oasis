@@ -1,3 +1,7 @@
+---
+const { lang } = Astro.props;
+---
+
 <style>
     .backgorund-white {
         background: linear-gradient(
@@ -23,27 +27,31 @@
     class="h-[calc(100dvh-5vw)] flex items-center relative overflow-hidden *:h-full"
 >
     <div
-        class="w-1/2 flex gap-[2vw] flex-col justify-evenly items-start py-[4vw]"
+        class="w-1/2 flex gap-[2vw] flex-col justify-evenly items-start py-[4vw] max-[767px]:justify-center max-[767px]:gap-[7vw] max-[767px]:w-full max-[767px]:h-full z-10"
     >
         <!-- Content -->
-        <h1 class="leading-[5vw] font-extrabold text-[--gold]">
+        <h1
+            class="leading-[5vw] font-extrabold text-[--gold] max-[767px]:leading-[10vw] max-[767px]:text-[9vw]"
+        >
             The Smart Way to Wear Luxury
         </h1>
 
         <!-- Subheading -->
-        <p class="w-full font-extralight text-[1.3vw] leading-[2vw]">
+        <p
+            class="w-full font-extralight text-[1.3vw] leading-[2vw] max-[767px]:text-[3vw] max-[767px]:leading-[5vw]"
+        >
             Rent designer fashion for any occasion at an affordable price, enjoy
             luxury without the commitment, and always stay in style.
         </p>
 
-        <button
-            style="font-size: calc(.1rem + 1vw)"
-            class="px-[1vw] py-[0.7vw] font-semibold text-black bg-[--gold] rounded-full hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
+        <a
+            href=`/${lang}/clothes/`
+            class="px-[1vw] py-[0.7vw] font-semibold text-[1.3vw] max-[767px]:text-[4vw] max-[767px]:ml-[1vw] max-[767px]:px-[4vw] max-[767px]:py-[1.7vw] text-black bg-[--gold] rounded-full hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
         >
             Discover
-        </button>
+        </a>
 
-        <div class="w-full flex items-center gap-[.5vw]">
+        <div class="w-full flex items-center gap-[.5vw] max-[767px]:gap-[5vw]">
             <div
                 class="w-[27%] flex *:w-[41%] *:h-full *:rounded-full *:-ml-[1vw] *:bg-[--color-black]"
             >
@@ -52,20 +60,19 @@
                 <img src="/hero-reviews.avif" alt="" />
             </div>
             <div class="w-3/4 grid gap-[.4vw]">
-                <p style="font-size: calc(.2rem + 1vw)" class="font-semibold">
+                <p class="font-semibold text-[1.3vw] max-[767px]:text-[3vw]">
                     Our happy customers
                 </p>
-                <p
-                    style="font-size: calc(.1rem + 1vw)"
-                    class="text-gray-400 text-sm"
-                >
+                <p class="text-gray-400 text-[1.3vw] max-[767px]:text-[3vw]">
                     <span class="text-yellow-400">&#9733;</span> 5.0 (1k Reviews)
                 </p>
             </div>
         </div>
     </div>
 
-    <div class="w-1/2 relative flex flex-col items-center">
+    <div
+        class="w-1/2 relative flex flex-col items-center max-[767px]:absolute max-[767px]:w-full max-[767px]:h-full max-[767px]:opacity-10 z-0"
+    >
         <img
             src="/items_images/hero-image1.avif"
             class="h-[156%] absolute -bottom-[64%] z-10"

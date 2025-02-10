@@ -56,23 +56,23 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         deleteModal.showModal();
                     }
                 }}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                className="bg-red-500 text-white px-[1vw] py-[.6vw] rounded-md hover:bg-red-600 text-[1.3vw]"
             >
                 Delete
             </button>
             <dialog
                 id={`delete-${name}-${id}`}
-                className="backdrop:bg-black/50 shadow-lg max-w-md w-full m-auto p-4 text-red-800 border border-red-300 rounded-lg bg-red-50"
+                className="backdrop:bg-black/50 shadow-lg max-w-[40vw] w-full m-auto p-[1vw] text-red-800 border border-red-300 rounded-lg bg-red-50"
             >
-                <div className="flex items-center mb-4">
-                    <h3 className="text-xl  .font-medium">
+                <div className="flex items-center mb-[1.5vw]">
+                    <h3 className="text-[1.5vw] max-[767px]:text-[4vw] font-medium">
                         Are you sure you want to remove {name}?
                     </h3>
                 </div>
 
                 {/* Mensagem de erro, se existir */}
                 {error && (
-                    <div className="mb-4 text-red-700 bg-red-100 p-2 rounded">
+                    <div className="mb-[1vw] text-red-700 bg-red-100 p-[.7vw] rounded">
                         {error}
                     </div>
                 )}
@@ -81,7 +81,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                     <button
                         onClick={remove}
                         disabled={isDeleting}
-                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300  .font-medium rounded-lg text-lg px-3 py-1.5 me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-lg px-[.8vw] py-[.5vw] me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {isDeleting ? "Deleting..." : "Delete"}
@@ -90,7 +90,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         onClick={() =>
                             document.getElementById(`delete-${name}-${id}`)?.close()
                         }
-                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  .font-medium rounded-lg text-lg px-3 py-1.5"
+                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-lg px-[.8vw] py-[.5vw]"
                     >
                         Cancel
                     </button>

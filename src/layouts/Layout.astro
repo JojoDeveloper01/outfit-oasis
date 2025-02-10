@@ -50,9 +50,9 @@ const data: any[] = items.map((item: any) => {
 		--color-black: #0e0e0e;
 		--color-white: #fff;
 		--color: #f7b785;
-		--color2: #dfb25c;
-		--color3: #efb577;
-		--teal: #008080;
+		--gold: #efb577;
+		--greenBlack: #008080;
+		--greenBlack: #006938;
 		--green: #89b5a1;
 		--blush: #e99a8b;
 		--gold: #ffca00;
@@ -139,12 +139,16 @@ const data: any[] = items.map((item: any) => {
 
 	.hvLi {
 		font-size: 1vw;
-		padding: 0.3rem min(0.6rem, 1rem);
+		padding: 0.3vw min(0.6vw, 0.9vw);
 		border-radius: 0.5rem;
 		cursor: pointer;
 
 		&:hover {
 			background-color: #dadada3a;
+		}
+
+		@media screen and (max-width: 767px) {
+			font-size: 2vw;
 		}
 	}
 
@@ -185,13 +189,15 @@ const data: any[] = items.map((item: any) => {
 		border: 0.01vw solid #d1d5db;
 		box-shadow: 0 0.01vw 0.04vw 0 rgb(0 0 0 / 0.05);
 		font-size: 0.9vw;
+		font-weight: 200;
 		line-height: 1.1vw;
+		color: #212121;
 
 		&:focus {
-			--tw-ring-shadow: var(--teal);
-			border-color: var(--teal);
+			--tw-ring-shadow: var(--greenBlack);
+			border-color: var(--greenBlack);
 			outline: none;
-			ring-color: var(--teal);
+			ring-color: var(--greenBlack);
 			ring-width: 2px;
 		}
 	}

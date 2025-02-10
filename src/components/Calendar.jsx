@@ -219,7 +219,7 @@ const Calendar = ({ itemsRent }) => {
   }, [startDate, endDate, pricePerDay]);
 
   return (
-    <div class="flex flex-col gap-4 justify-evenly w-full relative">
+    <div class="flex flex-col gap-[1vw] justify-evenly w-full relative">
       <div class="flex justify-between items-center">
         <button
           class="text-blue-500 font-bold disabled:text-gray-400"
@@ -228,7 +228,7 @@ const Calendar = ({ itemsRent }) => {
         >
           &lt;
         </button>
-        <h2 class="text-xl font-semibold">{`${monthNames[month]} ${year}`}</h2>
+        <h2 class="text-[1vw] max-[767px]:text-[3vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
         <button
           class="text-blue-500 font-bold disabled:text-gray-400"
           onClick={() => setCurrentDate(new Date(year, month + 1))}
@@ -242,7 +242,7 @@ const Calendar = ({ itemsRent }) => {
           <span>{day}</span>
         ))}
       </div>
-      <div class="grid grid-cols-7 gap-2 text-center">
+      <div class="grid grid-cols-7 gap-[.7vw] text-center">
         {[...Array(firstDay)].map(() => (
           <div></div>
         ))}
@@ -255,7 +255,7 @@ const Calendar = ({ itemsRent }) => {
 
           return (
             <div
-              className={`p-2 rounded-md cursor-pointer ${isSelected
+              className={`p-[.7vw] rounded-md cursor-pointer ${isSelected
                 ? "bg-blue-300"
                 : isHovered
                   ? "bg-blue-100"
@@ -275,7 +275,7 @@ const Calendar = ({ itemsRent }) => {
       </div>
       {tooltip.visible && (
         <div
-          class="tooltip absolute bg-[rgba(59,130,246,0.9)] text-[white] text-sm shadow-[0_2px_6px_rgba(0,0,0,0.2)] z-[1000] pointer-events-none whitespace-nowrap hidden p-2 rounded-md;"
+          class="tooltip absolute bg-[rgba(59,130,246,0.9)] text-[white] text-[1vw] shadow-[0_2px_6px_rgba(0,0,0,0.2)] z-[1000] pointer-events-none whitespace-nowrap hidden p-[.7vw] rounded-md;"
           style={{
             position: 'fixed',
             left: `${tooltip.x}px`,
@@ -293,7 +293,7 @@ const Calendar = ({ itemsRent }) => {
           <span id="interval-date">{`${formatDate(startDate)} - ${formatDate(endDate)}`}</span>
           -
           <span>{`${calculateIntervalDays(startDate, endDate)} days x ${pricePerDay} €/day =`}
-            <span id="totalPriceItem" className="ml-2 px-2 py-1 bg-gray-300 rounded-lg">{`${totalPrice}`}</span> €
+            <span id="totalPriceItem" className="ml-2 px-2 py-[.3vw] bg-gray-300 rounded-lg">{`${totalPrice}`}</span> €
           </span>
         </div>
       )}

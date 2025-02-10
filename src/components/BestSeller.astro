@@ -4,16 +4,20 @@ const { lang, topPurchasedProducts } = Astro.props;
 
 <!-- Produtos mais comprados -->
 <div
-    class="w-[35rem] max-[640px]:w-[22rem] h-fit bg-gray-800 text-white px-4 py-8 rounded-lg shadow-lg"
+    class="w-[35rem] max-[767px]:w-[22rem] h-fit bg-gray-800 text-white px-[1vw] py-8 rounded-lg shadow-lg"
 >
     <h2 class="text-lg font-semibold mb-8">Produtos Mais Comprados</h2>
     <div class="max-h-[25rem] overflow-y-auto">
-        <table class="w-full text-sm text-left text-gray-200">
+        <table class="w-full text-[1vw] text-left text-gray-200">
             <thead class="text-xs text-gray-400 uppercase bg-gray-700">
                 <tr>
-                    <th scope="col" class="px-4 py-2">Produto</th>
-                    <th scope="col" class="px-4 py-2 text-right">Vendas</th>
-                    <th scope="col" class="px-4 py-2 text-right">Total</th>
+                    <th scope="col" class="px-[1vw] py-[.6vw]">Produto</th>
+                    <th scope="col" class="px-[1vw] py-[.6vw] text-right"
+                        >Vendas</th
+                    >
+                    <th scope="col" class="px-[1vw] py-[.6vw] text-right"
+                        >Total</th
+                    >
                 </tr>
             </thead>
             <tbody>
@@ -21,11 +25,13 @@ const { lang, topPurchasedProducts } = Astro.props;
                     Array.isArray(topPurchasedProducts) &&
                         topPurchasedProducts.map((product: any) => (
                             <tr class="border-b border-gray-600">
-                                <td class="px-4 py-2">{product.name}</td>
-                                <td class="px-4 py-2 text-right">
+                                <td class="px-[1vw] py-[.6vw]">
+                                    {product.name}
+                                </td>
+                                <td class="px-[1vw] py-[.6vw] text-right">
                                     {product.count}
                                 </td>
-                                <td class="flex gap-1 px-4 py-2 text-right">
+                                <td class="flex gap-1 px-[1vw] py-[.6vw] text-right">
                                     {product.rental_price
                                         ? (
                                               product.count *

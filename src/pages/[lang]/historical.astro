@@ -101,13 +101,13 @@ function getStatusClass(
     keywords="Historical"
     canonical="https://outfit-oasis.com/historical"
 >
-    <section class="max-w-[85vw] mx-auto py-12 px-4 min-h-screen">
+    <section class="max-w-[85vw] mx-auto py-[.3vw]2 px-[1vw] min-h-screen">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">My Rental History</h1>
         <div class="shadow-md rounded-lg">
             <table class="min-w-full border-collapse border border-gray-300">
                 <thead>
                     <tr
-                        class="*:bg-gray-200 *:px-4 *:py-3 *:border *:border-gray-300 *:text-left"
+                        class="*:bg-gray-200 *:px-[1vw] *:py-[.8vw] *:border *:border-gray-300 *:text-left"
                     >
                         <th>Rental ID</th>
                         <th>Item</th>
@@ -129,10 +129,10 @@ function getStatusClass(
 
                             return (
                                 <tr>
-                                    <td class="px-4 py-3 border border-gray-300">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300">
                                         {rental.rental_id}
                                     </td>
-                                    <td class="px-4 py-3 border border-gray-300 flex items-center gap-4">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300 flex items-center gap-[1vw]">
                                         <PreviewImage
                                             client:idle
                                             src={rental.item?.image}
@@ -148,18 +148,18 @@ function getStatusClass(
                                             <p class="font-bold text-gray-800">
                                                 {rental.item?.name}
                                             </p>
-                                            <p class="text-sm text-gray-600">
+                                            <p class="text-[1vw] text-gray-600">
                                                 {rental.item?.brand}
                                             </p>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 border border-gray-300">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300">
                                         {rental.start_date}
                                     </td>
-                                    <td class="px-4 py-3 border border-gray-300">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300">
                                         {rental.end_date}
                                     </td>
-                                    <td class="px-4 py-3 border border-gray-300">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300">
                                         {rental.return_date
                                             ? "Finished" // Devolvido
                                             : rental.rental_status === "active"
@@ -167,7 +167,7 @@ function getStatusClass(
                                               : "Pending"}{" "}
                                     </td>
                                     <td
-                                        class={`px-4 py-3 border border-gray-300 font-bold ${getStatusClass(
+                                        class={`px-[1vw] py-[.8vw] border border-gray-300 font-bold ${getStatusClass(
                                             rental.rental_id,
                                             rental.end_date,
                                             rental.return_date,
@@ -201,7 +201,7 @@ function getStatusClass(
                                                     <path d="M12 2l.642 .005l.616 .017l.299 .013l.579 .034l.553 .046c4.687 .455 6.65 2.333 7.166 6.906l.03 .29l.046 .553l.041 .727l.006 .15l.017 .617l.005 .642l-.005 .642l-.017 .616l-.013 .299l-.034 .579l-.046 .553c-.455 4.687 -2.333 6.65 -6.906 7.166l-.29 .03l-.553 .046l-.727 .041l-.15 .006l-.617 .017l-.642 .005l-.642 -.005l-.616 -.017l-.299 -.013l-.579 -.034l-.553 -.046c-4.687 -.455 -6.65 -2.333 -7.166 -6.906l-.03 -.29l-.046 -.553l-.041 -.727l-.006 -.15l-.017 -.617l-.004 -.318v-.648l.004 -.318l.017 -.616l.013 -.299l.034 -.579l.046 -.553c.455 -4.687 2.333 -6.65 6.906 -7.166l.29 -.03l.553 -.046l.727 -.041l.15 -.006l.617 -.017c.21 -.003 .424 -.005 .642 -.005zm.01 13l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -8a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
                                                 </svg>
                                             </button>
-                                            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-800 text-white text-sm px-4 py-2 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-gray-800 text-white text-[1vw] px-[1vw] py-[.6vw] rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                 {rental.return_date
                                                     ? "The item has already been returned." // Devolvido
                                                     : endDateObj < today
@@ -213,7 +213,7 @@ function getStatusClass(
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 border border-gray-300 text-gray-800">
+                                    <td class="px-[1vw] py-[.8vw] border border-gray-300 text-gray-800">
                                         ${rental.total_cost}
                                     </td>
                                 </tr>

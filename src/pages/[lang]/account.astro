@@ -70,15 +70,13 @@ const formFields: FormField[] = [
 ---
 
 <Layout>
-    <section class="h-full flex items-center justify-center py-8 px-4">
-        <div
-            class="w-full h-[29rem] max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl rounded-lg shadow-md p-6"
-        >
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-8">
+    <section class="h-full flex items-center justify-center py-8 px-[1vw]">
+        <div class="w-full rounded-lg shadow-md p-6">
+            <h1 class="text-[2vw] max-[767px]:text-[3vw] font-bold mb-8">
                 Account Information
             </h1>
 
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 gap-[2vw]">
                 {
                     formFields.map((field) => (
                         <EditableField

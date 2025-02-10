@@ -52,13 +52,13 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
             {data.length === 0 ? (
                 <div
                     style={`width: ${width}`}
-                    className={`py-3 px-4 text-center h-full`}>No items available.</div>
+                    className={`py-[.8vw] px-[1vw] text-center min-h-96 h-full`}>No items available.</div>
             ) : (
                 data.map((entry) => (
                     <div
                         key={entry.id}
                         style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`}`}
-                        className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2 h-full" : "mx-auto max-w-sm"}  shadow-lg rounded-lg overflow-hidden border border-gray-300`}
+                        className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2 h-full" : "mx-auto"}  shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                     >
                         {/* Image Section */}
                         {entry.image && (
@@ -76,9 +76,9 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                                     <Availability entry={entry} />
                                 </div>
 
-                                <div className="absolute top-2 right-2 flex flex-col gap-2 items-center">
+                                <div className="absolute top-[.7vw] right-2 flex flex-col gap-[.7vw] items-center">
                                     {/* Size*/}
-                                    <div className="px-3 py-1 bg-black text-white rounded-full text-xs">{entry.size}</div>
+                                    <div className="px-[.8vw] py-[.3vw] bg-black text-white rounded-full text-xs">{entry.size}</div>
 
                                     {/* Color*/}
                                     <div className="right-2 flex gap-1">
@@ -95,17 +95,17 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                         )}
 
                         {/* Bottom Info Section */}
-                        <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-4 pt-4 pb-3 flex gap-4 justify-around">
+                        <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-4 pb-3 flex gap-[1vw] justify-around">
                             {/* Title and Price */}
                             <div className="grid">
                                 <h3 className="text-base font-semibold truncate">{entry.name}</h3>
-                                <p style="font-family:cursive" className="text-lg font-bold text-[--color2]">{entry.rental_price} €</p>
+                                <p style="font-family:cursive" className="text-lg font-bold text-[--gold]">{entry.rental_price} €</p>
                             </div>
 
                             {/* Cart Button */}
                             <button
                                 id={`add-to-cart-${entry.id}`}
-                                className="w-12 h-12 flex items-center justify-center bg-[--color2] rounded-full shadow-lg hover: hover:text-[--color2] transition-colors duration-200 ease-in-out"
+                                className="size-12 flex items-center justify-center bg-[--color-black] rounded-full shadow-lg hover: hover:text-[--color-black] transition-colors duration-200 ease-in-out"
                                 aria-label="Add to Cart"
                             >
                                 <svg

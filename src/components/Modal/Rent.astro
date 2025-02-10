@@ -289,12 +289,16 @@ const { data } = Astro.props;
     </button>
 
     <div
-        class="relative h-[41rem] *:h-full p-6 *:flex *:gap-4 *:flex-col *:justify-between"
+        class="relative h-[41rem] *:h-full p-6 *:flex *:gap-[1vw] *:flex-col *:justify-between"
     >
         <!-- Passo 1 -->
         <section id="step1">
-            <h3 class="text-xl font-bold mb-2">Choose Rental Days</h3>
-            <p class="text-lg font-semibold text-black bg-gray-200 px-4 py-2">
+            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+                Choose Rental Days
+            </h3>
+            <p
+                class="text-lg font-semibold text-black bg-gray-200 px-[1vw] py-[.6vw]"
+            >
                 Select the days you want to rent this item
             </p>
 
@@ -303,14 +307,14 @@ const { data } = Astro.props;
             <div class="flex justify-between">
                 <button
                     id="closeFromStep1"
-                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    class="bg-gray-500 text-white px-[1vw] py-[.6vw] rounded hover:bg-gray-600"
                     onclick="document.getElementById('modalRent').close()"
                 >
                     Close
                 </button>
                 <button
                     id="nextToStep2"
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    class="bg-blue-500 text-white px-[1vw] py-[.6vw] rounded hover:bg-blue-600"
                 >
                     Next
                 </button>
@@ -319,14 +323,16 @@ const { data } = Astro.props;
 
         <!-- Passo 2 -->
         <section id="step2" class="hidden-step">
-            <h3 class="text-xl font-bold mb-2">Confirm Your Selection</h3>
+            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+                Confirm Your Selection
+            </h3>
             <div id="itemDetails" class="h-full">
                 <!-- Informações do item -->
             </div>
             <div class="flex justify-between">
                 <button
                     id="backToStep1"
-                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    class="bg-gray-500 text-white px-[1vw] py-[.6vw] rounded hover:bg-gray-600"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +351,7 @@ const { data } = Astro.props;
                 </button>
                 <button
                     id="nextToStep3"
-                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    class="bg-blue-500 text-white px-[1vw] py-[.6vw] rounded hover:bg-blue-600"
                 >
                     Confirm
                 </button>
@@ -354,8 +360,12 @@ const { data } = Astro.props;
 
         <!-- Passo 3 -->
         <section id="step3" class="hidden-step">
-            <h3 class="text-xl font-bold mb-2">Payment</h3>
-            <p class="text-lg font-semibold text-black bg-gray-200 px-4 py-2">
+            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+                Payment
+            </h3>
+            <p
+                class="text-lg font-semibold text-black bg-gray-200 px-[1vw] py-[.6vw]"
+            >
                 Choose a payment method
             </p>
 
@@ -370,13 +380,13 @@ const { data } = Astro.props;
                         id="payment-form"
                         class="h-full flex flex-col justify-between shadow-md mt-auto mb-auto"
                     >
-                        <div id="payment-element" class="h-full mb-4">
+                        <div id="payment-element" class="h-full mb-[1vw]">
                             <!-- stripe.js vai injetar o formulário aqui -->
                         </div>
                         <button
                             id="submit"
                             type="submit"
-                            class="bg-[#0055de] text-white rounded-md border-0 px-4 py-3 text-lg font-semibold cursor-pointer shadow-md w-full transition-all duration-200 hover:contrast-125 disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="bg-[#0055de] text-white rounded-md border-0 px-[1vw] py-[.8vw] text-lg font-semibold cursor-pointer shadow-md w-full transition-all duration-200 hover:contrast-125 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Pay Now
                         </button>
@@ -389,7 +399,7 @@ const { data } = Astro.props;
             <div class="flex justify-between">
                 <button
                     id="backToStep2"
-                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    class="bg-gray-500 text-white px-[1vw] py-[.6vw] rounded hover:bg-gray-600"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -521,10 +531,10 @@ const { data } = Astro.props;
                 <!-- Seção de Detalhes -->
                 <div class="flex flex-col justify-between w-full md:w-2/3">
                     <h4 class="text-3xl font-semibold mb-3 text-gray-800">${item.name}</h4>
-                    <div class="grid gap-2">
-                        <div class="flex justify-evenly bg-gray-200 p-2 rounded-lg">
-                            <p class="flex gap-4 items-center">
-                                <span class=" .font-medium"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-ruler-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M17 3l4 4l-14 14l-4 -4z"></path><path d="M16 7l-1.5 -1.5"></path><path d="M13 10l-1.5 -1.5"></path><path d="M10 13l-1.5 -1.5"></path><path d="M7 16l-1.5 -1.5"></path></svg></span> 
+                    <div class="grid gap-[.7vw]">
+                        <div class="flex justify-evenly bg-gray-200 p-[.7vw] rounded-lg">
+                            <p class="flex gap-[1vw] items-center">
+                                <span class=" font-medium"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-ruler-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M17 3l4 4l-14 14l-4 -4z"></path><path d="M16 7l-1.5 -1.5"></path><path d="M13 10l-1.5 -1.5"></path><path d="M10 13l-1.5 -1.5"></path><path d="M7 16l-1.5 -1.5"></path></svg></span> 
                                 ${item.size}
                             </p>
                             <p class="flex gap-3 items-center">
@@ -533,7 +543,7 @@ const { data } = Astro.props;
                             </p>
                         </div>
 
-                        <p class="flex justify-center gap-4 bg-gray-200 p-2 rounded-lg text-lg text-black-600">
+                        <p class="flex justify-center gap-[1vw] bg-gray-200 p-[.7vw] rounded-lg text-lg text-black-600">
                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-cake"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20.84 12c0 2.05 .985 3.225 -.04 5c-1.026 1.775 -2.537 1.51 -4.314 2.534c-1.776 1.026 -2.302 2.466 -4.353 2.466c-2.051 0 -2.576 -1.441 -4.353 -2.466c-1.776 -1.024 -3.288 -.759 -4.314 -2.534c-1.025 -1.775 -.04 -2.95 -.04 -5s-.985 -3.225 .04 -5c1.026 -1.775 2.537 -1.51 4.314 -2.534c1.776 -1.026 2.302 -2.466 4.353 -2.466s2.577 1.441 4.353 2.466c1.776 1.024 3.288 .759 4.313 2.534c1.026 1.775 .04 2.95 .04 5z" /></svg> 
                             ${item.brand}
                         </p>

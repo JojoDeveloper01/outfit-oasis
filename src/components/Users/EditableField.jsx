@@ -82,15 +82,15 @@ export default function EditableField({ userID, field, name, type, value }) {
     };
 
     return (
-        <div className="w-3/4 flex items-center gap-4">
-            <label htmlFor={`${userID}-${field}`} className="w-20 text-sm font-bold text-gray-700">
+        <div className="w-[70%] flex items-center gap-[2vw]">
+            <label htmlFor={`${userID}-${field}`} className="w-20 text-[1vw] font-bold text-gray-300">
                 {name}
             </label>
 
             <div className="w-full relative">
                 {type === "password" ? (
                     // Campo de Senha
-                    <div className="relative flex items-center gap-2">
+                    <div className="relative flex items-center gap-[.7vw]">
                         <input
                             id={`${userID}-${field}`}
                             name={field}
@@ -99,6 +99,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                             onInput={handleInputChange}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
+                            style="margin:0"
                             className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                                 }`}
                         />
@@ -112,6 +113,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
                                     height="24"
+                                    className="size-[1.5vw]"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
@@ -145,7 +147,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                     </div>
                 ) : type === "file" ? (
                     // Campo de Arquivo
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-[1vw]">
                         <PreviewImage
                             src={fieldValue}
                             type="account"
@@ -154,7 +156,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                             onClick={() => document.getElementById(`preview-account-image-${fieldValue}`).showModal()}
                             src={value}
                             alt={field}
-                            class="w-14 h-12 rounded-full border border-gray-300 cursor-pointer object-cover"
+                            class="size-[3vw] rounded-full border border-gray-300 cursor-pointer object-cover"
                         />
                         <input
                             id={`${userID}-${field}`}
@@ -167,7 +169,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                                 }
                             }}
                             accept="image/*" // Aceita apenas imagens
-                            className={`block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                            className={`block w-full text-[.5vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                                 }`}
                         />
                     </div>
@@ -181,6 +183,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                         onInput={handleInputChange}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
+                        style="margin:0"
                         className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                             }`}
                     />

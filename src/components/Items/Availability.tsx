@@ -76,7 +76,7 @@ const Availability: FunctionalComponent<{ entry: Entry }> = ({ entry }) => {
         <div
             id={`availability-${entry.id}`}
             data-availability={lastUnavailableDate ? "reserved" : "available"}
-            className={`absolute top-2 left-2 px-3 py-1 text-xs font-bold uppercase rounded-lg z-10 ${lastUnavailableDate ? "bg-[--color3] text-white" : "bg-[--teal] text-white"
+            className={`absolute top-[.7vw] left-2 px-[.8vw] py-[.3vw] text-xs font-bold uppercase rounded-lg z-10 ${lastUnavailableDate ? "bg-[--gold] text-black" : "bg-[--greenBlack] text-white"
                 }`}
             style={{ boxShadow: "0 2px 24px 4px rgb(85 85 85 / 43%)" }}
         >

@@ -20,36 +20,39 @@ const { image, name, email, lang, t } = Astro.props;
         id="profile-menu-button"
     >
         <span class="sr-only">Open user menu</span>
-        <img src={image} class="w-8 h-8 rounded-full" src="" alt="user photo" />
+        <img
+            src={image}
+            class="size-[2vw] rounded-full"
+            src=""
+            alt="user photo"
+        />
     </button>
 
     <!-- Dropdown menu -->
     <div
         id="user-dropdown"
-        class="profile-menu absolute top-full right-0 mt-2 border border-gray-200 rounded-lg shadow-lg invisible opacity-0 transform -translate-y-2 transition-all duration-300 ease z-50"
+        class="profile-menu absolute top-full right-0 mt-[.5vw] border border-gray-200 rounded-lg shadow-lg invisible opacity-0 transform -translate-y-2 transition-all duration-300 ease bg-gray-100 z-50 overflow-hidden"
     >
-        <div class="text-left px-4 py-3 hover:bg-gray-100">
-            <a href=`/${lang}/account`>
-                <span class="block text-sm text-black">
+        <div>
+            <a
+                href=`/${lang}/account`
+                class="block p-[.5vw] hover:bg-gray-200 text-gray-700 text-[.9vw]"
+            >
+                <span>
                     {name}
                 </span>
-                <span class="block text-sm text-gray-500 truncate">{email}</span
-                >
+                <span>{email}</span>
             </a>
         </div>
-        <ul aria-labelledby="profile-menu-button">
+        <ul aria-labelledby="profile-menu-button" class="hvLi text-black">
             <li>
-                <a
-                    id="logout"
-                    class="block p-3 hover:bg-gray-100 text-gray-700 text-sm"
-                    >{t("nav.logout")}</a
-                >
+                <a id="logout">{t("nav.logout")}</a>
             </li>
         </ul>
     </div>
     <button
         type="button"
-        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        class="inline-flex items-center p-[.5vw] w-10 h-10 justify-center text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         aria-controls="navbar-user"
     >
         <span class="sr-only">Open main menu</span>
