@@ -50,12 +50,12 @@ const isUser = user ? "modalRent" : "modalLogin";
 
 <Layout>
     <div
-        class="w-[49vw] h-[40vw] mx-auto my-[2vw] flex max-[768px]:flex-col max-[768px]:w-[33%] max-[768px]:h-[71vw] max-[768px]:justify-evenly bg-gray-50 rounded-xl shadow-xl"
+        class="w-[49vw] h-[40vw] mx-auto my-[2vw] flex max-[687px]:size-full max-[800px]:size-4/5 max-[464px]:flex-col max- [464px]:w-[33%] max-[464px]:h-[71vw] max-[464px]:justify-evenly bg-gray-50 rounded-xl shadow-xl"
     >
         {/* Image Section */}
         <div
             transition:name=`item-${data.id}`
-            class="w-full max-[768px]:h-1/2 relative"
+            class="w-full max-[464px]:h-1/2 relative"
         >
             {/* Availability Badge */}
             <Availability client:load entry={data} />
@@ -68,7 +68,7 @@ const isUser = user ? "modalRent" : "modalLogin";
 
         {/* Details Section */}
         <div
-            class="px-[1.3vw] py-[1vw] w-full flex flex-col justify-evenl max-[768px]:h-1/2 max-[768px]:justify-around"
+            class="px-[1.3vw] py-[1vw] w-full flex flex-col justify-evenly max-[464px]:h-1/2 max-[464px]:justify-around"
         >
             {/* Título e Preço */}
             <div class="flex flex-col gap-[.5vw] justify-between">
