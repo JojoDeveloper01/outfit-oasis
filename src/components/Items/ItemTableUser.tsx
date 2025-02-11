@@ -111,7 +111,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                                 {/* Cart Button */}
                                 <button
                                     id={`add-to-cart-${entry.id}`}
-                                    className="size-12 flex items-center justify-center bg-[--color-black] rounded-full shadow-lg hover: hover:text-[--color-black] transition-colors duration-200 ease-in-out"
+                                    className="size-12 flex items-center justify-center bg-[--color-black] rounded-full shadow-lg transition-colors duration-200 ease-in-out hover:bg-white hover:text-black"
                                     aria-label="Add to Cart"
                                 >
                                     <svg
