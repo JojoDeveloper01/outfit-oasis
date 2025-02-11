@@ -43,7 +43,7 @@ if (addUserResult?.error) {
 
     <!-- Add New User Accordion -->
     <details
-        class="max-w-screen-desktop my-16 group border border-gray-200 rounded-lg"
+        class="max-w-screen-desktop my-[5vw] group border border-gray-200 rounded-lg"
     >
         <!-- Cabeçalho do Accordion -->
         <summary
@@ -75,7 +75,7 @@ if (addUserResult?.error) {
             >
                 <!-- Grid Container -->
                 <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    class="grid grid-cols-1 max-tablet:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
                 >
                     <!-- Name Field -->
                     <div class="field">
@@ -137,7 +137,9 @@ if (addUserResult?.error) {
                     </div>
 
                     <!-- Profile Picture Field -->
-                    <div class="field col-span-1 md:col-span-2 lg:col-span-1">
+                    <div
+                        class="field col-span-1 max-tablet:col-span-2 lg:col-span-1"
+                    >
                         <label for="profile_pic"> Profile Picture </label>
                         <input
                             type="file"

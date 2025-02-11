@@ -131,3 +131,24 @@ export const sendEmail = async (to: any, message: any) => {
     throw new Error("Erro ao enviar email");
   }
 };
+
+//
+interface DashboardItem {
+  href: string;
+  label: string;
+}
+
+export const dashboardItems = (lang: string, t: (key: string) => string): DashboardItem[] => [
+  {
+    href: `/${lang}/dashboard/analytics`,
+    label: t("nav.analytics"),
+  },
+  {
+    href: `/${lang}/dashboard/users`,
+    label: t("nav.users"),
+  },
+  {
+    href: `/${lang}/dashboard/items`,
+    label: t("nav.items"),
+  },
+];

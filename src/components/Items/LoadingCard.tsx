@@ -12,7 +12,7 @@ export default function LoadingCard({ count, width, height, layoutDirection }: L
         <div
             className={`${layoutDirection === "horizontal"
                 ? "overflow-x-auto overflow-y-hidden whitespace-nowrap h-full"
-                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-9"
+                : "flex flex-wrap gap-[2vw] mt-[2.3vw]"
                 }`}
         >
             {cards.map((_, index) => (
@@ -20,7 +20,7 @@ export default function LoadingCard({ count, width, height, layoutDirection }: L
                     key={index}
                     style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`
                         }`}
-                    className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2 h-full" : "mx-auto"
+                    className={`relative ${layoutDirection === "horizontal" ? "inline-block h-full" : ""
                         } shadow-lg rounded-lg overflow-hidden border border-gray-300 animate-pulse`}
                 >
                     <div className="absolute inset-0 bg-gray-200"></div>

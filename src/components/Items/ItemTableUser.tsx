@@ -54,18 +54,17 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
             </div>
         ) :
             (
-
                 <div
                     className={`${layoutDirection === "horizontal"
                         ? "overflow-x-auto overflow-y-hidden whitespace-nowrap h-full"
-                        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-9"
+                        : "flex flex-wrap gap-[2vw] mt-[2.3vw]"
                         }`}
                 >
                     {data.map((entry) => (
                         <div
                             key={entry.id}
                             style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`}`}
-                            className={`relative ${layoutDirection === "horizontal" ? "inline-block mx-2 h-full" : "mx-auto"}  shadow-lg rounded-lg overflow-hidden border border-gray-300`}
+                            className={`relative ${layoutDirection === "horizontal" ? "inline-block h-full" : ""}  shadow-lg rounded-lg overflow-hidden border border-gray-300`}
                         >
                             {/* Image Section */}
                             {entry.image && (
@@ -85,7 +84,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
 
                                     <div className="absolute top-[.7vw] right-2 flex flex-col gap-[.7vw] items-center">
                                         {/* Size*/}
-                                        <div className="px-[.8vw] py-[.3vw] bg-black text-white rounded-full text-xs">{entry.size}</div>
+                                        <div className="px-[.8vw] py-[.3vw] bg-black text-white rounded-full text-[.9vw]">{entry.size}</div>
 
                                         {/* Color*/}
                                         <div className="right-2 flex gap-1">
@@ -102,7 +101,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                             )}
 
                             {/* Bottom Info Section */}
-                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-4 pb-3 flex gap-[1vw] justify-around">
+                            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-[1vw] pb-3 flex gap-[1vw] justify-around">
                                 {/* Title and Price */}
                                 <div className="grid">
                                     <h3 className="text-base font-semibold truncate">{entry.name}</h3>

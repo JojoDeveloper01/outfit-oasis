@@ -87,7 +87,7 @@ const rentals = await getRentals();
 
     <!-- Add New Item Form -->
     <details
-        class="max-w-screen-desktop my-16 group border border-gray-200 rounded-lg"
+        class="max-w-screen-desktop my-[5vw] group border border-gray-200 rounded-lg"
     >
         <summary
             class="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 rounded-t-lg hover:bg-gray-100"
@@ -116,7 +116,7 @@ const rentals = await getRentals();
                 enctype="multipart/form-data"
             >
                 <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    class="grid grid-cols-1 max-tablet:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
                 >
                     <!-- name Field -->
                     <div>
@@ -222,7 +222,7 @@ const rentals = await getRentals();
                     </div>
 
                     <!-- image Field -->
-                    <div class="col-span-1 md:col-span-2 lg:col-span-1">
+                    <div class="col-span-1 max-tablet:col-span-2 lg:col-span-1">
                         <label
                             for="image"
                             class="block text-[1vw] font-medium text-gray-700 mb-1"

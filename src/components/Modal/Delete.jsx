@@ -65,7 +65,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                 className="backdrop:bg-black/50 shadow-lg max-w-[40vw] w-full m-auto p-[1vw] text-red-800 border border-red-300 rounded-lg bg-red-50"
             >
                 <div className="flex items-center mb-[1.5vw]">
-                    <h3 className="text-[1.5vw] max-[767px]:text-[4vw] font-medium">
+                    <h3 className="text-[1.5vw] max-tablet:text-[4vw] font-medium">
                         Are you sure you want to remove {name}?
                     </h3>
                 </div>

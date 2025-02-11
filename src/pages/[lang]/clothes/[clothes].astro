@@ -50,45 +50,50 @@ const isUser = user ? "modalRent" : "modalLogin";
 
 <Layout>
     <div
-        class="max-w-screen-lg mx-auto my-16 flex flex-col md:flex-row bg-gray-50 rounded-xl shadow-xl"
+        class="w-[58vw] h-[47vw] max-tablet:w-[20vw] max-tablet:h-[40vw] mx-auto my-[4vw] flex flex-col flex-row bg-gray-50 rounded-xl shadow-xl"
     >
         {/* Image Section */}
-        <div transition:name=`item-${data.id}` class="w-full md:w-1/2 relative">
+        <div
+            transition:name=`item-${data.id}`
+            class="w-full max-tablet:w-1/2 relative"
+        >
             {/* Availability Badge */}
             <Availability client:load entry={data} />
             <img
                 src={String(data.image)}
                 alt={String(data.name)}
-                class="rounded-lg shadow-md w-full h-[46rem] max-[768px]:h-[32rem] object-cover object-top saturate-150"
+                class="rounded-lg shadow-md size-full max-tablet:h-[32rem] object-cover object-top saturate-150"
             />
         </div>
 
         {/* Details Section */}
         <div
-            class="px-6 py-8 w-full md:w-1/2 flex flex-col justify-between gap-6"
+            class="px-[1.3vw] py-[2.3vw] w-full max-tablet:w-1/2 flex flex-col justify-between gap-[1.3vw]"
         >
             {/* Título e Preço */}
-            <div>
-                <h1 class="text-2xl md:text-4xl font-bold text-gray-800">
+            <div class="flex flex-col gap-[.5vw] justify-between">
+                <h1 class="text-[1.5vw] font-bold text-gray-800">
                     {data.name}
                 </h1>
-                <p class="text-[1vw] text-gray-500 font-bold mt-4">
+                <p class="text-[1vw] text-gray-500 font-bold">
                     {data.category}
                 </p>
-                <div class="mt-3 flex items-center gap-[1vw]">
-                    <p class="text-2xl md:text-3xl font-bold text-gray-900">
+                <div class="flex items-center">
+                    <p class="text-[1vw] font-bold text-gray-900">
                         {Number(data.rental_price).toFixed(2)} €
                     </p>
                 </div>
             </div>
 
-            <div class="grid gap-[1vw]">
+            <div class="flex flex-col justify-between gap-[1vw]">
                 {/* Color */}
                 <div>
-                    <p class="text-gray-800 font-semibold">Color</p>
-                    <div class="flex items-center gap-[1vw] mt-2">
+                    <p class="text-[1.3vw] text-gray-800 font-semibold">
+                        Color
+                    </p>
+                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
                         <span
-                            class="w-8 h-8 rounded-full border-2 border-gray-200"
+                            class="size-[1.5vw] rounded-full border-2 border-gray-200"
                             style={{ backgroundColor: String(data.color) }}
                         ></span>
                     </div>
@@ -96,10 +101,12 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                 {/* Brand */}
                 <div>
-                    <p class="text-gray-800 font-semibold">Brand</p>
-                    <div class="flex items-center gap-[1vw] mt-2">
+                    <p class="text-[1.3vw] text-gray-800 font-semibold">
+                        Brand
+                    </p>
+                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
                         <span
-                            class="py-[.6vw] px-[1vw] border rounded-lg text-gray-700 font-medium"
+                            class="text-[1vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
                         >
                             {data.brand}
                         </span>
@@ -108,10 +115,10 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                 {/* Tamanhos */}
                 <div>
-                    <p class="text-gray-800 font-semibold">Size</p>
-                    <div class="flex items-center gap-[1vw] mt-2">
+                    <p class="text-[1.3vw] text-gray-800 font-semibold">Size</p>
+                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
                         <button
-                            class="py-[.6vw] px-[1vw] border rounded-lg text-gray-700 font-medium"
+                            class="text-[1vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
                         >
                             {data.size}
                         </button>
@@ -120,13 +127,13 @@ const isUser = user ? "modalRent" : "modalLogin";
             </div>
 
             {/* Botão de Ação */}
-            <div class="flex flex-col justify-evently mt-6">
+            <div class="flex flex-col justify-evently">
                 <div
                     class="flex gap-[1vw] *:p-[1vw] *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
                 >
                     <button
                         onclick={`document.getElementById('${isUser}').showModal()`}
-                        class={`w-full bg-[--greenBlack] hover:bg-black hover:text-white`}
+                        class={`w-full bg-[--greenBlack] text-[1.4vw] hover:bg-black hover:text-white`}
                         data-rent={data.id}
                     >
                         Rent Now
@@ -134,7 +141,7 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                     <button
                         id={`add-to-cart-${data.id}`}
-                        class="w-1/6 flex justify-center bg-[--color-black] hover:bg-black hover:text-white"
+                        class="w-1/6 bg-[--color-black] hover:bg-black hover:text-white *:size-[2vw] *:m-auto"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -161,8 +168,8 @@ const isUser = user ? "modalRent" : "modalLogin";
                 </div>
 
                 {/* Informação Adicional */}
-                <div class="border-t pt-4 mt-4">
-                    <ul class="text-[1vw] text-gray-600 space-y-2">
+                <div class="border-t pt-[1vw] mt-[.9vw]">
+                    <ul class="text-[.8vw] font-light text-gray-600 space-y-2">
                         <li>💸 Qualiade - Preço</li>
                         <li>🔒 Pagamentos seguros e suporte rápido</li>
                     </ul>

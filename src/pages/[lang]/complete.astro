@@ -32,7 +32,7 @@ const item_id = Astro.url.searchParams.get("item_id");
             <p id="status-message" class="text-lg text-gray-700">
                 Verificando status...
             </p>
-            <div class="loader mt-6"></div>
+            <div class="loader mt-[1.5vw]"></div>
             <!-- Animação de carregamento -->
         </div>
 
@@ -46,7 +46,7 @@ const item_id = Astro.url.searchParams.get("item_id");
                 Payment successful! Thank you for purchasing!
             </p>
             <p
-                class="text-[1vw] max-[767px]:text-[3vw] text-gray-800 font-semibold mb-[1vw]"
+                class="text-[1vw] max-tablet:text-[1.5vw] text-gray-800 font-semibold mb-[1vw]"
             >
                 Find your item here:
             </p>
@@ -63,7 +63,7 @@ const item_id = Astro.url.searchParams.get("item_id");
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
-            <p class="text-lg mt-4">
+            <p class="text-lg mt-[.9vw]">
                 Show item ID <span class="font-bold">{item_id}</span> at the desk
                 to receive your item.
             </p>

@@ -1,55 +1,113 @@
 ---
 import { getLangFromUrl, useTranslations } from "@i18n/utils";
 
+import { dashboardItems } from "@lib/utils";
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const t = useTranslations(lang) as (key: string) => string;
 
 const { user, isStaff } = Astro.props;
 ---
 
+<style>
+    button {
+        &:hover {
+            color: var(--colo-white);
+        }
+    }
+
+    .dashboard-dropdown {
+        &:hover .dashboard-menu,
+        &:focus-within .dashboard-menu {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(-148%);
+        }
+
+        svg {
+            transform: rotate(0deg);
+            transition:
+                color 0.3s ease,
+                transform 0.3s ease;
+        }
+
+        &:hover svg,
+        &:focus-within svg {
+            transform: rotate(180deg);
+        }
+    }
+</style>
+
 <footer
     transition:persist="footer"
-    class="bottom-0 left-0 z-20 w-full p-[1vw] shadow md:flex md:items-center md:justify-between md:p-6 capitalize"
+    class="w-full border-t-2 border-[#ffffff3d]"
     slot="footer"
 >
     <div
-        class="max-w-screen-2xl w-full flex flex-wrap items-center justify-between mx-auto p-[1vw]"
+        class="flex flex-wrap items-center justify-between mx-auto py-[1.5vw] max-laptop:py-[1vw]"
     >
-        <span class="text-[1vw] sm:text-center"
-            >© 2023 <a href={`/${lang}/`} class="hover:underline"
-                >OutFit Oasis</a
-            >. All Rights Reserved.
+        <span
+            class="self-center text-[1vw] max-laptop:text-[1vw] font-semibold whitespace-nowrap"
+            >© 2025 <a href={`/${lang}/`} class="hover:underline">
+                OutFit Oasis
+            </a>
+            All Rights Reserved.
         </span>
         <ul
-            class="flex flex-col font-medium p-[1vw] md:p-0 mt-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0"
+            class="flex p-[1vw] rounded-lg rtl:space-x-reverse *:flex *:items-center"
         >
             <li>
-                <a
-                    href={`/${lang}/`}
-                    class="block py-[.6vw] px-[.8vw] rounded md:p-0"
-                    aria-current="page">{t("nav.home")}</a
+                <a href={`/${lang}/`} class="hvLi" aria-current="page"
+                    >{t("nav.home")}</a
                 >
             </li>
             <li>
-                <a
-                    href=`/${lang}/clothes/`
-                    class="block py-[.6vw] px-[.8vw] rounded md:p-0"
-                    >{t("nav.clothes")}</a
-                >
+                <a href=`/${lang}/clothes/` class="hvLi">{t("nav.clothes")}</a>
             </li>
-            <li>
-                <a
-                    href=`/${lang}/historical/`
-                    class="block py-[.6vw] px-[.8vw] rounded md:p-0"
+            <li style=`display: ${user === undefined ? 'none' : ''}`>
+                <a href=`/${lang}/historical/` class="hvLi"
                     >{t("nav.historical")}</a
                 >
             </li>
-            <li class=`${isStaff}`>
-                <a
-                    href={`/${lang}/dashboard/`}
-                    class="block py-[.6vw] px-[.8vw] rounded md:p-0"
-                    >{t("nav.dashboard")}</a
-                >
+            <li style=`display: ${isStaff}`>
+                <ul class="dashboard-dropdown relative flex items-center">
+                    <a
+                        href={`/${lang}/dashboard/`}
+                        class="hvLi hover: mr-[.5vw]">{t("nav.dashboard")}</a
+                    >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down opacity-80 size-[2vw]"
+                        ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                        ></path><path d="M6 9l6 6l6 -6"></path></svg
+                    >
+
+                    <!-- dashboard Dropdown -->
+                    <ul
+                        class="dashboard-menu mt-[1vw] absolute top-full right-0 rounded-lg shadow-lg invisible opacity-0 translate-y-[-10px] transition-all duration-300 ease z-[1000] bg-gray-100 overflow-hidden"
+                        aria-label="submenu dropdown"
+                    >
+                        {
+                            dashboardItems(lang, t).map((item) => (
+                                <li>
+                                    <a
+                                        href={item.href}
+                                        class="w-[10vw] block p-[.5vw] hover:bg-gray-200 text-gray-700 text-[1vw] text-center"
+                                    >
+                                        {item.label}
+                                    </a>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </ul>
             </li>
         </ul>
     </div>

@@ -12,11 +12,11 @@ const defaultReviews = [
     <ul class="space-y-8 px-8">
         {
             defaultReviews.map((review: { text: string; user: unknown }) => (
-                <li class=" p-6 rounded-lg shadow-lg">
+                <li class=" p-[1.5vw] rounded-lg shadow-lg">
                     <blockquote class="text-gray-700 italic">
                         "{review.text}"
                     </blockquote>
-                    <cite class="block text-right font-semibold mt-4">
+                    <cite class="block text-right font-semibold mt-[.9vw]">
                         - {review.user}
                     </cite>
                 </li>

@@ -8,9 +8,10 @@ import { languages } from "@i18n/ui";
 import LanguagePicker from "./LanguagePicker.astro";
 import UserMenu from "./UserMenu.astro";
 import ModalCart from "./Modal/ModalCart.astro";
+import { dashboardItems } from "@lib/utils";
 
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const t = useTranslations(lang) as (key: string) => string;
 const translatePath = useTranslatedPath(lang as keyof typeof languages);
 
 const { user, isStaff } = Astro.props;
@@ -18,20 +19,6 @@ const { user, isStaff } = Astro.props;
 //console.log(user);
 
 //dashboard dropdown
-const dasboardItems = [
-    {
-        href: `/${lang}/dashboard/analytics`,
-        label: t("nav.analytics"),
-    },
-    {
-        href: `/${lang}/dashboard/users`,
-        label: t("nav.users"),
-    },
-    {
-        href: `/${lang}/dashboard/items`,
-        label: t("nav.items"),
-    },
-];
 ---
 
 <style>
@@ -74,13 +61,13 @@ const dasboardItems = [
             >
                 <!-- <img src="" class="h-8" alt="Outfit Oasis Logo" /> -->
                 <span
-                    class="self-center text-[1vw] max-laptop:text-[1vw] max-[767px]:text-[3vw] font-semibold whitespace-nowrap"
+                    class="self-center text-[1vw] max-laptop:text-[1vw] text-[1.5vw] font-semibold whitespace-nowrap"
                     >OutFit Oasis</span
                 >
             </a>
 
             <ul
-                class="flex p-[1vw] mt-4 rounded-lg rtl:space-x-reverse md:mt-0 *:flex *:items-center"
+                class="flex p-[1vw] mt-[.9vw] rounded-lg rtl:space-x-reverse *:flex *:items-center"
             >
                 <li>
                     <a href={`/${lang}/`} class="hvLi" aria-current="page"
@@ -125,7 +112,7 @@ const dasboardItems = [
                             aria-label="submenu dropdown"
                         >
                             {
-                                dasboardItems.map((item) => (
+                                dashboardItems(lang, t).map((item) => (
                                     <li>
                                         <a
                                             href={item.href}
@@ -142,7 +129,7 @@ const dasboardItems = [
             </ul>
 
             <div
-                class="gap-[1vw] items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+                class="gap-[1vw] items-center justify-between w-full flex w-auto order-1"
                 id="navbar-user"
             >
                 <LanguagePicker

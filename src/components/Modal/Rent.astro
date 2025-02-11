@@ -266,7 +266,7 @@ const { data } = Astro.props;
     <!-- Botão de fechar -->
     <button
         id="closeModal"
-        class="absolute top-6 right-4 text-gray-500 hover:text-gray-700 z-10"
+        class="absolute top-[1.5vw] right-4 text-gray-500 hover:text-gray-700 z-10"
         aria-label="Close"
         onclick="document.getElementById('modalRent').close()"
     >
@@ -289,11 +289,11 @@ const { data } = Astro.props;
     </button>
 
     <div
-        class="relative h-[41rem] *:h-full p-6 *:flex *:gap-[1vw] *:flex-col *:justify-between"
+        class="relative h-[41rem] *:h-full p-[1.5vw] *:flex *:gap-[1vw] *:flex-col *:justify-between"
     >
         <!-- Passo 1 -->
         <section id="step1">
-            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+            <h3 class="text-[1vw] max-tablet:text-[1.5vw] font-bold mb-2">
                 Choose Rental Days
             </h3>
             <p
@@ -323,7 +323,7 @@ const { data } = Astro.props;
 
         <!-- Passo 2 -->
         <section id="step2" class="hidden-step">
-            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+            <h3 class="text-[1vw] max-tablet:text-[1.5vw] font-bold mb-2">
                 Confirm Your Selection
             </h3>
             <div id="itemDetails" class="h-full">
@@ -360,7 +360,7 @@ const { data } = Astro.props;
 
         <!-- Passo 3 -->
         <section id="step3" class="hidden-step">
-            <h3 class="text-[1vw] max-[767px]:text-[3vw] font-bold mb-2">
+            <h3 class="text-[1vw] max-tablet:text-[1.5vw] font-bold mb-2">
                 Payment
             </h3>
             <p
@@ -373,7 +373,7 @@ const { data } = Astro.props;
             <div id="paymentSection" class="h-[22rem] mb-8">
                 <!-- Stripe Elements will be injected here -->
                 <p class="font-bold text-lg"><span id="itemPrice"></span>€</p>
-                <div class="h-full mt-2">
+                <div class="h-full mt-[.6vw]">
                     <!-- Elemento do Stripe -->
 
                     <form
@@ -522,14 +522,14 @@ const { data } = Astro.props;
                 "#itemDetails",
             ) as HTMLElement;
             itemDetails.innerHTML = `
-            <div class="h-full flex flex-col md:flex-row items-center md:items-stretch gap-6">
+            <div class="h-full flex flex-col max-tablet:flex-row items-center max-tablet:items-stretch gap-[1.5vw]">
                 <!-- Seção da Imagem -->
-                <div class="w-full md:w-1/3">
+                <div class="w-full max-tablet:w-1/3">
                     <img src="${item.image}" class="size-full object-cover rounded-lg border border-gray-200 shadow-sm" />
                 </div>
 
                 <!-- Seção de Detalhes -->
-                <div class="flex flex-col justify-between w-full md:w-2/3">
+                <div class="flex flex-col justify-between w-full max-tablet:w-2/3">
                     <h4 class="text-3xl font-semibold mb-3 text-gray-800">${item.name}</h4>
                     <div class="grid gap-[.7vw]">
                         <div class="flex justify-evenly bg-gray-200 p-[.7vw] rounded-lg">

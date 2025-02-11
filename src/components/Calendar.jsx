@@ -228,7 +228,7 @@ const Calendar = ({ itemsRent }) => {
         >
           &lt;
         </button>
-        <h2 class="text-[1vw] max-[767px]:text-[3vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
+        <h2 class="text-[1vw] max-tablet:text-[1.5vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
         <button
           class="text-blue-500 font-bold disabled:text-gray-400"
           onClick={() => setCurrentDate(new Date(year, month + 1))}
