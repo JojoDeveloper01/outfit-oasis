@@ -43,10 +43,10 @@ const { user, isStaff } = Astro.props;
     slot="footer"
 >
     <div
-        class="flex flex-wrap items-center justify-between mx-auto py-[1.5vw] max-laptop:py-[1vw]"
+        class="flex flex-wrap items-center justify-between mx-auto py-[1.5vw] max-[1024px]:py-[1vw]"
     >
         <span
-            class="self-center text-[1vw] max-laptop:text-[1vw] font-semibold whitespace-nowrap"
+            class="self-center text-[1vw] max-[1024px]:text-[1vw] font-semibold whitespace-nowrap"
             >© 2025 <a href={`/${lang}/`} class="hover:underline">
                 OutFit Oasis
             </a>

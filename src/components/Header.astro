@@ -52,22 +52,20 @@ const { user, isStaff } = Astro.props;
 
 <header transition:persist="header" class="capitalize">
     <nav class="m-auto border-b-2 border-[#ffffff3d]">
-        <div
-            class="flex flex-wrap items-center justify-between mx-auto py-[1.5vw] max-laptop:py-[1vw]"
-        >
+        <div class="flex items-center justify-between mx-auto py-[1vw]">
             <a
                 href={`/${lang}/`}
                 class="flex items-center space-x-3 rtl:space-x-reverse"
             >
                 <!-- <img src="" class="h-8" alt="Outfit Oasis Logo" /> -->
                 <span
-                    class="self-center text-[1vw] max-laptop:text-[1vw] text-[1.5vw] font-semibold whitespace-nowrap"
+                    class="self-center text-[1vw] max-[768px]:text-[3vw] max-[768px]:text-[1.5vw] font-semibold whitespace-nowrap"
                     >OutFit Oasis</span
                 >
             </a>
 
             <ul
-                class="flex p-[1vw] mt-[.9vw] rounded-lg rtl:space-x-reverse *:flex *:items-center"
+                class="flex p-[1vw] rounded-lg rtl:space-x-reverse *:flex *:items-center"
             >
                 <li>
                     <a href={`/${lang}/`} class="hvLi" aria-current="page"
@@ -129,7 +127,7 @@ const { user, isStaff } = Astro.props;
             </ul>
 
             <div
-                class="gap-[1vw] items-center justify-between w-full flex w-auto order-1"
+                class="gap-[1vw] items-center justify-between flex order-1"
                 id="navbar-user"
             >
                 <LanguagePicker

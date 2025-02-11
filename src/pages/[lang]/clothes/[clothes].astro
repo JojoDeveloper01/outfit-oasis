@@ -50,48 +50,46 @@ const isUser = user ? "modalRent" : "modalLogin";
 
 <Layout>
     <div
-        class="w-[58vw] h-[47vw] max-tablet:w-[20vw] max-tablet:h-[40vw] mx-auto my-[4vw] flex flex-col flex-row bg-gray-50 rounded-xl shadow-xl"
+        class="w-[49vw] h-[40vw] mx-auto my-[2vw] flex max-[768px]:flex-col max-[768px]:w-[33%] max-[768px]:h-[71vw] max-[768px]:justify-evenly bg-gray-50 rounded-xl shadow-xl"
     >
         {/* Image Section */}
         <div
             transition:name=`item-${data.id}`
-            class="w-full max-tablet:w-1/2 relative"
+            class="w-full max-[768px]:h-1/2 relative"
         >
             {/* Availability Badge */}
             <Availability client:load entry={data} />
             <img
                 src={String(data.image)}
                 alt={String(data.name)}
-                class="rounded-lg shadow-md size-full max-tablet:h-[32rem] object-cover object-top saturate-150"
+                class="rounded-lg shadow-md size-full object-cover object-top saturate-150"
             />
         </div>
 
         {/* Details Section */}
         <div
-            class="px-[1.3vw] py-[2.3vw] w-full max-tablet:w-1/2 flex flex-col justify-between gap-[1.3vw]"
+            class="px-[1.3vw] py-[1vw] w-full flex flex-col justify-evenl max-[768px]:h-1/2 max-[768px]:justify-around"
         >
             {/* Título e Preço */}
             <div class="flex flex-col gap-[.5vw] justify-between">
-                <h1 class="text-[1.5vw] font-bold text-gray-800">
+                <h1 class="text-[1.3vw] font-bold text-gray-800">
                     {data.name}
                 </h1>
-                <p class="text-[1vw] text-gray-500 font-bold">
+                <p class="text-[.9vw] text-gray-500 font-bold">
                     {data.category}
                 </p>
                 <div class="flex items-center">
-                    <p class="text-[1vw] font-bold text-gray-900">
+                    <p class="text-[.9vw] font-bold text-gray-900">
                         {Number(data.rental_price).toFixed(2)} €
                     </p>
                 </div>
             </div>
 
-            <div class="flex flex-col justify-between gap-[1vw]">
+            <div class="flex flex-col justify-between gap-[.5vw]">
                 {/* Color */}
                 <div>
-                    <p class="text-[1.3vw] text-gray-800 font-semibold">
-                        Color
-                    </p>
-                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
+                    <p class="text-[.9vw] text-gray-800 font-semibold">Color</p>
+                    <div class="flex items-center gap-[1vw]">
                         <span
                             class="size-[1.5vw] rounded-full border-2 border-gray-200"
                             style={{ backgroundColor: String(data.color) }}
@@ -101,12 +99,10 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                 {/* Brand */}
                 <div>
-                    <p class="text-[1.3vw] text-gray-800 font-semibold">
-                        Brand
-                    </p>
-                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
+                    <p class="text-[.9vw] text-gray-800 font-semibold">Brand</p>
+                    <div class="flex items-center gap-[1vw]">
                         <span
-                            class="text-[1vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
+                            class="text-[.9vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
                         >
                             {data.brand}
                         </span>
@@ -115,10 +111,10 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                 {/* Tamanhos */}
                 <div>
-                    <p class="text-[1.3vw] text-gray-800 font-semibold">Size</p>
-                    <div class="flex items-center gap-[1vw] mt-[.6vw]">
+                    <p class="text-[.9vw] text-gray-800 font-semibold">Size</p>
+                    <div class="flex items-center gap-[1vw]">
                         <button
-                            class="text-[1vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
+                            class="text-[.9vw] p-[.6vw] border rounded-lg text-gray-700 font-medium"
                         >
                             {data.size}
                         </button>
@@ -129,11 +125,11 @@ const isUser = user ? "modalRent" : "modalLogin";
             {/* Botão de Ação */}
             <div class="flex flex-col justify-evently">
                 <div
-                    class="flex gap-[1vw] *:p-[1vw] *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
+                    class="flex gap-[1vw] *:p-[.4vw] *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
                 >
                     <button
                         onclick={`document.getElementById('${isUser}').showModal()`}
-                        class={`w-full bg-[--greenBlack] text-[1.4vw] hover:bg-black hover:text-white`}
+                        class={`w-full bg-[--greenBlack] text-[1vw] hover:bg-black hover:text-white`}
                         data-rent={data.id}
                     >
                         Rent Now
@@ -141,7 +137,7 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                     <button
                         id={`add-to-cart-${data.id}`}
-                        class="w-1/6 bg-[--color-black] hover:bg-black hover:text-white *:size-[2vw] *:m-auto"
+                        class="w-1/6 bg-[--color-black] hover:bg-black hover:text-white *:size-[1.5vw] *:m-auto"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -116,7 +116,7 @@ const rentals = await getRentals();
                 enctype="multipart/form-data"
             >
                 <div
-                    class="grid grid-cols-1 max-tablet:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
+                    class="grid grid-cols-1 max-[768px]:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
                 >
                     <!-- name Field -->
                     <div>
@@ -222,7 +222,9 @@ const rentals = await getRentals();
                     </div>
 
                     <!-- image Field -->
-                    <div class="col-span-1 max-tablet:col-span-2 lg:col-span-1">
+                    <div
+                        class="col-span-1 max-[768px]:col-span-2 lg:col-span-1"
+                    >
                         <label
                             for="image"
                             class="block text-[1vw] font-medium text-gray-700 mb-1"

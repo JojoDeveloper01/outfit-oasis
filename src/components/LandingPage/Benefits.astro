@@ -8,12 +8,12 @@ const defaultBenefits = [
 
 <section class="benefits py-[.3vw]6">
     <h2 class="text-3xl font-bold text-center mb-8">Why Rent with Us?</h2>
-    <ul class="grid grid-cols-1 max-tablet:grid-cols-3 gap-8 px-8">
+    <ul class="grid grid-cols-1 max-[768px]:grid-cols-3 gap-8 px-8">
         {
             defaultBenefits.map(
                 (benefit: { title: string; description: string }) => (
                     <li class=" p-[1.5vw] rounded-lg shadow-lg text-center">
-                        <h3 class="text-[1vw] max-tablet:text-[1.5vw] font-semibold mb-2">
+                        <h3 class="text-[1vw] max-[768px]:text-[1.5vw] font-semibold mb-2">
                             {benefit.title}
                         </h3>
                         <p class="text-gray-700">{benefit.description}</p>

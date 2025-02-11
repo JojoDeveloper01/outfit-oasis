@@ -17,28 +17,27 @@ const { lang } = Astro.props;
         position: absolute;
         right: 0;
         top: 0;
-
         z-index: 0;
     }
 </style>
 
 <section
     id="hero"
-    class="h-[calc(100dvh-5vw)] flex items-center relative overflow-hidden *:h-full"
+    class="h-[calc(100dvh-6vw)] max-[768px]:h-[calc(100dvh-7vw)] flex items-center relative overflow-hidden *:h-full"
 >
     <div
-        class="w-1/2 flex gap-[2vw] flex-col justify-evenly items-start py-[4vw] max-tablet:justify-center max-tablet:gap-[7vw] max-tablet:w-full max-tablet:h-full z-10"
+        class="w-1/2 flex gap-[2vw] flex-col justify-evenly items-start py-[4vw] max-[768px]:justify-evently max-[768px]:w-full max-[768px]:h-full z-10"
     >
         <!-- Content -->
         <h1
-            class="leading-[5vw] font-extrabold text-[--gold] max-tablet:leading-[10vw] max-tablet:text-[9vw]"
+            class="leading-[5vw] font-extrabold text-[--gold] max-[768px]:leading-[14vw] max-[768px]:text-[calc(5vw+3vh)]"
         >
             The Smart Way to Wear Luxury
         </h1>
 
         <!-- Subheading -->
         <p
-            class="w-full font-extralight text-[1.3vw] leading-[2vw] max-tablet:text-[1.5vw] max-tablet:leading-[5vw]"
+            class="w-full font-extralight text-[1.3vw] leading-[2vw] max-[768px]:text-[3vw] max-[768px]:leading-[5vw]"
         >
             Rent designer fashion for any occasion at an affordable price, enjoy
             luxury without the commitment, and always stay in style.
@@ -46,12 +45,12 @@ const { lang } = Astro.props;
 
         <a
             href=`/${lang}/clothes/`
-            class="px-[1vw] py-[0.7vw] font-semibold text-[1.3vw] max-tablet:text-[4vw] max-tablet:ml-[1vw] max-tablet:px-[4vw] max-tablet:py-[1.7vw] text-black bg-[--gold] rounded-full hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
+            class="px-[1vw] py-[0.7vw] font-semibold text-[1.3vw] max-[768px]:text-[4vw] max-[768px]:ml-[1vw] max-[768px]:px-[4vw] max-[768px]:py-[1.7vw] text-black bg-[--gold] rounded-full hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
         >
             Discover
         </a>
 
-        <div class="w-full flex items-center gap-[.5vw] max-tablet:gap-[5vw]">
+        <div class="w-full flex items-center gap-[.5vw] max-[768px]:gap-[5vw]">
             <div
                 class="w-[27%] flex *:w-[41%] *:h-full *:rounded-full *:-ml-[1vw] *:bg-[--color-black]"
             >
@@ -60,10 +59,10 @@ const { lang } = Astro.props;
                 <img src="/hero-reviews.avif" alt="" />
             </div>
             <div class="w-3/4 grid gap-[.4vw]">
-                <p class="font-semibold text-[1.3vw] max-tablet:text-[1.5vw]">
+                <p class="font-semibold text-[1.3vw] max-[768px]:text-[1.5vw]">
                     Our happy customers
                 </p>
-                <p class="text-gray-400 text-[1.3vw] max-tablet:text-[1.5vw]">
+                <p class="text-gray-400 text-[1.3vw] max-[768px]:text-[1.5vw]">
                     <span class="text-yellow-400">&#9733;</span> 5.0 (1k Reviews)
                 </p>
             </div>
@@ -71,7 +70,7 @@ const { lang } = Astro.props;
     </div>
 
     <div
-        class="w-1/2 relative flex flex-col items-center max-tablet:absolute max-tablet:w-full max-tablet:h-full max-tablet:opacity-10 z-0"
+        class="w-1/2 relative flex flex-col items-center max-[768px]:absolute max-[768px]:w-full max-[768px]:h-full max-[768px]:opacity-10 z-0"
     >
         <img
             src="/items_images/hero-image.png"
