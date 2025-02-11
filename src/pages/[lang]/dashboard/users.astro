@@ -36,8 +36,6 @@ if (addUserResult?.error) {
 <style></style>
 
 <Dashboard>
-    <h1>Manage Users</h1>
-
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
@@ -146,7 +144,7 @@ if (addUserResult?.error) {
                             id="profile_pic"
                             name="profile_pic"
                             accept="image/*"
-                            class="block w-full text-[1vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                            class="block w-full text-[1vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]"
                         />
                     </div>
                 </div>
@@ -155,7 +153,7 @@ if (addUserResult?.error) {
                 <div class="flex justify-end">
                     <button
                         type="submit"
-                        class="px-5 py-[.6vw].5 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+                        class="px-5 py-[.6vw] bg-[--gold] text-white font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
                     >
                         Create User
                     </button>

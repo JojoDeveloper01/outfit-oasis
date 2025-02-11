@@ -145,11 +145,11 @@ const isUser = user ? "modalRent" : "modalLogin";
             {/* Botão de Ação */}
             <div class="flex flex-col justify-evently">
                 <div
-                    class="flex gap-[1vw] *:p-[.8vw] *:font-bold *:rounded-lg *:text-white *:shadow-md *:transition"
+                    class="flex gap-[1vw] *:p-[.8vw] *:font-bold *:rounded-lg *:shadow-md *:transition"
                 >
                     <button
                         onclick={`document.getElementById('${isUser}').showModal()`}
-                        class={`w-full bg-[--greenBlack] text-[1vw] max-[687px]:text-[1.4vw] max-[464px]:text-[2vw] max-[464px]:p-[2vw] hover:bg-black hover:text-white`}
+                        class={`w-full bg-black text-[1vw] max-[687px]:text-[1.4vw] max-[464px]:text-[2vw] max-[464px]:p-[2vw] hover:bg-white hover:text-black`}
                         data-rent={data.id}
                     >
                         Rent Now
@@ -157,7 +157,7 @@ const isUser = user ? "modalRent" : "modalLogin";
 
                     <button
                         id={`add-to-cart-${data.id}`}
-                        class="w-1/6 bg-[--color-black] hover:bg-black hover:text-white max-[687px]:p-[1.4vw] *:size-[1.5vw] *:m-auto max-[687px]:*:size-[2vw] max-[464px]:*:size-[4vw]"
+                        class="w-1/6 bg-[--gold] text-black hover:bg-black hover:text-[--gold] max-[687px]:p-[1.4vw] *:size-[1.5vw] *:m-auto max-[687px]:*:size-[2vw] max-[464px]:*:size-[4vw]"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -186,7 +186,7 @@ const isUser = user ? "modalRent" : "modalLogin";
                 {/* Informação Adicional */}
                 <div class="border-t pt-[1vw] mt-[.9vw]">
                     <ul
-                        class="text-[.8vw] max-[687px]:text-[1.4vw] max-[464px]:text-[1.8vw] font-light text-gray-600 space-y-2"
+                        class="text-[.8vw] max-[687px]:text-[1.4vw] max-[464px]:text-[1.8vw] font-light text-white space-y-2"
                     >
                         <li>💸 Qualiade - Preço</li>
                         <li>🔒 Pagamentos seguros e suporte rápido</li>

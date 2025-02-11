@@ -169,7 +169,7 @@ export default function EditableField({ userID, field, name, type, value }) {
                                 }
                             }}
                             accept="image/*" // Aceita apenas imagens
-                            className={`block w-full text-[.5vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                            className={`block w-full text-[.5vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                                 }`}
                         />
                     </div>

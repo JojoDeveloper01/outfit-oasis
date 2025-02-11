@@ -56,7 +56,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
             (
                 <div
                     className={`${layoutDirection === "horizontal"
-                        ? "overflow-x-auto overflow-y-hidden whitespace-nowrap h-full"
+                        ? "overflow-x-auto overflow-y-hidden whitespace-nowrap h-full flex gap-[1vw]"
                         : "flex flex-wrap gap-[2vw] mt-[2.3vw]"
                         }`}
                 >
@@ -105,7 +105,7 @@ export default function ItemTableForUser({ items, rentals, lang, layoutDirection
                                 {/* Title and Price */}
                                 <div className="grid">
                                     <h3 className="text-base font-semibold truncate">{entry.name}</h3>
-                                    <p style="font-family:cursive" className="text-lg font-bold text-[--gold]">{entry.rental_price} €</p>
+                                    <p style="font-family:cursive" className="text-[1.2vw] font-bold text-[--gold]">{entry.rental_price} €</p>
                                 </div>
 
                                 {/* Cart Button */}

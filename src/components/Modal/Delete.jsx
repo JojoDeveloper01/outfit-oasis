@@ -56,7 +56,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         deleteModal.showModal();
                     }
                 }}
-                className="bg-red-500 text-white px-[1vw] py-[.6vw] rounded-md hover:bg-red-600 text-[1.3vw]"
+                className="bg-red-500 text-white px-[.8vw] py-[.6vw] rounded-md hover:bg-red-600 text-[.7vw]"
             >
                 Delete
             </button>
@@ -81,7 +81,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                     <button
                         onClick={remove}
                         disabled={isDeleting}
-                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-lg px-[.8vw] py-[.5vw] me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                        className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw] me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
                         {isDeleting ? "Deleting..." : "Delete"}
@@ -90,7 +90,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         onClick={() =>
                             document.getElementById(`delete-${name}-${id}`)?.close()
                         }
-                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-lg px-[.8vw] py-[.5vw]"
+                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw]"
                     >
                         Cancel
                     </button>

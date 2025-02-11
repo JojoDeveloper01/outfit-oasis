@@ -7,7 +7,7 @@ const item_id = Astro.url.searchParams.get("item_id");
 <style>
     .loader {
         border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #f76c6c;
+        border-left-color: var(--gold);
         border-radius: 50%;
         width: 36px;
         height: 36px;
@@ -24,12 +24,12 @@ const item_id = Astro.url.searchParams.get("item_id");
 <Layout>
     <div
         id="payment-status"
-        class="flex flex-col items-center justify-center h-screen bg-pink-100"
+        class="flex flex-col items-center justify-center h-screen"
     >
         <!-- Status de carregamento -->
         <div id="status-loading" class="flex flex-col items-center">
-            <h1 class="text-3xl font-bold mb-[1vw]">Status do Pagamento</h1>
-            <p id="status-message" class="text-lg text-gray-700">
+            <h1 class="text-[2vw] font-bold mb-[1vw]">Status do Pagamento</h1>
+            <p id="status-message" class="text-[1.2vw] font-light text-white">
                 Verificando status...
             </p>
             <div class="loader mt-[1.5vw]"></div>
@@ -41,12 +41,12 @@ const item_id = Astro.url.searchParams.get("item_id");
             id="status-success"
             class="hidden flex flex-col items-center text-center"
         >
-            <h1 class="text-3xl font-bold mb-[1vw]">🎉 Success!</h1>
-            <p class="text-lg text-green-700 font-semibold mb-[1vw]">
+            <h1 class="text-[2vw] font-bold mb-[1vw]">🎉 Success!</h1>
+            <p class="text-[1.2vw] text-[--gold] font-semibold mb-[1vw]">
                 Payment successful! Thank you for purchasing!
             </p>
             <p
-                class="text-[1vw] max-[768px]:text-[1.5vw] text-gray-800 font-semibold mb-[1vw]"
+                class="text-[1vw] max-[768px]:text-[1.5vw] text-white font-semibold mb-[1vw]"
             >
                 Find your item here:
             </p>
@@ -63,7 +63,7 @@ const item_id = Astro.url.searchParams.get("item_id");
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
-            <p class="text-lg mt-[.9vw]">
+            <p class="text-[1.2vw] mt-[.9vw]">
                 Show item ID <span class="font-bold">{item_id}</span> at the desk
                 to receive your item.
             </p>

@@ -293,7 +293,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                         key={`${item.id}-${field}`}
                                         className={`relative flex flex-col gap-[.7vw]`}
                                     >
-                                        <label className="font-bold text-[1vw] text-gray-600" htmlFor={field}>
+                                        <label className="font-bold text-[1vw] text-white" htmlFor={field}>
                                             {field.replace("_", " ")}
                                         </label>
 

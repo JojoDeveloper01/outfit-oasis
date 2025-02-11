@@ -219,25 +219,25 @@ const Calendar = ({ itemsRent }) => {
   }, [startDate, endDate, pricePerDay]);
 
   return (
-    <div class="flex flex-col gap-[1vw] justify-evenly w-full relative">
+    <div class="flex flex-col gap-[1vw] max-[768px]:gap-[2vw] justify-evenly w-full relative">
       <div class="flex justify-between items-center">
         <button
-          class="text-blue-500 font-bold disabled:text-gray-400"
+          class="text-[--gold] font-bold disabled:text-gray-400"
           onClick={() => setCurrentDate(new Date(year, month - 1))}
           disabled={year === today.getFullYear() && month === today.getMonth()}
         >
           &lt;
         </button>
-        <h2 class="text-[1vw] max-[768px]:text-[1.5vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
+        <h2 class="text-[1.3vw] max-[768px]:text-[1.5vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
         <button
-          class="text-blue-500 font-bold disabled:text-gray-400"
+          class="text-[--gold] font-bold disabled:text-gray-400"
           onClick={() => setCurrentDate(new Date(year, month + 1))}
           disabled={year === maxDate.getFullYear() && month === maxDate.getMonth()}
         >
           &gt;
         </button>
       </div>
-      <div class="grid grid-cols-7 text-center text-gray-700 font-bold">
+      <div class="grid grid-cols-7 text-[1.3vw] text-center text-gray-700 font-bold">
         {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
           <span>{day}</span>
         ))}
@@ -255,27 +255,29 @@ const Calendar = ({ itemsRent }) => {
 
           return (
             <div
-              className={`p-[.7vw] rounded-md cursor-pointer ${isSelected
-                ? "bg-blue-300"
+              className={`grid text-[1vw] max-[768px]:text-[2.3vw] p-[.7vw] rounded-md cursor-pointer font-normal ${isSelected
+                ? "bg-yellow-200"
                 : isHovered
-                  ? "bg-blue-100"
+                  ? "bg-yellow-200"
                   : isDisabled
-                    ? "bg-gray-300"
+                    ? "bg-[#919191]"
                     : "bg-gray-200"
-                } ${isDisabled ? "cursor-not-allowed" : "hover:bg-blue-100"}`}
+                } ${isDisabled ? "cursor-not-allowed" : "hover:bg-yellow-100"}`}
               onClick={() => !isDisabled && handleDateClick(date)}
               onMouseEnter={(e) => handleMouseEnter(date, e)}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
             >
-              {day}
+              <span>
+                {day}
+              </span>
             </div>
           );
         })}
       </div>
       {tooltip.visible && (
         <div
-          class="tooltip absolute bg-[rgba(59,130,246,0.9)] text-[white] text-[1vw] shadow-[0_2px_6px_rgba(0,0,0,0.2)] z-[1000] pointer-events-none whitespace-nowrap hidden p-[.7vw] rounded-md;"
+          class="tooltip absolute bg-[--gold] text-black text-[.9vw] font-normal shadow-[0_2px_6px_rgba(0,0,0,0.2)] z-[1000] pointer-events-none whitespace-nowrap hidden p-[.3vw] rounded-lg overflow-hidden;"
           style={{
             position: 'fixed',
             left: `${tooltip.x}px`,
@@ -288,12 +290,12 @@ const Calendar = ({ itemsRent }) => {
       )}
       {startDate && endDate && (
         <div
-          className="flex flex-wrap gap-x-2 text-lg font-semibold text-gray-700"
+          className="flex flex-wrap gap-x-2 text-[1.2vw] max-[768px]:text-[2vw] font-semibold text-gray-700 bg-gray-200 px-3 py-1 rounded-lg"
         >
           <span id="interval-date">{`${formatDate(startDate)} - ${formatDate(endDate)}`}</span>
           -
           <span>{`${calculateIntervalDays(startDate, endDate)} days x ${pricePerDay} €/day =`}
-            <span id="totalPriceItem" className="ml-2 px-2 py-[.3vw] bg-gray-300 rounded-lg">{`${totalPrice}`}</span> €
+            <span id="totalPriceItem" className="ml-2 px-2 py-[.3vw] bg-[#919191]gray-300 rounded-lg">{`${totalPrice}`}</span> €
           </span>
         </div>
       )}
