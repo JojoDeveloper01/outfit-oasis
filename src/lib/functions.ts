@@ -11,6 +11,21 @@ export const stripe = await loadStripe(
     "pk_test_51Qe20MQiiUMPEnxK0iI0rdoNI2ypnoGNTrna9PadMTbptmaQCoB8tVwiWfi1DxD783Uqq69yRVr5Sq1ytDTZCmmA001BOcIb1X",
 ) || null;
 
+export interface Item {
+    id: number;
+    name: string;
+    category: string;
+    type: string;
+    size: string;
+    color: string;
+    brand: string;
+    condition: string;
+    rental_price: number;
+    image?: string;
+    availability: number;
+    rentalUsers?: any[];
+}
+
 export const sanitizeName = (text: string) => {
     const sanitizedText = text
         .replace(/[^a-z0-9]+/gi, '-') // Substitui caracteres especiais por '-'

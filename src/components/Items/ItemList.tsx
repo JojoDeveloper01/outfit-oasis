@@ -2,9 +2,10 @@ import ItemFilter from "@components/Items/ItemFilter";
 import ItemTableUser from "@components/Items/ItemTableUser";
 import ItemTableStaff from "@components/Items/ItemTableStaff";
 import { useState } from "preact/hooks";
+import type { Item } from "@lib/functions";
 
 interface ItemListProps {
-    items: any[];
+    items: Item[];
     users: any[];
     rentals: any[];
     userType: string;

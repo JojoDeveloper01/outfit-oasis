@@ -1,18 +1,7 @@
 import { turso } from "@turso";
+import type { Item } from "./functions";
 
 /* Items */
-
-interface Item {
-    name: string,
-    type: string,
-    category: string,
-    size: string,
-    color: string,
-    brand: string,
-    rental_price: string,
-    condition: string,
-    image: string,
-}
 
 export async function getItems() {
     const result = await turso.execute('SELECT * FROM articles WHERE availability = 1 ORDER BY added_date DESC');
@@ -22,7 +11,7 @@ export async function getItems() {
 export async function addItem(item: Item) {
     const result = await turso.execute({
         sql: 'INSERT INTO articles (name, type, category, size, color, brand, rental_price, condition, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        args: [item.name, item.type, item.category, item.size, item.color, item.brand, item.rental_price, item.condition, item.image],
+        args: [item.name, item.type, item.category, item.size, item.color, item.brand, item.rental_price, item.condition, item.image || null],
     });
     return result.rowsAffected;
 }
@@ -35,7 +24,9 @@ export async function editItem(id: number, updates: Partial<Item>): Promise<bool
             .map(([key, _]) => `${key} = ?`) // Mapear os campos para 'key = ?'
             .join(", ");
 
-        const values = Object.values(updates).filter((value) => value !== undefined && value !== null);
+        const values = Object.values(updates)
+            .filter((value) => value !== undefined && value !== null)
+            .map((value) => Array.isArray(value) ? JSON.stringify(value) : value);
 
         //console.log("values: ", values)
 
