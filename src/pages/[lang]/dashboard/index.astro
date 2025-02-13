@@ -37,75 +37,71 @@ const { topPurchasedProducts } = analyticsData;
 ---
 
 <Dashboard>
-    <section class="mt-16">
-        <div class=`relative w-full h-[15rem] mb-[1vw]`>
+    <div class=`relative w-full h-[15rem]`>
+        <div class="mb-3 ml-2">
+            <a href={`/${lang}/clothes`} class="text-white underline">
+                Go to Clothes
+            </a>
+        </div>
+        <ItemTableUser
+            client:load
+            items={items}
+            rentals={rentals}
+            lang={lang}
+            layoutDirection="horizontal"
+            width="13rem"
+        />
+        <div class="w-fit h-full absolute flex items-center right-4 top-0 z-50">
+            <span
+                class="*:size-10 opacity-70 text-black *:drop-shadow-[0_35px_35px_rgba(255,255,255,1)] z-50 *:text-[#5f5f5f]"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-right-lines"
+                    ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                    ></path><path
+                        d="M12 9v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-3v-6h3z"
+                    ></path><path d="M3 9v6"></path><path d="M6 9v6"
+                    ></path></svg
+                >
+            </span>
+        </div>
+    </div>
+
+    <div class="w-full flex flex-wrap gap-[2vw] mt-[4vw]">
+        <div>
             <div class="mb-3 ml-2">
-                <a href={`/${lang}/clothes`} class="text-white underline">
-                    Go to Clothes
+                <a
+                    href={`/${lang}/dashboard/items`}
+                    class="text-white underline"
+                >
+                    Go to items
                 </a>
             </div>
-            <ItemTableUser
-                client:load
-                items={items}
-                rentals={rentals}
+            <BestSeller
                 lang={lang}
-                layoutDirection="horizontal"
-                width="13rem"
+                topPurchasedProducts={topPurchasedProducts}
             />
-            <div
-                class="w-fit h-full absolute flex items-center right-4 top-0 z-50"
-            >
-                <span
-                    class="*:size-10 opacity-70 text-black *:drop-shadow-[0_35px_35px_rgba(255,255,255,1)] z-50 *:text-[#5f5f5f]"
+        </div>
+
+        <div class="min-w-[26rem]">
+            <div class="mb-3 ml-2">
+                <a
+                    href={`/${lang}/dashboard/users`}
+                    class="text-white underline"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-big-right-lines"
-                        ><path stroke="none" d="M0 0h24v24H0z" fill="none"
-                        ></path><path
-                            d="M12 9v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-3v-6h3z"
-                        ></path><path d="M3 9v6"></path><path d="M6 9v6"
-                        ></path></svg
-                    >
-                </span>
+                    Go to Users
+                </a>
             </div>
+            <UsersList client:load userType="client" users={users} />
         </div>
-
-        <div class="w-full flex flex-wrap gap-[1vw] mt-16">
-            <div>
-                <div class="mb-3 ml-2">
-                    <a
-                        href={`/${lang}/dashboard/items`}
-                        class="text-white underline"
-                    >
-                        Go to items
-                    </a>
-                </div>
-                <BestSeller
-                    lang={lang}
-                    topPurchasedProducts={topPurchasedProducts}
-                />
-            </div>
-
-            <div class="min-w-[26rem]">
-                <div class="mb-3 ml-2">
-                    <a
-                        href={`/${lang}/dashboard/users`}
-                        class="text-white underline"
-                    >
-                        Go to Users
-                    </a>
-                </div>
-                <UsersList client:load userType="client" users={users} />
-            </div>
-        </div>
-    </section>
+    </div>
 </Dashboard>

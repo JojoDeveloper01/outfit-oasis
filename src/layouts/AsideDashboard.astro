@@ -21,7 +21,65 @@ const user = $user;
 const isStaff = user?.user_type || null;
 
 const dashboard = `/${lang}/dashboard`;
+
+const navItems: {
+    path: string;
+    label:
+        | "home"
+        | "dashboard"
+        | "clothes"
+        | "analytics"
+        | "users"
+        | "items"
+        | "historical"
+        | "logout";
+    icon: string;
+}[] = [
+    {
+        path: "/",
+        label: "home",
+        icon: "m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z",
+    },
+    {
+        path: "/analytics",
+        label: "analytics",
+        icon: "m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z",
+    },
+    {
+        path: "/users",
+        label: "users",
+        icon: "M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z",
+    },
+    {
+        path: "/items",
+        label: "items",
+        icon: "M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z",
+    },
+];
+
+interface Props {
+    dashboard?: string;
+    t?: (key: string) => string;
+}
 ---
+
+<style>
+    aside {
+        overflow: hidden;
+    }
+
+    a {
+        min-height: 3.5rem;
+    }
+
+    span {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        max-width: 100%;
+        word-break: break-word;
+    }
+</style>
 
 <Layout
     title="Dashboard"
@@ -30,129 +88,92 @@ const dashboard = `/${lang}/dashboard`;
     canonical="https://outfit-oasis.com/dashboard"
     hideFooter={true}
 >
-    <div class="h-full flex">
-        <button
-            data-drawer-target="default-sidebar"
-            data-drawer-toggle="default-sidebar"
-            aria-controls="default-sidebar"
-            type="button"
-            class="inline-flex items-center p-[.7vw] mt-[.6vw] ms-3 text-[1vw] text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-        >
-            <span class="sr-only">Open sidebar</span>
-            <svg
-                class="w-6 h-6"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+    <div class="h-full flex gap-[2.5vw] overflow-hidden pt-[3vw]">
+        <div class="text-center ml-2">
+            <button
+                class="text-black bg-[--gold] hover:bg-yellow-200 focus:ring-4 focus:ring-yellow-200 font-medium rounded-lg text-[1vw] px-[1vw] py-[.7vw] dark:bg-[--gold] focus:outline-none"
+                type="button"
+                onclick="document.getElementById('drawer-navigation').classList.toggle('-translate-x-full')"
             >
-                <path
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
-                    d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-                ></path>
-            </svg>
-        </button>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2"
+                    ><path stroke="none" d="M0 0h24v24H0z" fill="none"
+                    ></path><path d="M4 6l16 0"></path><path d="M4 12l16 0"
+                    ></path><path d="M4 18l16 0"></path></svg
+                >
+            </button>
+        </div>
 
+        <!-- Sidebar Drawer -->
         <aside
-            id="default-sidebar"
-            class="z-40 w-[20rem] transition-transform -translate-x-full sm:translate-x-0 bg-[#1a1a1a]"
-            aria-label="Sidebar"
+            id="drawer-navigation"
+            class="absolute top-0 left-0 z-40 w-72 h-screen px-8 py-4 overflow-y-auto transition-transform -translate-x-full bg-[#1a1a1a] text-white dark:bg-gray-800"
+            tabindex="-1"
+            aria-labelledby="drawer-navigation-label"
         >
-            <div class="h-full px-[.8vw] py-4 capitalize">
-                <ul class="space-y-2 font-medium h-full">
-                    <li>
-                        <a
-                            href={`${dashboard}/`}
-                            class="flex items-center p-[.7vw] text-white rounded-lg hover:bg-gray-100 hover:text-black"
-                        >
-                            <svg
-                                class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-white"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"
-                                ></path>
-                            </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap"
-                                >{t("nav.home")}</span
-                            >
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href={`${dashboard}/analytics`}
-                            class="flex items-center p-[.7vw] text-white rounded-lg hover:bg-gray-100 hover:text-black"
-                        >
-                            <svg
-                                class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-white"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"
-                                ></path>
-                            </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap"
-                                >{t("nav.analytics")}</span
-                            >
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href={`${dashboard}/users`}
-                            class="flex items-center p-[.7vw] text-white rounded-lg hover:bg-gray-100 hover:text-black"
-                        >
-                            <svg
-                                class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-white"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 20 18"
-                            >
-                                <path
-                                    d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"
-                                ></path>
-                            </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap"
-                                >{t("nav.users")}</span
-                            >
-                        </a>
-                    </li>
-                    <li>
-                        <a
-                            href={`${dashboard}/items`}
-                            class="flex items-center p-[.7vw] text-white rounded-lg hover:bg-gray-100 hover:text-black"
-                        >
-                            <svg
-                                class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-white"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 18 20"
-                            >
-                                <path
-                                    d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"
-                                ></path>
-                            </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap"
-                                >{t("nav.items")}</span
-                            >
-                        </a>
-                    </li>
+            <h5
+                id="drawer-navigation-label"
+                class="text-base font-semibold text-gray-400 uppercase"
+            >
+                Menu
+            </h5>
+            <button
+                type="button"
+                onclick="document.getElementById('drawer-navigation').classList.add('-translate-x-full')"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+                <svg
+                    aria-hidden="true"
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="sr-only">Close menu</span>
+            </button>
+
+            <div class="py-4 overflow-y-auto">
+                <ul class="space-y-2 font-medium">
+                    {
+                        navItems.map((item) => (
+                            <li>
+                                <a
+                                    href={`${dashboard}${item.path}`}
+                                    class="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700"
+                                >
+                                    <svg
+                                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path d={item.icon} />
+                                    </svg>
+                                    <span class="ms-3">
+                                        {t(`nav.${item.label}`)}
+                                    </span>
+                                </a>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
         </aside>
 
-        <section class="w-full overflow-y-auto">
-            <div class="w-full mt-[.9vw] mb-36 pl-[6vw] pr-8">
-                <slot />
-            </div>
+        <section class="w-full pb-8 overflow-y-auto">
+            <slot />
         </section>
     </div>
 

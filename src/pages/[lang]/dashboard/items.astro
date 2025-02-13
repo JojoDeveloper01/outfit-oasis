@@ -80,21 +80,21 @@ const rentals = await getRentals();
 </style>
 
 <Dashboard>
-    <h1>Manage Items</h1>
+    <h1 class="text-4xl">Item management</h1>
 
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
     <!-- Add New Item Form -->
     <details
-        class="max-w-screen-desktop my-[5vw] group border border-gray-200 rounded-lg"
+        class="my-[3vw] bg-[#38383899] rounded-lg shadow-md overflow-hidden"
     >
         <summary
-            class="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 rounded-t-lg hover:bg-gray-100"
+            class="flex items-center justify-between cursor-pointer px-6 py-[1.5vw] font-semibold text-white bg-[#38383899] rounded-t-lg"
         >
             <span>Add New Item</span>
             <svg
-                class="w-3 h-3 transition-transform group-open:rotate-180"
+                class="w-4 h-4 transition-transform group-open:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 10 6"
@@ -108,57 +108,71 @@ const rentals = await getRentals();
             </svg>
         </summary>
 
-        <div class="p-5 border-t border-gray-200 rounded-b-lg">
+        <div class="p-6 bg-[#38383899]">
             <form
                 action={actions.addItem}
                 method="POST"
-                class="space-y-4"
+                class="space-y-6"
                 enctype="multipart/form-data"
             >
                 <div
-                    class="grid grid-cols-1 max-[768px]:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
+                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
-                    <!-- name Field -->
                     <div>
-                        <label for="name"> Name </label>
+                        <label class="block text-gray-300" for="name"
+                            >Name</label
+                        >
                         <input
                             type="text"
                             id="name"
                             name="name"
                             placeholder="Enter the item's name"
-                            autocomplete="name"
                             required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <!-- Category Field -->
                     <div>
-                        <label for="category"> Category </label>
+                        <label class="block text-gray-300" for="category"
+                            >Category</label
+                        >
                         <input
                             type="text"
                             id="category"
                             name="category"
                             placeholder="Enter the item's category"
-                            autocomplete="category"
                             required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <!-- type Field -->
                     <div>
-                        <label for="type"> type </label>
-                        <select id="type" name="type" required>
+                        <label class="block text-gray-300" for="type"
+                            >Type</label
+                        >
+                        <select
+                            id="type"
+                            name="type"
+                            required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
+                        >
                             <option value="">Select a Type</option>
-                            <option value="clothing">clothing</option>
-                            <option value="footwear">footwear</option>
-                            <option value="other">other</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="footwear">Footwear</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
 
-                    <!-- Size Field -->
                     <div>
-                        <label for="size"> Size </label>
-                        <select id="size" name="size" required>
+                        <label class="block text-gray-300" for="size"
+                            >Size</label
+                        >
+                        <select
+                            id="size"
+                            name="size"
+                            required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
+                        >
                             <option value="">Select a size</option>
                             <option value="XS">XS</option>
                             <option value="S">S</option>
@@ -169,38 +183,52 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <!-- Color Field -->
                     <div>
-                        <label for="color"> Color </label>
-                        <select id="color" name="color" required>
+                        <label class="block text-gray-300" for="color"
+                            >Color</label
+                        >
+                        <select
+                            id="color"
+                            name="color"
+                            required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
+                        >
                             <option value="">Select a color</option>
-                            <option value="red">red</option>
-                            <option value="blue">blue</option>
-                            <option value="yellow">yellow</option>
-                            <option value="green">green</option>
-                            <option value="brown">brown</option>
-                            <option value="black">black</option>
-                            <option value="white">white</option>
-                            <option value="other">other</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="green">Green</option>
+                            <option value="brown">Brown</option>
+                            <option value="black">Black</option>
+                            <option value="white">White</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
 
-                    <!-- brand Field -->
                     <div>
-                        <label for="brand"> brand </label>
+                        <label class="block text-gray-300" for="brand"
+                            >Brand</label
+                        >
                         <input
                             type="text"
                             id="brand"
                             name="brand"
                             placeholder="Enter the item's brand"
                             required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <!-- condition Field -->
                     <div>
-                        <label for="condition"> Condition </label>
-                        <select id="condition" name="condition" required>
+                        <label class="block text-gray-300" for="condition"
+                            >Condition</label
+                        >
+                        <select
+                            id="condition"
+                            name="condition"
+                            required
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
+                        >
                             <option value="">Select a condition</option>
                             <option value="new">New</option>
                             <option value="used">Used</option>
@@ -208,42 +236,36 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <!-- rental price Field -->
                     <div>
-                        <label for="rental_price"> rental price </label>
+                        <label class="block text-gray-300" for="rental_price"
+                            >Rental Price</label
+                        >
                         <input
                             type="text"
                             id="rental_price"
                             name="rental_price"
-                            placeholder="Enter the item's rental_price"
-                            autocomplete="rental_price"
+                            placeholder="Enter rental price"
                             required
-                        />
-                    </div>
-
-                    <!-- image Field -->
-                    <div
-                        class="col-span-1 max-[768px]:col-span-2 lg:col-span-1"
-                    >
-                        <label
-                            for="image"
-                            class="block text-[1vw] font-medium text-gray-700 mb-1"
-                        >
-                            image
-                        </label>
-                        <input
-                            type="file"
-                            id="image"
-                            name="image"
-                            accept="image/*"
-                            class="block w-full text-[1vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]-700"
+                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
                 </div>
+
+                <div>
+                    <label class="block text-gray-300" for="image">Image</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        class="w-full text-white p-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[--gold]"
+                    />
+                </div>
+
                 <div class="flex justify-end">
                     <button
                         type="submit"
-                        class="px-5 py-[.6vw].5 bg-[--gold] text-[--color-white] font-medium rounded-lg shadow hover:bg-[--color-black] focus:ring-4 focus:ring-[--color-white]"
+                        class="px-6 py-2 bg-[--gold] text-white font-semibold rounded-lg shadow-md hover:bg-yellow-200 focus:ring-4 focus:ring-[--gold]"
                     >
                         Create Item
                     </button>
