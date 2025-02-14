@@ -34,7 +34,7 @@ export default function CardBase({
         return (
             <div
                 style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`} ${style}`}
-                className={`relative ${baseStyles[layoutDirection as keyof typeof baseStyles]} shadow-lg rounded-lg overflow-hidden border border-gray-300 ${className}`}
+                className={`relative ${baseStyles[layoutDirection as keyof typeof baseStyles]} shadow-lg rounded-lg overflow-hidden ${className}`}
             >
                 {children}
             </div>
@@ -47,7 +47,7 @@ export default function CardBase({
     return (
         <div
             style={`width: ${width}; ${layoutDirection === "horizontal" ? "" : `height: ${height};`} ${style}`}
-            className={`relative ${baseStyles[layoutDirection as keyof typeof baseStyles]} shadow-lg rounded-lg overflow-hidden border border-gray-300 ${className}`}
+            className={`relative group ${baseStyles[layoutDirection as keyof typeof baseStyles]} shadow-lg rounded-lg overflow-hidden ${className}`}
         >
             {/* Image Section */}
             {entry.image && (
@@ -84,7 +84,7 @@ export default function CardBase({
             )}
 
             {/* Bottom Info Section */}
-            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-[1vw] pb-3 flex gap-[1vw] justify-around">
+            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-[1vw] pb-3 flex gap-[1vw] justify-around opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {/* Title and Price */}
                 <div className="grid">
                     <h3 className="text-base font-semibold truncate">{entry.name}</h3>
