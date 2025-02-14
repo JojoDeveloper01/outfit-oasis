@@ -26,6 +26,18 @@ export interface Item {
     rentalUsers?: any[];
 }
 
+export interface Rental {
+    rental_id: number;
+    user_id: number;
+    article_id: number;
+    start_date: string;
+    end_date: string;
+    rental_status: string;
+    return_date: string | null;
+    total_cost: number;
+    item?: Item; // Item associado ao aluguel
+}
+
 export const sanitizeName = (text: string) => {
     const sanitizedText = text
         .replace(/[^a-z0-9]+/gi, '-') // Substitui caracteres especiais por '-'

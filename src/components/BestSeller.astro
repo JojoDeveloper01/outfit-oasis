@@ -4,18 +4,18 @@ const { lang, topPurchasedProducts } = Astro.props;
 
 <!-- Produtos mais comprados -->
 <div
-    class="w-[35rem] max-[768px]:w-[22rem] h-fit bg-gray-800 text-white px-[1vw] py-8 rounded-lg shadow-lg"
+    class="w-[35rem] max-[768px]:w-[22rem] h-fit text-white my-8 rounded-lg shadow-lg"
 >
     <h2 class="text-[1.2vw] font-semibold mb-8">Produtos Mais Comprados</h2>
     <div class="max-h-[25rem] overflow-y-auto">
-        <table class="w-full text-[1vw] text-left text-gray-200">
-            <thead class="text-[.9vw] text-gray-400 uppercase bg-gray-700">
+        <table class="w-full text-[1vw] text-left">
+            <thead class="text-[.9vw] uppercase">
                 <tr>
                     <th scope="col" class="px-[1vw] py-[.6vw]">Produto</th>
-                    <th scope="col" class="px-[1vw] py-[.6vw] text-right"
+                    <th scope="col" class="px-[1.5vw] py-[.6vw] text-right"
                         >Vendas</th
                     >
-                    <th scope="col" class="px-[1vw] py-[.6vw] text-right"
+                    <th scope="col" class="px-[1.5vw] py-[.6vw] text-right"
                         >Total</th
                     >
                 </tr>
@@ -28,10 +28,10 @@ const { lang, topPurchasedProducts } = Astro.props;
                                 <td class="px-[1vw] py-[.6vw]">
                                     {product.name}
                                 </td>
-                                <td class="px-[1vw] py-[.6vw] text-right">
+                                <td class="px-[1.5vw] py-[.6vw] text-right">
                                     {product.count}
                                 </td>
-                                <td class="flex gap-1 px-[1vw] py-[.6vw] text-right">
+                                <td class="flex gap-1 px-[1.5vw] py-[.6vw] text-right">
                                     {product.rental_price
                                         ? (
                                               product.count *

@@ -114,7 +114,7 @@ export default function UserTable({ users, activeFilters, userType }) {
     return (
         <div>
             {/* Cabeçalho */}
-            <div className="bg-gray-50 p-[1vw] rounded-t-lg grid grid-cols-5 gap-[1vw] text-[1vw] font-semibold text-black">
+            <div className="p-[1vw] rounded-t-lg grid grid-cols-5 gap-[1vw] text-[1vw] font-semibold bg-[--grayLight] text-[--color-white]">
                 <div>Profile Picture</div>
                 <div>Name</div>
                 <div>Email</div>
@@ -124,12 +124,12 @@ export default function UserTable({ users, activeFilters, userType }) {
             </div>
 
             {/* Lista de usuários */}
-            <div className="font-light divide-y divide-gray-200 rounded-b-lg">
+            <div className="font-thin divide-y divide-gray-500 rounded-b-lg *:text-[--color-white1]">
                 {data.length === 0 ? (
                     <div className="py-[.8vw] px-[1vw]">No Users available.</div>
                 ) : (
                     data.map((user) => (
-                        <div key={user.id} className="hover:bg-gray-100 p-[1vw] grid grid-cols-5 gap-[1vw] items-center text-black">
+                        <div key={user.id} className="p-[1vw] grid grid-cols-5 gap-[1vw] items-center hover:bg-[--grayLight]">
                             {/* Profile Picture */}
                             <div className="flex items-center justify-center w-12">
                                 <PreviewImage src={user.profile_pic} type="profile" />
@@ -147,7 +147,7 @@ export default function UserTable({ users, activeFilters, userType }) {
 
                             {/* Name, Email, User Type, Phone */}
                             {["name", "email", "user_type", "phone"].map((field) => (
-                                <div key={`${user.id}-${field}`} className="text-[1vw] text-black">
+                                <div key={`${user.id}-${field}`} className="text-[1vw]">
                                     <div className="relative flex items-stretch gap-[.7vw] min-w-32 max-w-64">
                                         {/* Campo editável */}
                                         <div className="w-4/5 *:m-0">

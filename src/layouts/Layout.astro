@@ -48,8 +48,10 @@ const data: any[] = items.map((item: any) => {
 	:root {
 		--background: #171717;
 		--gray: #212121;
+		--grayLight: #434343;
 		--color-black: #0e0e0e;
-		--color-white: #fff;
+		--color-white: #c4c4c4;
+		--color-white1: #e5e7eb;
 		--color: #f7b785;
 		--gold: #efb577;
 		--greenBlack: #006938;
@@ -197,6 +199,14 @@ const data: any[] = items.map((item: any) => {
 			outline: none;
 			ring-color: var(--greenBlack);
 			ring-width: 2px;
+		}
+	}
+
+	table {
+		background: var(--gray);
+		color: var(--color-white1);
+		thead {
+			background-color: var(--grayLight);
 		}
 	}
 

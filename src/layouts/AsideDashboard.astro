@@ -116,20 +116,20 @@ interface Props {
         <!-- Sidebar Drawer -->
         <aside
             id="drawer-navigation"
-            class="absolute top-0 left-0 z-40 w-72 h-screen px-8 py-4 overflow-y-auto transition-transform -translate-x-full bg-[#1a1a1a] text-white dark:bg-gray-800"
+            class="absolute top-0 left-0 z-40 w-72 h-screen px-8 py-4 overflow-y-auto transition-transform -translate-x-full text-[--color-white1] bg-[--gray]"
             tabindex="-1"
             aria-labelledby="drawer-navigation-label"
         >
             <h5
                 id="drawer-navigation-label"
-                class="text-base font-semibold text-gray-400 uppercase"
+                class="text-base font-bold text-[--color-white] uppercase"
             >
                 Menu
             </h5>
             <button
                 type="button"
                 onclick="document.getElementById('drawer-navigation').classList.add('-translate-x-full')"
-                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                class="text-[--color-white] bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             >
                 <svg
                     aria-hidden="true"
@@ -146,16 +146,16 @@ interface Props {
             </button>
 
             <div class="py-4 overflow-y-auto">
-                <ul class="space-y-2 font-medium">
+                <ul class="space-y-2 font-light">
                     {
                         navItems.map((item) => (
                             <li>
                                 <a
                                     href={`${dashboard}${item.path}`}
-                                    class="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700"
+                                    class="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-[--color-black] dark:hover:bg-[--grayLight]"
                                 >
                                     <svg
-                                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                                        class="w-5 h-5 text-[--color-white] transition duration-75 group-hover:text-[--color-black]"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >

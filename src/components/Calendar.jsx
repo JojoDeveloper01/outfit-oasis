@@ -222,7 +222,7 @@ const Calendar = ({ itemsRent }) => {
     <div class="flex flex-col gap-[1vw] max-[768px]:gap-[2vw] justify-evenly w-full relative">
       <div class="flex justify-between items-center">
         <button
-          class="text-[--gold] font-bold disabled:text-gray-400"
+          class="text-[--gold] font-bold disabled:text-[--color-white]"
           onClick={() => setCurrentDate(new Date(year, month - 1))}
           disabled={year === today.getFullYear() && month === today.getMonth()}
         >
@@ -230,7 +230,7 @@ const Calendar = ({ itemsRent }) => {
         </button>
         <h2 class="text-[1.3vw] max-[768px]:text-[1.5vw] font-semibold">{`${monthNames[month]} ${year}`}</h2>
         <button
-          class="text-[--gold] font-bold disabled:text-gray-400"
+          class="text-[--gold] font-bold disabled:text-[--color-white]"
           onClick={() => setCurrentDate(new Date(year, month + 1))}
           disabled={year === maxDate.getFullYear() && month === maxDate.getMonth()}
         >
