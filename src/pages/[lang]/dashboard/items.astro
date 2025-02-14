@@ -6,11 +6,14 @@ import Alerts from "@components/Modal/Alerts.astro";
 import { getItems, getRentals, getUsers } from "@lib/dbFunctions";
 import { userExistsByID } from "@lib/dbFunctions";
 import { actions, isInputError } from "astro:actions";
+import type { Item } from "@lib/functions";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-let items = await getItems();
+let items = (await getItems()) as unknown as Item[];
+
+console.log("items: ", items);
 
 let id: number;
 let $user: any;
@@ -86,11 +89,9 @@ const rentals = await getRentals();
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
     <!-- Add New Item Form -->
-    <details
-        class="my-[3vw] bg-[#38383899] rounded-lg shadow-md overflow-hidden"
-    >
+    <details class="my-[3vw] bg-[--gray] rounded-lg shadow-md overflow-hidden">
         <summary
-            class="flex items-center justify-between cursor-pointer px-6 py-[1.5vw] font-semibold text-white bg-[#38383899] rounded-t-lg"
+            class="flex items-center justify-between cursor-pointer px-6 py-[1.5vw] font-semibold text-white bg-[--gray] rounded-t-lg"
         >
             <span>Add New Item</span>
             <svg
@@ -108,7 +109,7 @@ const rentals = await getRentals();
             </svg>
         </summary>
 
-        <div class="p-6 bg-[#38383899]">
+        <div class="p-6 bg-[--gray]">
             <form
                 action={actions.addItem}
                 method="POST"

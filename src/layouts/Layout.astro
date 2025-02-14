@@ -46,17 +46,15 @@ const data: any[] = items.map((item: any) => {
 
 <style is:global>
 	:root {
-		--background: #f5ded2;
+		--background: #171717;
+		--gray: #212121;
 		--color-black: #0e0e0e;
 		--color-white: #fff;
 		--color: #f7b785;
 		--gold: #efb577;
-		--greenBlack: #008080;
 		--greenBlack: #006938;
-		--green: #89b5a1;
-		--blush: #e99a8b;
+		--blush: #0f0b0a;
 		--gold: #ffca00;
-		--gray: #dfdfdf;
 	}
 
 	/* Aplica para todos os elementos com rolagem */
@@ -77,7 +75,7 @@ const data: any[] = items.map((item: any) => {
 	html,
 	body {
 		/* background: linear-gradient(135deg, #000000, #0d0d0d, #2e2e2e); */
-		background: #0e0e0e;
+		background: var(--background);
 		background-size: 300% 300%;
 		color: var(--color-white);
 

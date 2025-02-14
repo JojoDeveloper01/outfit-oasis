@@ -3,24 +3,9 @@ import Delete from "../Modal/Delete";
 import PreviewImage from "../Modal/PreviewImage";
 import ErrorTooltip from "../Modal/ErrorTooltip";
 import { actions } from "astro:actions";
-import { sanitizeName } from "@lib/functions"
+import { sanitizeName, type Item } from "@lib/functions"
 import type { ComponentChild, VNode } from "preact";
 import type { JSX } from "preact/jsx-runtime";
-
-interface Item {
-    rentalUsers: any;
-    id: number;
-    name: string;
-    category: string;
-    type: string;
-    size: string;
-    color: string;
-    brand: string;
-    condition: string;
-    rental_price: number;
-    image?: string;
-    availability: number;
-}
 
 export default function ItemCard({ items, users, rentals, activeFilters }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string } }) {
     const [data, setData] = useState(items); // Estado dos itens
@@ -161,7 +146,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
         setData((prevData) =>
             prevData.map((item) => ({
                 ...item,
-                rentalUsers: item.rentalUsers.map((rental: { rental_id: number; }) =>
+                rentalUsers: (item.rentalUsers ?? []).map((rental: { rental_id: number; }) =>
                     rental.rental_id === rental_id ? { ...rental, [field]: value } : rental
                 ),
             }))
@@ -213,7 +198,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                     data.reduce((acc: { [key: number]: Item }, item) => {
                         acc[item.id] = {
                             ...item,
-                            rentalUsers: item.rentalUsers.map((rental: { rental_id: number; }) =>
+                            rentalUsers: (item.rentalUsers ?? []).map((rental: { rental_id: number; }) =>
                                 rental.rental_id === rental_id
                                     ? { ...rental, [field]: value } // Update the saved field in originalValues
                                     : rental
@@ -306,7 +291,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                         type="text"
                                                         id={`${item.id}-${field}`}
                                                         name={field}
-                                                        value={item[field as keyof Item] || ""}
+                                                        value={String(item[field as keyof Item] || "")}
                                                         className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
                                                         placeholder={`Enter ${field.replace("_", " ")}`}
                                                         onInput={(e) => handleFieldChange(e, item.id, field)}
@@ -316,7 +301,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                     <select
                                                         id={`${item.id}-${field}`}
                                                         name={field}
-                                                        value={item[field as keyof Item] || ""}
+                                                        value={String(item[field as keyof Item] || "")}
                                                         className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
                                                         onChange={(e) => handleFieldChange(e, item.id, field)}
                                                     >
