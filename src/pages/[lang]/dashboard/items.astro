@@ -53,46 +53,15 @@ const users = await getUsers();
 const rentals = await getRentals();
 ---
 
-<style>
-    .col-wrap {
-        display: flex;
-        gap: 1rem;
-
-        & > * {
-            flex: 1;
-        }
-    }
-    button {
-        background-color: var(--color-white);
-        color: unset;
-
-        &:hover {
-            color: unset;
-        }
-    }
-
-    @media screen and (max-width: 900px) {
-        .col-wrap {
-            display: grid;
-
-            & > * {
-                width: 10 0%;
-            }
-        }
-    }
-</style>
-
 <Dashboard>
-    <h1 class="text-4xl">Item management</h1>
+    <h1 class="text-[2vw] md:text-[1.5vw]">Item management</h1>
 
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
     <!-- Add New Item Form -->
-    <details class="my-[3vw] bg-[--gray] rounded-lg shadow-md overflow-hidden">
-        <summary
-            class="flex items-center justify-between cursor-pointer px-6 py-[1.5vw] font-semibold text-white bg-[--gray] rounded-t-lg"
-        >
+    <details>
+        <summary>
             <span>Add New Item</span>
             <svg
                 class="w-4 h-4 transition-transform group-open:rotate-180"
@@ -119,44 +88,31 @@ const rentals = await getRentals();
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
-                    <div>
-                        <label class="block text-gray-300" for="name"
-                            >Name</label
-                        >
+                    <div class="grid gap-4">
+                        <label for="name">Name</label>
                         <input
                             type="text"
                             id="name"
                             name="name"
                             placeholder="Enter the item's name"
                             required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="category"
-                            >Category</label
-                        >
+                    <div class="grid gap-4">
+                        <label for="category">Category</label>
                         <input
                             type="text"
                             id="category"
                             name="category"
                             placeholder="Enter the item's category"
                             required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="type"
-                            >Type</label
-                        >
-                        <select
-                            id="type"
-                            name="type"
-                            required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
-                        >
+                    <div class="grid gap-4">
+                        <label for="type">Type</label>
+                        <select id="type" name="type" required>
                             <option value="">Select a Type</option>
                             <option value="clothing">Clothing</option>
                             <option value="footwear">Footwear</option>
@@ -164,16 +120,9 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="size"
-                            >Size</label
-                        >
-                        <select
-                            id="size"
-                            name="size"
-                            required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
-                        >
+                    <div class="grid gap-4">
+                        <label for="size">Size</label>
+                        <select id="size" name="size" required>
                             <option value="">Select a size</option>
                             <option value="XS">XS</option>
                             <option value="S">S</option>
@@ -184,16 +133,9 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="color"
-                            >Color</label
-                        >
-                        <select
-                            id="color"
-                            name="color"
-                            required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
-                        >
+                    <div class="grid gap-4">
+                        <label for="color">Color</label>
+                        <select id="color" name="color" required>
                             <option value="">Select a color</option>
                             <option value="red">Red</option>
                             <option value="blue">Blue</option>
@@ -206,30 +148,20 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="brand"
-                            >Brand</label
-                        >
+                    <div class="grid gap-4">
+                        <label for="brand">Brand</label>
                         <input
                             type="text"
                             id="brand"
                             name="brand"
                             placeholder="Enter the item's brand"
                             required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
                         />
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="condition"
-                            >Condition</label
-                        >
-                        <select
-                            id="condition"
-                            name="condition"
-                            required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
-                        >
+                    <div class="grid gap-4">
+                        <label for="condition">Condition</label>
+                        <select id="condition" name="condition" required>
                             <option value="">Select a condition</option>
                             <option value="new">New</option>
                             <option value="used">Used</option>
@@ -237,38 +169,38 @@ const rentals = await getRentals();
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-gray-300" for="rental_price"
-                            >Rental Price</label
-                        >
+                    <div class="grid gap-4">
+                        <label for="rental_price">Rental Price</label>
                         <input
                             type="text"
                             id="rental_price"
                             name="rental_price"
                             placeholder="Enter rental price"
                             required
-                            class="w-full mt-1 p-2 rounded-lg focus:ring-2 focus:ring-[--gold] text-white"
+                        />
+                    </div>
+
+                    <div
+                        class="field col-span-1 max-[768px]:col-span-2 lg:col-span-1"
+                    >
+                        <label for="image">Image</label>
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/*"
+                            class="block w-full text-[1vw] text-[--gold] file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]"
                         />
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-gray-300" for="image">Image</label>
-                    <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/*"
-                        class="w-full text-white p-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-[--gold]"
-                    />
-                </div>
-
+                <!-- Submit Button -->
                 <div class="flex justify-end">
                     <button
                         type="submit"
-                        class="px-6 py-2 bg-[--gold] text-white font-semibold rounded-lg shadow-md hover:bg-yellow-200 focus:ring-4 focus:ring-[--gold]"
+                        class="px-5 py-[.6vw] bg-[--gold] text-black font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
                     >
-                        Create Item
+                        Create User
                     </button>
                 </div>
             </form>

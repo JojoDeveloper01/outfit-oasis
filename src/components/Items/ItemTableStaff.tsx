@@ -249,10 +249,10 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                     return (
                         <div
                             key={item.id}
-                            className="flex flex-wrap items-start gap-[.7vw] p-[1vw] pt-7  shadow-lg rounded-lg border border-gray-300"
+                            className="flex flex-wrap items-start gap-[.7vw] p-[1vw] pt-7  shadow-lg rounded-lg bg-[--gray]"
                         >
                             {/* Campos */}
-                            <div className="flex flex-wrap gap-[.7vw] flex-grow px-12">
+                            <div className="flex flex-wrap gap-[1vw] flex-grow px-12">
 
                                 {/* Imagem */}
                                 {item.image && (
@@ -282,7 +282,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                             {field.replace("_", " ")}
                                         </label>
 
-                                        <div className={`relative flex items-stretch gap-[.7vw] min-w-32 max-w-56`}>
+                                        <div className={`relative flex items-stretch gap-[.7vw] min-w-32 max-w-56 mt-[1vw]`}>
 
                                             {/* Conditional rendering for input types */}
                                             <div className="p-1 min-w-24 max-w-48 *:m-0">
@@ -292,7 +292,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                         id={`${item.id}-${field}`}
                                                         name={field}
                                                         value={String(item[field as keyof Item] || "")}
-                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
+                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-[--gold]" : ""}`}
                                                         placeholder={`Enter ${field.replace("_", " ")}`}
                                                         onInput={(e) => handleFieldChange(e, item.id, field)}
                                                         autoComplete="off"
@@ -302,7 +302,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                         id={`${item.id}-${field}`}
                                                         name={field}
                                                         value={String(item[field as keyof Item] || "")}
-                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-yellow-500" : ""}`}
+                                                        className={`${errors[`${item.id}-${field}`] ? "border-red-500" : ""} ${highlightMatch(field, item[field as keyof Item] ?? "") ? "ring-2 ring-[--gold]" : ""}`}
                                                         onChange={(e) => handleFieldChange(e, item.id, field)}
                                                     >
                                                         {/* Options for each dropdown */}
@@ -398,64 +398,58 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                             {/* Locações históricas */}
                             <details className="w-full my-4 px-12">
-                                <summary className="flex items-center justify-between cursor-pointer p-5  font-medium text-gray-500  border border-gray-200 rounded-lg hover:bg-gray-100">
+                                <summary className="flex items-center justify-between cursor-pointer p-5 font-medium bg-[--background] text-[--color-white1] hover:bg-[--grayLight] rounded-lg">
                                     Historical Rents
-                                    <span className="text-[#00671e] font-bold">{itemRentals.length || 0}</span>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-[--gold] font-bold">{itemRentals.length || 0}</span>
 
-                                    {/* Se o item tiver pelo menos 1 rental "completed", mostra o botão */}
-                                    {hasCompletedRentals && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setHideCompleted((prev) => !prev)}
-                                            className="ml-4 py-[.3vw] px-2 bg-gray-200 rounded hover:bg-gray-300 text-[1vw] text-gray-700"
-                                        >
-                                            {hideCompleted ? "Mostrar Completados" : "Ocultar Completados"}
-                                        </button>
-                                    )}
+                                        {/* Se o item tiver pelo menos 1 rental "completed", mostra o botão */}
+                                        {hasCompletedRentals && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setHideCompleted((prev) => !prev)}
+                                                className="ml-4 py-[.3vw] px-2 text-[1vw] rounded bg-[--color-white] text-[--color-black]"
+                                            >
+                                                {hideCompleted ? "Mostrar Completados" : "Ocultar Completados"}
+                                            </button>
+                                        )}
+                                    </div>
                                 </summary>
 
-                                <div className="bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                                <div className="bg-[--background] border-t border-[--color-white] rounded-b-lg">
                                     {itemRentals.length ? (
                                         itemRentals.map((renter: { rental_status: JSX.Signalish<string | number | undefined>; userName: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; start_date: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; end_date: string | number | bigint | boolean | object | ComponentChild[] | VNode<any> | null | undefined; rental_id: number; return_date: any; total_cost: string | number | bigint | boolean | object | VNode<any> | null | undefined; }, index: unknown) => (
                                             <div
                                                 key={index}
-                                                className={`
-                                                        flex flex-wrap items-center gap-[1vw] px-[1vw] py-6 border-b rounded-md shadow-sm
-                                                        ${renter.rental_status === "completed"
-                                                        ? "bg-green-100 border-green-400"
-                                                        : renter.rental_status === "active"
-                                                            ? "bg-orange-100 border-orange-400"
-                                                            : "bg-red-100 border-red-400"
-                                                    }
-                                                    `}
+                                                className={`flex flex-wrap items-center gap-[1vw] px-[1vw] py-6 border-b rounded-md shadow-sm hover:bg-[--gray]`}
                                             >
                                                 {/* Name */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg`}>
                                                         Name
                                                     </span>
-                                                    <span className="text-gray-800 font-bold">{renter.userName}</span>
+                                                    <span className="px-[1vw] font-extralight">{renter.userName}</span>
                                                 </div>
 
                                                 {/* Start Date */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
                                                         Start Date
                                                     </span>
-                                                    <span className="text-gray-800">{renter.start_date}</span>
+                                                    <span className="px-[1vw] font-extralight">{renter.start_date}</span>
                                                 </div>
 
                                                 {/* End Date */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
                                                         End Date
                                                     </span>
-                                                    <span className="text-gray-800">{renter.end_date}</span>
+                                                    <span className="px-[1vw] font-extralight">{renter.end_date}</span>
                                                 </div>
 
                                                 {/* Status */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
                                                         Status
                                                     </span>
                                                     <div className="flex gap-[.7vw]">
@@ -463,8 +457,8 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                             id={`${renter.rental_id}-rental_status`}
                                                             name="rental_status"
                                                             value={renter.rental_status}
-                                                            style={{ width: "7rem", paddingRight: "0.5rem", background: "transparent" }}
-                                                            className="px-2 py-[.3vw] border rounded border-gray-300 cursor-pointer"
+                                                            style={{ width: "7rem", paddingRight: "0.5rem" }}
+                                                            className={`px-2 py-[.3vw] rounded cursor-pointer text-[--color-black] ${statusBg(String(renter.rental_status))}`}
                                                             onChange={(e) => handleRentalStatusChange(e, renter.rental_id, "rental_status")}
                                                         >
                                                             <option value="active">Active</option>
@@ -504,29 +498,29 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
 
                                                 {/* Return */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
                                                         Return
                                                     </span>
-                                                    <span className="text-gray-800">{renter.return_date || "Pending"}</span>
+                                                    <span className="px-[1vw] font-extralight">{renter.return_date || "Pending"}</span>
                                                 </div>
 
                                                 {/* Total Cost */}
                                                 <div className="flex flex-col gap-[.7vw]">
-                                                    <span className={`px-[1vw] py-[.3vw] text-black-600 text-[1vw]  font-medium rounded-lg ${statusBg(String(renter.rental_status))}}`}>
+                                                    <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
                                                         Total Cost
                                                     </span>
-                                                    <span className="text-gray-800 font-bold">${renter.total_cost}</span>
+                                                    <span className="px-[1vw] font-extralight">${renter.total_cost}</span>
                                                 </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="p-5 text-[1vw] text-gray-500">No rentals recorded.</div>
+                                        <div className="p-5 text-[1vw] text-[--color-white1] bg-[--background]">No rentals recorded.</div>
                                     )}
                                 </div>
                             </details>
 
                             {/* Botões de ação */}
-                            <div className="w-full flex flex-col gap-[.7vw] items-end">
+                            <div className="w-full flex flex-col gap-[.7vw] items-end px-12">
                                 <Delete
                                     name={sanitizeName(item.name)}
                                     id={item.id}

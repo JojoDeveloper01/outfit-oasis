@@ -84,11 +84,11 @@ export default function CardBase({
             )}
 
             {/* Bottom Info Section */}
-            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white px-[1vw] pt-[1vw] pb-3 flex gap-[1vw] justify-around opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/30 to-black/80 text-white p-[0.8vw] flex gap-[1vw] justify-around opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {/* Title and Price */}
                 <div className="grid">
-                    <h3 className="text-base font-semibold truncate">{entry.name}</h3>
-                    <p style="font-family:cursive" className="text-[1.2vw] font-bold text-[--gold]">{entry.rental_price} €</p>
+                    <h3 className="text-[.65vw] font-semibold truncate">{entry.name}</h3>
+                    <span style="font-family:cursive" className="text-[.9vw] font-bold text-[--gold]">{entry.rental_price} €</span>
                 </div>
 
                 {/* Cart Button */}

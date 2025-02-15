@@ -12,15 +12,6 @@ interface Entry {
 }
 
 const Availability: FunctionalComponent<{ entry: Entry }> = ({ entry }) => {
-    function formatDate(date: string): string {
-        const parsedDate = new Date(date);
-        return parsedDate.toLocaleDateString("pt-PT", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        });
-    }
-
     const rentals = Array.isArray(entry.rental) ? entry.rental : entry.rental ? [entry.rental] : [];
     const today = new Date();
     const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
@@ -81,7 +72,7 @@ const Availability: FunctionalComponent<{ entry: Entry }> = ({ entry }) => {
             style={{ boxShadow: "0 2px 24px 4px rgb(85 85 85 / 43%)" }}
         >
             {lastUnavailableDate
-                ? `Reserved until ${formatDate(lastUnavailableDate.toISOString().split("T")[0])}`
+                ? "Reserved"
                 : "Available"}
         </div>
     );

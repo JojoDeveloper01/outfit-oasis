@@ -33,22 +33,16 @@ if (addUserResult?.error) {
 }
 ---
 
-<style></style>
-
 <Dashboard>
-    <h1 class="text-4xl">User management</h1>
+    <h1 class="text-[2vw] md:text-[1.5vw]">User management</h1>
 
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
 
     <!-- Add New User Accordion -->
-    <details
-        class="max-w-screen-desktop my-[5vw] group border border-gray-200 rounded-lg"
-    >
+    <details>
         <!-- Cabeçalho do Accordion -->
-        <summary
-            class="flex items-center justify-between cursor-pointer p-5 font-medium text-gray-500 rounded-t-lg hover:bg-gray-100"
-        >
+        <summary>
             <span>Add New User</span>
             <svg
                 class="w-3 h-3 transition-transform group-open:rotate-180"
@@ -66,7 +60,7 @@ if (addUserResult?.error) {
         </summary>
 
         <!-- Conteúdo do Accordion -->
-        <div class="p-5 border-t border-gray-200 rounded-b-lg">
+        <div class="p-5 rounded-b-lg text-[--color-white1]]">
             <form
                 action={actions.addUser}
                 method="POST"
@@ -78,7 +72,7 @@ if (addUserResult?.error) {
                     class="grid grid-cols-1 max-[768px]:grid-cols-2 lg:grid-cols-3 gap-[1.5vw]"
                 >
                     <!-- Name Field -->
-                    <div class="field">
+                    <div class="grid gap-4">
                         <label for="name"> Name </label>
                         <input
                             type="text"
@@ -91,7 +85,7 @@ if (addUserResult?.error) {
                     </div>
 
                     <!-- Email Field -->
-                    <div class="field">
+                    <div class="grid gap-4">
                         <label for="email"> Email </label>
                         <input
                             type="email"
@@ -103,7 +97,7 @@ if (addUserResult?.error) {
                     </div>
 
                     <!-- Password Field -->
-                    <div class="field">
+                    <div class="grid gap-4">
                         <label for="password"> Password </label>
                         <input
                             type="password"
@@ -116,7 +110,7 @@ if (addUserResult?.error) {
                     </div>
 
                     <!-- User Type Field -->
-                    <div class="field">
+                    <div class="grid gap-4">
                         <label for="user_type"> User Type </label>
                         <select id="user_type" name="user_type" required>
                             <option value="client">Client</option>
@@ -125,7 +119,7 @@ if (addUserResult?.error) {
                     </div>
 
                     <!-- Phone Field -->
-                    <div class="field">
+                    <div class="grid gap-4">
                         <label for="phone"> Phone </label>
                         <input
                             type="number"
@@ -146,7 +140,7 @@ if (addUserResult?.error) {
                             id="profile_pic"
                             name="profile_pic"
                             accept="image/*"
-                            class="block w-full text-[1vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]"
+                            class="block w-full text-[1vw] text-[--gold] file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]"
                         />
                     </div>
                 </div>
@@ -155,7 +149,7 @@ if (addUserResult?.error) {
                 <div class="flex justify-end">
                     <button
                         type="submit"
-                        class="px-5 py-[.6vw] bg-[--gold] text-white font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
+                        class="px-5 py-[.6vw] bg-[--gold] text-black font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
                     >
                         Create User
                     </button>

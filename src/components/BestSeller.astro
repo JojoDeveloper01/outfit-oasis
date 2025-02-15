@@ -3,18 +3,16 @@ const { lang, topPurchasedProducts } = Astro.props;
 ---
 
 <!-- Produtos mais comprados -->
-<div
-    class="w-[35rem] max-[768px]:w-[22rem] h-fit text-white rounded-lg shadow-lg"
->
+<div class="w-full max-[768px]:w-[22rem] h-fit text-white rounded-lg shadow-lg">
     <div class="max-h-[25rem] overflow-y-auto">
         <table class="w-full text-[1vw] text-left rounded-t-lg overflow-hidden">
             <thead class="text-[.9vw] uppercase">
                 <tr>
-                    <th scope="col" class="px-[1vw] py-[.6vw]">Produto</th>
-                    <th scope="col" class="px-[1.5vw] py-[.6vw] text-right"
+                    <th scope="col" class="px-[1vw] py-[1vw]">Produto</th>
+                    <th scope="col" class="px-[1.5vw] py-[1vw] text-right"
                         >Vendas</th
                     >
-                    <th scope="col" class="px-[1.5vw] py-[.6vw] text-right"
+                    <th scope="col" class="px-[1.5vw] py-[1vw] text-right"
                         >Total</th
                     >
                 </tr>
@@ -23,14 +21,14 @@ const { lang, topPurchasedProducts } = Astro.props;
                 {
                     Array.isArray(topPurchasedProducts) &&
                         topPurchasedProducts.map((product: any) => (
-                            <tr class="border-b border-gray-600">
-                                <td class="px-[1vw] py-[.6vw]">
+                            <tr class="hover:bg-[--background]">
+                                <td class="px-[1vw] py-[1vw]">
                                     {product.name}
                                 </td>
-                                <td class="px-[1.5vw] py-[.6vw] text-right">
+                                <td class="px-[1.5vw] py-[1vw] text-right">
                                     {product.count}
                                 </td>
-                                <td class="flex gap-1 px-[1.5vw] py-[.6vw] text-right">
+                                <td class="flex gap-1 px-[1.5vw] py-[1vw] text-right">
                                     {product.rental_price
                                         ? (
                                               product.count *

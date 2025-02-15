@@ -9,11 +9,11 @@
         background: #e0a800; /* Slightly darker gold for hover effect */
     }
 
-    input {
-        background: rgba(255, 255, 255, 0.1); /* Subtle background for inputs */
-        color: white; /* Text visibility */
-        border: 1px solid rgba(255, 255, 255, 0.3); /* Input borders */
-    }
+    /*   input {
+        background: rgba(255, 255, 255, 0.1);
+        color: white; 
+        border: 1px solid rgba(255, 255, 255, 0.3); 
+    } */
 
     input::placeholder {
         color: rgba(255, 255, 255, 0.5); /* Placeholder visibility */
@@ -23,7 +23,7 @@
 <!-- Modal de Login -->
 <dialog
     id="modalLogin"
-    class="blurred-background w-[26vw] p-0 rounded-lg shadow-lg"
+    class="backdrop:bg-black/50 blurred-background w-[26vw] p-0 rounded-lg shadow-lg"
 >
     <form
         method="dialog"
@@ -120,7 +120,7 @@
 <!-- Modal de Registro -->
 <dialog
     id="modalRegister"
-    class="blurred-background w-[31vw] p-0 rounded-lg shadow-lg"
+    class="backdrop:bg-black/50 blurred-background w-[31vw] p-0 rounded-lg shadow-lg"
 >
     <form
         method="dialog"

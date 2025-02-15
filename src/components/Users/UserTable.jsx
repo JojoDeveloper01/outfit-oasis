@@ -112,7 +112,7 @@ export default function UserTable({ users, activeFilters, userType }) {
     };
 
     return (
-        <div>
+        <div className="bg-[--gray]">
             {/* Cabeçalho */}
             <div className="p-[1vw] rounded-t-lg grid grid-cols-5 gap-[1vw] text-[1vw] font-semibold bg-[--grayLight] text-[--color-white]">
                 <div>Profile Picture</div>
@@ -124,12 +124,12 @@ export default function UserTable({ users, activeFilters, userType }) {
             </div>
 
             {/* Lista de usuários */}
-            <div className="font-thin divide-y divide-gray-500 rounded-b-lg *:text-[--color-white1]">
+            <div className="font-thin  *:text-[--color-white1]">
                 {data.length === 0 ? (
                     <div className="py-[.8vw] px-[1vw]">No Users available.</div>
                 ) : (
                     data.map((user) => (
-                        <div key={user.id} className="p-[1vw] grid grid-cols-5 gap-[1vw] items-center hover:bg-[--grayLight]">
+                        <div key={user.id} className="p-[1vw] grid grid-cols-5 gap-[1vw] items-center hover:bg-[--background]">
                             {/* Profile Picture */}
                             <div className="flex items-center justify-center w-12">
                                 <PreviewImage src={user.profile_pic} type="profile" />
@@ -150,11 +150,11 @@ export default function UserTable({ users, activeFilters, userType }) {
                                 <div key={`${user.id}-${field}`} className="text-[1vw]">
                                     <div className="relative flex items-stretch gap-[.7vw] min-w-32 max-w-64">
                                         {/* Campo editável */}
-                                        <div className="w-4/5 *:m-0">
+                                        <div className="w-4/5">
                                             {field === "user_type" && userType === "staff" ? (
                                                 <select
                                                     value={user[field] || ""}
-                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
+                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-[--gold]" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
                                                     onChange={(e) => handleFieldChange(e, user.id, field)}
                                                 >
                                                     <option value="client">Client</option>
@@ -164,7 +164,7 @@ export default function UserTable({ users, activeFilters, userType }) {
                                                 <input
                                                     type="text"
                                                     value={user[field] || ""}
-                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-yellow-500" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
+                                                    className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-[--gold]" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
                                                     placeholder={`Enter ${field.replace("_", " ")}`}
                                                     onInput={(e) => handleFieldChange(e, user.id, field)}
                                                 />

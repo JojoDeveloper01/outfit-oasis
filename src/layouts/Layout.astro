@@ -181,17 +181,18 @@ const data: any[] = items.map((item: any) => {
 	[multiple],
 	textarea,
 	select {
-		margin-top: 1vw;
 		display: block;
 		width: 100%;
-		padding: 2%;
+		padding: 1vw;
 		border-radius: 0.375rem;
-		border: 0.01vw solid #d1d5db;
+		border: 0;
 		box-shadow: 0 0.01vw 0.04vw 0 rgb(0 0 0 / 0.05);
+
+		background-color: var(--grayLight);
 		font-size: 0.9vw;
-		font-weight: 200;
+		font-weight: 300;
 		line-height: 1.1vw;
-		color: #212121;
+		color: var(--color-white1);
 
 		&:focus {
 			--tw-ring-shadow: var(--greenBlack);
@@ -202,12 +203,47 @@ const data: any[] = items.map((item: any) => {
 		}
 	}
 
+	input[type="file"] {
+		margin-top: 1vw;
+		padding: unset;
+		background-color: unset;
+	}
+
 	table {
 		background: var(--gray);
 		color: var(--color-white1);
 		thead {
 			background-color: var(--grayLight);
 		}
+	}
+
+	details {
+		margin: 3vw 0;
+		border-radius: 0.5rem;
+		background-color: var(--gray);
+
+		summary {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			padding: 1.5vw;
+
+			color: var(--color-white1);
+			font-weight: 400;
+			border-top-left-radius: 0.5rem;
+			border-top-right-radius: 0.5rem;
+
+			cursor: pointer;
+
+			&:hover {
+				background-color: var(--grayLight);
+			}
+		}
+	}
+	.svg-yellow {
+		filter: brightness(0) saturate(82%) invert(75%) sepia(121%)
+			saturate(390%) hue-rotate(6deg) brightness(91%) contrast(55%);
 	}
 
 	.blurred-background {

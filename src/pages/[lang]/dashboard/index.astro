@@ -37,10 +37,14 @@ const { topPurchasedProducts } = analyticsData;
 ---
 
 <Dashboard>
-    <div class=`relative w-full h-[13rem]`>
+    <div class=`relative w-full h-[16rem]`>
         <div class="mb-3 ml-2">
-            <a href={`/${lang}/clothes`} class="text-white underline">
+            <a
+                href={`/${lang}/clothes`}
+                class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
+            >
                 Go to Clothes
+                <img class="svg-yellow" src="/icons/redirect.svg" />
             </a>
         </div>
         <div class="h-full relative">
@@ -50,7 +54,7 @@ const { topPurchasedProducts } = analyticsData;
                 rentals={rentals}
                 lang={lang}
                 layoutDirection="horizontal"
-                width="13rem"
+                width="14rem"
             />
             <div
                 class="w-fit h-full absolute flex items-center right-4 top-0 z-50"
@@ -80,14 +84,15 @@ const { topPurchasedProducts } = analyticsData;
         </div>
     </div>
 
-    <div class="w-full flex flex-wrap gap-[2vw] mt-[5vw]">
+    <div class="w-full flex flex-wrap gap-[4vw] mt-[6vw] pb-[3vw]">
         <div>
             <div class="mb-3 ml-2">
                 <a
                     href={`/${lang}/dashboard/items`}
-                    class="text-white underline"
+                    class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
                 >
                     Go to items
+                    <img class="svg-yellow" src="/icons/redirect.svg" />
                 </a>
             </div>
             <BestSeller
@@ -100,9 +105,10 @@ const { topPurchasedProducts } = analyticsData;
             <div class="mb-3 ml-2">
                 <a
                     href={`/${lang}/dashboard/users`}
-                    class="text-white underline"
+                    class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
                 >
                     Go to Users
+                    <img class="svg-yellow" src="/icons/redirect.svg" />
                 </a>
             </div>
             <UsersList client:load userType="client" users={users} />

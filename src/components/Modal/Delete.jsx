@@ -46,7 +46,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
     if (!isClient) return null;
 
     return (
-        <div className={`${onDelete ? 'mx-12' : ''}`}>
+        <div>
             <button
                 onClick={() => {
                     const deleteModal = document.getElementById(
@@ -56,13 +56,13 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         deleteModal.showModal();
                     }
                 }}
-                className="bg-red-500 text-white px-[.8vw] py-[.6vw] rounded-md hover:bg-red-600 text-[.7vw]"
+                className="bg-red-500 text-[--color-white1] px-[.8vw] py-[.6vw] rounded-md hover:bg-red-600 text-[.7vw]"
             >
                 Delete
             </button>
             <dialog
                 id={`delete-${name}-${id}`}
-                className="backdrop:bg-black/50 shadow-lg max-w-[40vw] w-full m-auto p-[1vw] text-red-800 border border-red-300 rounded-lg bg-red-50"
+                className="backdrop:bg-black/50 bg-[--gray] text-[--color-white1] shadow-lg max-w-[40vw] w-full m-auto p-[1vw] rounded-lg"
             >
                 <div className="flex items-center mb-[1.5vw]">
                     <h3 className="text-[1.5vw] max-[768px]:text-[4vw] font-medium">
@@ -90,7 +90,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         onClick={() =>
                             document.getElementById(`delete-${name}-${id}`)?.close()
                         }
-                        className="text-red-800 bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw]"
+                        className="bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw]"
                     >
                         Cancel
                     </button>
