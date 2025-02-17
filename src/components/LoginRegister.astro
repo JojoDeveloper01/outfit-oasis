@@ -23,7 +23,7 @@
 <!-- Modal de Login -->
 <dialog
     id="modalLogin"
-    class="backdrop:bg-black/50 blurred-background w-[26vw] p-0 rounded-lg shadow-lg"
+    class="backdrop:bg-black/50 blurred-background w-full max-w-md p-0 rounded-lg shadow-lg"
 >
     <form
         method="dialog"
@@ -31,43 +31,41 @@
         class="h-full flex flex-col rounded-lg"
     >
         <!-- Header -->
-        <div class="flex justify-between items-center p-[.9vw] border-b">
-            <h2 class="text-[1.3vw] font-semibold text-white">Sign in</h2>
+        <div class="flex justify-between items-center p-4 border-b">
+            <h2 class="text-lg md:text-xl font-semibold text-white">Sign in</h2>
             <button
                 type="button"
                 onclick="document.getElementById('modalLogin').close()"
-                class="text-gray-500 hover:text-white px-[1vw] py-[.6vw] rounded-full"
+                class="text-gray-500 hover:text-white px-3 py-2 rounded-full"
             >
                 &#x2715;
             </button>
         </div>
         <!-- Corpo do Modal -->
-        <div class="h-full flex gap-[1.2vw] flex-col justify-around p-[.9vw]">
+        <div class="h-full flex flex-col gap-4 p-4">
             <div>
                 <label
                     for="loginEmail"
-                    class="block text-[.9vw] text-white mb-[.4vw]"
-                    >Your Email</label
+                    class="block text-sm text-white mb-[1vw]">Your Email</label
                 >
                 <input
                     type="email"
                     id="loginEmail"
                     name="loginEmail"
                     placeholder="name@company.com"
-                    class="w-full px-full border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
-                <!-- Erro específico do email -->
                 <p
                     id="loginEmailError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="loginPassword"
-                    class="block text-[.9vw] text-white mb-1"
+                    class="block text-sm text-white mb-[1vw]"
                     >Your password</label
                 >
                 <input
@@ -75,39 +73,37 @@
                     id="loginPassword"
                     name="loginPassword"
                     placeholder="••••••••"
-                    class="w-full px-full border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
-                <!-- Erro específico da senha -->
                 <p
                     id="loginPasswordError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
-
             <div class="flex items-center">
                 <input
                     id="rememberLogin"
                     name="rememberLogin"
                     type="checkbox"
-                    class="w-[1vw] h-[1vw] border-gray-300 rounded"
+                    class="w-4 h-4 border-gray-300 rounded"
                 />
-                <label for="rememberLogin" class="ml-2 text-[.9vw] text-white"
+                <label for="rememberLogin" class="ml-2 text-sm text-white"
                     >Remember me</label
                 >
             </div>
             <button
                 type="submit"
-                class="w-full bg-yellow-500 text-white py-[0.5vw] rounded-lg hover:bg-yellow-600"
+                class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600"
             >
                 Login to your account
             </button>
-            <p class="text-[.9vw] text-white text-center">
+            <p class="text-sm text-white text-center">
                 Not registered?
                 <button
                     type="button"
-                    class="px-[0.5vw] py-[.2vw] text-yellow-500 rounded-lg hover:underline"
+                    class="text-yellow-500 hover:underline"
                     onclick="document.getElementById('modalLogin').close(); document.getElementById('modalRegister').showModal();"
                 >
                     Create account
@@ -120,7 +116,7 @@
 <!-- Modal de Registro -->
 <dialog
     id="modalRegister"
-    class="backdrop:bg-black/50 blurred-background w-[31vw] p-0 rounded-lg shadow-lg"
+    class="backdrop:bg-black/50 blurred-background w-full max-w-md p-0 rounded-lg shadow-lg"
 >
     <form
         method="dialog"
@@ -128,88 +124,90 @@
         class="h-full flex flex-col rounded-lg"
     >
         <!-- Header -->
-        <div class="flex justify-between items-center p-[.9vw] border-b">
-            <h2 class="text-[1.3vw] font-semibold text-white">Register</h2>
+        <div class="flex justify-between items-center p-4 border-b">
+            <h2 class="text-lg md:text-xl font-semibold text-white">
+                Register
+            </h2>
             <button
                 type="button"
                 onclick="document.getElementById('modalRegister').close()"
-                class="text-gray-500 hover:text-white px-[1vw] py-[.7vw] rounded-full"
+                class="text-gray-500 hover:text-white px-3 py-2 rounded-full"
             >
                 &#x2715;
             </button>
         </div>
         <!-- Corpo do Modal -->
-        <div class="h-full flex gap-[1.2vw] flex-col justify-around p-[.9vw]">
+        <div class="h-full flex flex-col gap-4 p-4">
             <div>
                 <label
                     for="registerName"
-                    class="block text-[.9vw] text-white mb-1">Name</label
+                    class="block text-sm text-white mb-[1vw]">Name</label
                 >
                 <input
                     type="text"
                     id="registerName"
                     placeholder="example name"
-                    class="block text-[.9vw] text-white mb-[.4vw]"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
                 <p
                     id="registerNameError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="registerEmail"
-                    class="block text-[.9vw] text-white mb-1">Your email</label
+                    class="block text-sm text-white mb-[1vw]">Your email</label
                 >
                 <input
                     type="email"
                     id="registerEmail"
                     placeholder="name@company.com"
-                    class="w-full px-full border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
                 <p
                     id="registerEmailError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="registerPassword"
-                    class="block text-[.9vw] text-white mb-1">Password</label
+                    class="block text-sm text-white mb-[1vw]">Password</label
                 >
                 <input
                     type="password"
                     id="registerPassword"
                     placeholder="••••••••"
-                    class="w-full px-full border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
                 <p
                     id="registerPasswordError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
             <div>
                 <label
                     for="registerConfirmPassword"
-                    class="block text-[.9vw] text-white mb-1"
+                    class="block text-sm text-white mb-[1vw]"
                     >Confirm password</label
                 >
                 <input
                     type="password"
                     id="registerConfirmPassword"
                     placeholder="••••••••"
-                    class="w-full px-full border rounded-lg focus:ring-2 focus:ring-blue-500"
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                 />
                 <p
                     id="registerConfirmPasswordError"
-                    class="mt-[.02] text-red-500 font-bold text-[.8vw] hidden"
+                    class="mt-1 text-red-500 font-bold text-xs hidden"
                 >
                 </p>
             </div>
@@ -217,24 +215,23 @@
                 <input
                     id="rememberRegister"
                     type="checkbox"
-                    class="w-[1vw] h-[1vw] border-gray-300 rounded"
+                    class="w-4 h-4 border-gray-300 rounded"
                 />
-                <label
-                    for="rememberRegister"
-                    class="ml-2 text-[.9vw] text-white">Remember me</label
+                <label for="rememberRegister" class="ml-2 text-sm text-white"
+                    >Remember me</label
                 >
             </div>
             <button
                 type="submit"
-                class="w-full bg-yellow-500 text-white py-[0.5vw] rounded-lg hover:bg-yellow-600"
+                class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600"
             >
                 Register
             </button>
-            <p class="text-[.9vw] text-white text-center">
+            <p class="text-sm text-white text-center">
                 Already have an account?
                 <button
                     type="button"
-                    class="px-[0.5vw] py-[.2vw] text-yellow-500 rounded-lg hover:underline"
+                    class="text-yellow-500 hover:underline"
                     onclick="document.getElementById('modalRegister').close(); document.getElementById('modalLogin').showModal();"
                 >
                     Login

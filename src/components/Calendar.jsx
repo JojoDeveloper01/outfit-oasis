@@ -237,7 +237,7 @@ const Calendar = ({ itemsRent }) => {
           &gt;
         </button>
       </div>
-      <div class="grid grid-cols-7 text-[1.3vw] text-center text-gray-700 font-bold">
+      <div class="grid grid-cols-7 text-[1.3vw] text-center text-[--color-white] font-light">
         {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
           <span>{day}</span>
         ))}
@@ -256,13 +256,13 @@ const Calendar = ({ itemsRent }) => {
           return (
             <div
               className={`grid text-[1vw] max-[768px]:text-[2.3vw] p-[.7vw] rounded-md cursor-pointer font-normal ${isSelected
-                ? "bg-yellow-200"
+                ? "bg-[--gold] text-[--color-black]"
                 : isHovered
-                  ? "bg-yellow-200"
+                  ? "bg-[--gold] text-[--color-black]"
                   : isDisabled
-                    ? "bg-[#919191]"
-                    : "bg-gray-200"
-                } ${isDisabled ? "cursor-not-allowed" : "hover:bg-yellow-100"}`}
+                    ? "bg-[--grayLight]"
+                    : "border-[1px] border-[--grayLight]"
+                } ${isDisabled ? "cursor-not-allowed" : "hover:bg-yellow-100 hover:text-[--color-black]"}`}
               onClick={() => !isDisabled && handleDateClick(date)}
               onMouseEnter={(e) => handleMouseEnter(date, e)}
               onMouseMove={handleMouseMove}
@@ -290,7 +290,7 @@ const Calendar = ({ itemsRent }) => {
       )}
       {startDate && endDate && (
         <div
-          className="flex flex-wrap gap-x-2 text-[1.2vw] max-[768px]:text-[2vw] font-semibold text-gray-700 bg-gray-200 px-3 py-1 rounded-lg"
+          className="flex flex-wrap gap-x-2 text-[1.2vw] max-[768px]:text-[2vw] font-semibold text-gray-700 bg-[--color-white] px-3 py-1 rounded-lg"
         >
           <span id="interval-date">{`${formatDate(startDate)} - ${formatDate(endDate)}`}</span>
           -

@@ -1,10 +1,11 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { getItems, getUserLogin } from "@lib/dbFunctions";
+import { getItems, getRentals, getUserLogin } from "@lib/dbFunctions";
 
 import Hero from "@components/LandingPage/Hero.astro";
-import Benefits from "@components/LandingPage/Benefits.astro";
-import Highlight from "@components/LandingPage/Highlight.astro";
+import WhyRentUs from "@components/LandingPage/WhyRentUs.astro";
+import OurClothes from "@components/LandingPage/OurClothes.astro";
+import HowItWorks from "@components/LandingPage/HowItWorks.astro";
 import RentNow from "@components/LandingPage/RentNow.astro";
 import Reviews from "@components/LandingPage/Reviews.astro";
 import Partnerships from "@components/LandingPage/Partnerships.astro";
@@ -17,6 +18,7 @@ const lang = getLangFromUrl(Astro.url);
 const isStaff = user?.user_type === "staff" ? "block" : "hidden";
 const t = useTranslations(lang);
 
+const rentals = await getRentals();
 const items = await getItems();
 ---
 
@@ -27,10 +29,11 @@ const items = await getItems();
 	canonical="https://outfit-oasis.com"
 >
 	<Hero lang={lang} />
-	<!-- <Benefits />
-	<Highlight /> -->
+	<OurClothes items={items} rentals={rentals} lang={lang} />
+	<HowItWorks />
+	<WhyRentUs />
 	<!-- Your Dream Outfit Awaits -->
-	<!-- <RentNow />
 	<Reviews />
-	<Partnerships /> -->
+	<RentNow />
+	<Partnerships />
 </Layout>

@@ -1,0 +1,53 @@
+---
+const defaultBenefits = [
+    { title: "Affordable", description: "Look great for less." },
+    { title: "Sustainable", description: "Eco-friendly fashion choices." },
+    { title: "Variety", description: "Outfits for every occasion." },
+];
+---
+
+<section id="whyRentUs" class="section flex flex-col items-center">
+    <div class="flex flex-col justify-center gap-28 size-full">
+        <h2 class="text-7xl font-bold text-white">Why Rent With Us?</h2>
+        <ul
+            class="grid grid-cols-[repeat(3,minmax(0,19rem))] justify-between gap-8 px-8"
+        >
+            {
+                defaultBenefits.map(
+                    (
+                        benefit: { title: string; description: string },
+                        index: number,
+                    ) => (
+                        <li class="bg-[--gold] text-[--color-black] px-6 py-12 rounded-lg h-[21rem] flex flex-col justify-evenly items-center text-center shadow-lg">
+                            <span
+                                class="*:size-16"
+                                set:html={
+                                    index === 0
+                                        ? `
+                            <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='currentColor' class='icon icon-tabler icons-tabler-filled icon-tabler-shield-check'>
+                                <path stroke='none' d='M0 0h24v24H0z' fill='none'/>
+                                <path d='M11.998 2l.118 .007l.059 .008l.061 .013l.111 .034a.993 .993 0 0 1 .217 .112l.104 .082l.255 .218a11 11 0 0 0 7.189 2.537l.342 -.01a1 1 0 0 1 1.005 .717a13 13 0 0 1 -9.208 16.25a1 1 0 0 1 -.502 0a13 13 0 0 1 -9.209 -16.25a1 1 0 0 1 1.005 -.717a11 11 0 0 0 7.531 -2.527l.263 -.225l.096 -.075a.993 .993 0 0 1 .217 -.112l.112 -.034a.97 .97 0 0 1 .119 -.021l.115 -.007zm3.71 7.293a1 1 0 0 0 -1.415 0l-3.293 3.292l-1.293 -1.292l-.094 -.083a1 1 0 0 0 -1.32 1.497l2 2l.094 .083a1 1 0 0 0 1.32 -.083l4 -4l.083 -.094a1 1 0 0 0 -.083 -1.32z' />
+                            </svg>`
+                                        : index === 1
+                                          ? `
+                            <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='icon icon-tabler icons-tabler-outline icon-tabler-tag'>
+                                <path stroke='none' d='M0 0h24v24H0z' fill='none'/>
+                                <path d='M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0' />
+                                <path d='M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z' />
+                            </svg>`
+                                          : `<img src="/icons/like.svg" alt="">`
+                                }
+                            />
+                            <h3 class="text-lg font-semibold mt-4">
+                                {benefit.title}
+                            </h3>
+                            <p class="text-sm text-center text-black font-light mt-2">
+                                {benefit.description}
+                            </p>
+                        </li>
+                    ),
+                )
+            }
+        </ul>
+    </div>
+</section>

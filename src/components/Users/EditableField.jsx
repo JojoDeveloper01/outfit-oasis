@@ -82,15 +82,14 @@ export default function EditableField({ userID, field, name, type, value }) {
     };
 
     return (
-        <div className="w-[70%] flex items-center gap-[2vw]">
-            <label htmlFor={`${userID}-${field}`} className="w-20 text-[1vw] font-bold text-gray-300">
+        <div className="w-full flex flex-col gap-2">
+            <label htmlFor={`${userID}-${field}`} className="text-sm font-bold text-gray-300">
                 {name}
             </label>
 
-            <div className="w-full relative">
+            <div className="relative w-full">
                 {type === "password" ? (
-                    // Campo de Senha
-                    <div className="relative flex items-center gap-[.7vw]">
+                    <div className="relative flex items-center w-full">
                         <input
                             id={`${userID}-${field}`}
                             name={field}
@@ -99,82 +98,41 @@ export default function EditableField({ userID, field, name, type, value }) {
                             onInput={handleInputChange}
                             onFocus={() => setIsFocused(true)}
                             onBlur={() => setIsFocused(false)}
-                            style="margin:0"
-                            className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                            className={`w-full rounded-md border border-gray-600 bg-gray-700 text-white p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                                 }`}
                         />
                         <button
                             type="button"
                             onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                            className="absolute right-1 mt-1 text-gray-500 hover:text-black"
+                            className="absolute right-3 text-gray-400 hover:text-white"
                         >
-                            {isPasswordVisible ? (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    className="size-[1.5vw]"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                    <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                                </svg>
-                            ) : (
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M21 9c-2.4 2.667 -5.4 4 -9 4c-3.6 0 -6.6 -1.333 -9 -4" />
-                                    <path d="M3 15l2.5 -3.8" />
-                                    <path d="M21 15l-2.5 -3.8" />
-                                    <path d="M9 17l.5 -4" />
-                                    <path d="M15 17l-.5 -4" />
-                                </svg>
-                            )}
+                            {isPasswordVisible ? "🙈" : "👁️"}
                         </button>
                     </div>
                 ) : type === "file" ? (
-                    // Campo de Arquivo
-                    <div className="flex items-center gap-[1vw]">
-                        <PreviewImage
-                            src={fieldValue}
-                            type="account"
-                        />
+                    <div className="flex items-center gap-4">
+                        <PreviewImage src={fieldValue} type="account" />
                         <img
                             onClick={() => document.getElementById(`preview-account-image-${fieldValue}`).showModal()}
                             src={value}
                             alt={field}
-                            class="size-[3vw] rounded-full border border-gray-300 cursor-pointer object-cover"
+                            className="w-12 h-12 rounded-full border border-gray-300 cursor-pointer object-cover"
                         />
                         <input
                             id={`${userID}-${field}`}
                             name={field}
                             type={type}
                             onChange={(e) => {
-                                const file = e.target.files[0]; // Obtém o primeiro arquivo selecionado
+                                const file = e.target.files[0];
                                 if (file) {
-                                    setFieldValue(file); // Atualiza o estado com o arquivo
+                                    setFieldValue(file);
                                 }
                             }}
-                            accept="image/*" // Aceita apenas imagens
-                            className={`block w-full text-[.5vw] text-gray-700 file:mr-[1vw] file:py-[.6vw] file:px-[1vw] file:rounded-full file:border-0 file:bg-[--gold] file:text-white hover:file:bg-[--gold]-700 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
-                                }`}
+                            accept="image/*"
+                            className="block w-full text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                         />
                     </div>
                 ) : (
-                    // Outros Tipos de Input
                     <input
                         id={`${userID}-${field}`}
                         name={field}
@@ -183,46 +141,22 @@ export default function EditableField({ userID, field, name, type, value }) {
                         onInput={handleInputChange}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        style="margin:0"
-                        className={`rounded-md border-gray-300 shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 ${errors[`${userID}-${field}`] ? "border-red-500" : ""
+                        className={`w-full rounded-md border border-gray-600 bg-gray-700 text-white p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors[`${userID}-${field}`] ? "border-red-500" : ""
                             }`}
                     />
                 )}
 
-                {/* Error Tooltip */}
                 {errors[`${userID}-${field}`] && isFocused && (
-                    <ErrorTooltip
-                        id={`${userID}-${field}`}
-                        message={errors[`${userID}-${field}`]}
-                    />
+                    <ErrorTooltip id={`${userID}-${field}`} message={errors[`${userID}-${field}`]} />
                 )}
             </div>
-
 
             {fieldValue !== originalValue && !errors[`${userID}-${field}`] && (
                 <button
                     onClick={handleSave}
+                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-full icon"
-                    >
-                        <path
-                            stroke="none"
-                            d="M0 0h24v24H0z"
-                            fill="none"
-                        />
-                        <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                    </svg>
+                    Save
                 </button>
             )}
         </div>
