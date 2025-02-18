@@ -6,16 +6,16 @@ const { items, rentals, lang } = Astro.props;
 
 <section id="ourclothes" class="section grid justify-center">
     <div class="flex flex-col justify-center gap-12 h-full">
-        <h2 class="text-7xl font-bold text-white">Our Clothes</h2>
+        <h2 class="text-[4vw] font-bold text-white">Our Clothes</h2>
         <div>
-            <div class="w-full h-[30rem] relative grid">
+            <div class="w-full h-[30vw] relative grid">
                 <ItemTableUser
                     client:load
                     items={items}
                     rentals={rentals}
                     lang={lang}
                     layoutDirection="horizontal"
-                    width="20rem"
+                    width="20vw"
                 />
                 <div
                     class="w-fit h-full absolute flex items-center right-4 top-0 z-50"

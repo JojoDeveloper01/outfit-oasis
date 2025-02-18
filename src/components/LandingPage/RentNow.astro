@@ -1,19 +1,40 @@
 ---
-/* export interface Props {
-    ctaText?: string;
-    ctaLink?: string;
-} */
+const cta = {
+    title: "Ready to renovate your low-cost clothes?",
+    button: {
+        text: "See more",
+        link: "/shop",
+    },
+    images: ["/man-banner.webp", "/woman-banner.png"],
+};
 ---
 
-<section
-    class="rent-now bg-gradient-to-r text-white py-[.3vw]6 text-center"
-    id="rent-now"
->
-    <h2 class="text-[4vw] font-bold mb-6">Your Dream Outfit Awaits</h2>
-    <a
-        href="#"
-        class="cta-button text-blue-600 py-[.8vw] px-6 rounded-lg shadow-lg hover:bg-gray-100"
+<section id="rentNow" class="text-white p-8 rounded-lg">
+    <div
+        class="h-full grid grid-cols-1 content-center md:grid-cols-2 gap-6 items-center"
     >
-        Rent Now
-    </a>
+        <!-- Texto CTA -->
+        <div class="flex flex-col gap-4">
+            <h2 class="text-[1vw] md:text-[2.5vw] font-bold">{cta.title}</h2>
+            <a
+                href={cta.button.link}
+                class="w-fit bg-[--gold] text-black font-semibold py-3 px-6 rounded-md hover:bg-yellow-500 transition"
+            >
+                {cta.button.text}
+            </a>
+        </div>
+
+        <!-- Imagens lado a lado -->
+        <div class="h-full flex gap-4 relative">
+            {
+                Object.values(cta.images).map((img) => (
+                    <img
+                        src={img}
+                        alt="Fashion"
+                        class={`h-full absolute -b-[11%]`}
+                    />
+                ))
+            }
+        </div>
+    </div>
 </section>
