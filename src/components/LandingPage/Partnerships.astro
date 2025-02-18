@@ -1,19 +1,38 @@
 ---
-/* const { partners } = Astro.props; */
-
-const defaultPartners = [
-    { logo: "/images/partner1.png", name: "Partner 1" },
-    { logo: "/images/partner2.png", name: "Partner 2" },
+const partners = [
+    { logo: "adidas.png", name: "Adidas" },
+    { logo: "lacoste.png", name: "Lacoste" },
+    { logo: "fila.png", name: "Fila" },
+    { logo: "kappa.png", name: "Kappa" },
+    { logo: "adidas.png", name: "Adidas" },
+    { logo: "lacoste.png", name: "Lacoste" },
+    { logo: "fila.png", name: "Fila" },
+    { logo: "kappa.png", name: "Kappa" },
 ];
 ---
 
-<section class="section partnerships py-[.3vw]6">
-    <h2 class="text-[2vw] font-bold text-center mb-8">Our Trusted Partners</h2>
-    <ul class="flex flex-wrap justify-center items-center gap-8">
+<section
+    id="partnerships"
+    class="section flex flex-col justify-around text-white py-48 rounded-lg"
+>
+    <h2 class="text-[4vw] font-bold text-white">Our Trusted Partners</h2>
+    <p class="font-normal text-center text-sm md:text-base mb-6">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+    </p>
+
+    <!-- Grid responsivo -->
+    <ul
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center justify-center mx-auto"
+    >
         {
-            defaultPartners.map((partner: { logo: string; name: string }) => (
-                <li>
-                    <img alt={partner.name} class="h-16 max-[768px]:h-24" />
+            partners.map((partner) => (
+                <li class="grid justify-center">
+                    <img
+                        src={`/partnerships/${partner.logo}`}
+                        alt={partner.name}
+                        class="h-32 object-contain"
+                    />
                 </li>
             ))
         }

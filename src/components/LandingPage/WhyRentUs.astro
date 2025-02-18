@@ -10,7 +10,7 @@ const defaultBenefits = [
     <div class="flex flex-col justify-center gap-28 size-full">
         <h2 class="text-[4vw] font-bold text-white">Why Rent With Us?</h2>
         <ul
-            class="grid grid-cols-[repeat(3,minmax(0,19rem))] justify-between gap-8 px-8"
+            class="grid grid-cols-[repeat(3,minmax(0,19rem))] justify-between gap-8"
         >
             {
                 defaultBenefits.map(
@@ -18,7 +18,7 @@ const defaultBenefits = [
                         benefit: { title: string; description: string },
                         index: number,
                     ) => (
-                        <li class="bg-[--gold] text-[--color-black] px-6 py-12 rounded-lg h-[21rem] flex flex-col justify-evenly items-center text-center shadow-lg">
+                        <li class="bg-[--gold] text-[--color-black] px-6 py-12 rounded-lg h-[20vw] flex flex-col justify-evenly items-center text-center shadow-lg">
                             <span
                                 class="*:size-[5vw]"
                                 set:html={

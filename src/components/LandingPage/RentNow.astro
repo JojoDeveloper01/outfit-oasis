@@ -5,36 +5,39 @@ const cta = {
         text: "See more",
         link: "/shop",
     },
-    images: ["/man-banner.webp", "/woman-banner.png"],
+    images: ["/man-banner.webp"],
 };
 ---
 
-<section id="rentNow" class="text-white p-8 rounded-lg">
-    <div
-        class="h-full grid grid-cols-1 content-center md:grid-cols-2 gap-6 items-center"
-    >
+<section id="rentNow" class="h-[45vh] text-white p-8 rounded-lg">
+    <div class="relative h-full flex gap-6 items-center">
         <!-- Texto CTA -->
-        <div class="flex flex-col gap-4">
+        <div class="w-[65%] flex flex-col gap-4">
             <h2 class="text-[1vw] md:text-[2.5vw] font-bold">{cta.title}</h2>
             <a
                 href={cta.button.link}
-                class="w-fit bg-[--gold] text-black font-semibold py-3 px-6 rounded-md hover:bg-yellow-500 transition"
+                class="w-fit bg-[--gold] text-black font-semibold px-12 py-4 rounded-md hover:bg-black hover:text-[--gold] transition"
             >
                 {cta.button.text}
             </a>
         </div>
 
         <!-- Imagens lado a lado -->
-        <div class="h-full flex gap-4 relative">
+        <div class="h-full flex gap-4 relative pt-12 z-10">
             {
                 Object.values(cta.images).map((img) => (
                     <img
                         src={img}
                         alt="Fashion"
-                        class={`h-full absolute -b-[11%]`}
+                        class={`h-full aspect-square`}
                     />
                 ))
             }
+        </div>
+        <div
+            style="background: linear-gradient(90deg, #171717 0%, rgb(40, 40, 40) 36%, rgb(40, 40, 40) 53%, #171717 100%);"
+            class="w-1/2 h-full absolute right-0 z-0"
+        >
         </div>
     </div>
 </section>
