@@ -51,12 +51,12 @@ const defaultReviews = [
 >
     <div class="flex flex-col justify-center gap-16 size-full">
         <h2 class="text-[4vw] font-bold text-white">What Our Customers Say</h2>
-        <div class="w-full overflow-x-auto scrollbar-hide">
-            <ul class="grid grid-rows-2 grid-flow-col gap-8 w-max">
+        <div class="w-full overflow-x-auto overflow-y-hidden">
+            <ul class="h-full grid grid-rows-2 grid-flow-col gap-4 w-max">
                 {
                     defaultReviews.map(
                         (review: { text: string; user: string }) => (
-                            <li class="bg-[--gray] p-6 rounded-lg flex flex-col shadow-lg max-w-[20rem] min-w-[20rem]">
+                            <li class="bg-[--gray] p-6 rounded-lg flex flex-col shadow-lg min-w-[26vw] max-w-[30vw]">
                                 <span class="*:size-[5vw]">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ const defaultReviews = [
                                         </>
                                     </svg>
                                 </span>
-                                <blockquote class="text-white italic mb-4">
+                                <blockquote class="text-[75%] text-white italic mb-[.8vw]">
                                     {review.text}
                                 </blockquote>
                                 <div class="flex items-center mt-auto">
