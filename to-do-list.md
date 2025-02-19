@@ -70,7 +70,7 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
 - pôr a página bonita 
     - Fazer as partes brancas, mais pretas como o modal rent ✅
     - Optimizar mais Account Information ✅
-    - fazer a landing page mostrando as diferentes roupas
+    - fazer a landing page mostrando as diferentes roupas ✅
     - Acabar de pôr a página responsiva   
 
 

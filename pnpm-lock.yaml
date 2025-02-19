@@ -13,7 +13,7 @@ importers:
         version: 4.0.4(@babel/core@7.26.8)(@types/node@22.13.1)(jiti@1.21.7)(preact@10.25.4)(yaml@2.7.0)
       '@astrojs/tailwind':
         specifier: ^6.0.0
-        version: 6.0.0(astro@5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))(tailwindcss@3.4.17)
+        version: 6.0.0(astro@5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))(tailwindcss@3.4.17)
       '@libsql/client':
         specifier: ^0.14.0
         version: 0.14.0
@@ -21,8 +21,8 @@ importers:
         specifier: 5.4.0
         version: 5.4.0
       astro:
-        specifier: ^5.2.3
-        version: 5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
+        specifier: ^5.3.0
+        version: 5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
       astro-particles:
         specifier: 2.10.0
         version: 2.10.0
@@ -52,8 +52,8 @@ importers:
         version: 2.12.0
     devDependencies:
       '@astrojs/node':
-        specifier: 9.0.2
-        version: 9.0.2(astro@5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))
+        specifier: 9.1.0
+        version: 9.1.0(astro@5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))
       '@babel/core':
         specifier: ^7.26.8
         version: 7.26.8
@@ -83,10 +83,10 @@ packages:
   '@astrojs/markdown-remark@6.1.0':
     resolution: {integrity: sha512-emZNNSTPGgPc3V399Cazpp5+snogjaF04ocOSQn9vy3Kw/eIC4vTQjXOrWDEoSEy+AwPDZX9bQ4wd3bxhpmGgQ==}
 
-  '@astrojs/node@9.0.2':
-    resolution: {integrity: sha512-MFFYRa5yQEBegKrSUPMeKnjDMB4okTrkVRA40/mU3ADKrKY5VV3af0LS+NYkH9pFOvj/OsPbdeQVxQ0jI3f6aQ==}
+  '@astrojs/node@9.1.0':
+    resolution: {integrity: sha512-7fDsawWci/j4prDVVwOFGuArG+YK+io54/5ksKL+lbSZ8xA4h6TB36RA4INmNatralEOKlgCxmbZdwewYcsFWA==}
     peerDependencies:
-      astro: ^5.0.0
+      astro: ^5.3.0
 
   '@astrojs/preact@4.0.4':
     resolution: {integrity: sha512-XQjT/q1R/P8NxJqwpAaOEfaRiaXmBLgKesIQQn3iFdozdMPXJjej3R0hnvtWoIcYY8puHkOIOhAFK9vD+I+1Yg==}
@@ -822,8 +822,8 @@ packages:
   astro-particles@2.10.0:
     resolution: {integrity: sha512-DE1azMdcu2dkXxEKd7seoRqbhlh4UnTfinWM+RF5jm00tPtaJ+cjrz5nKHRnzYcyTAR18MaRAC4lIKf3tu86iQ==}
 
-  astro@5.2.5:
-    resolution: {integrity: sha512-AYXyYkc+c5xbKTm48FyQA91y81nXyNPAaoyafR0LUugE4lAwuvIUcXDBfMzmbuP1lGRvsE33G2oypv6gbGaPFg==}
+  astro@5.3.0:
+    resolution: {integrity: sha512-e88l/Yk/6enR/ZDddLbqtM+oblBFk5mneNSmNesyVYGL/6Dj4UA67GPAZOk79VxT5dbLlclZSyyw/wlxN1aj3A==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1467,7 +1467,6 @@ packages:
 
   libsql@0.4.7:
     resolution: {integrity: sha512-T9eIRCs6b0J1SHKYIvD8+KCJMcWZ900iZyxdnSCdqxN12Z1ijzT+jY5nrk72Jw4B0HGzms2NgpryArlJqvc3Lw==}
-    cpu: [x64, arm64, wasm32]
     os: [darwin, linux, win32]
 
   lilconfig@3.1.3:
@@ -2572,9 +2571,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.0.2(astro@5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))':
+  '@astrojs/node@9.1.0(astro@5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))':
     dependencies:
-      astro: 5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
+      '@astrojs/internal-helpers': 0.5.1
+      astro: 5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
       send: 1.1.0
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -2609,9 +2609,9 @@ snapshots:
     dependencies:
       prismjs: 1.29.0
 
-  '@astrojs/tailwind@6.0.0(astro@5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))(tailwindcss@3.4.17)':
+  '@astrojs/tailwind@6.0.0(astro@5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0))(tailwindcss@3.4.17)':
     dependencies:
-      astro: 5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
+      astro: 5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0)
       autoprefixer: 10.4.20(postcss@8.5.2)
       postcss: 8.5.2
       postcss-load-config: 4.0.2(postcss@8.5.2)
@@ -3260,7 +3260,7 @@ snapshots:
     dependencies:
       tsparticles-engine: 2.12.0
 
-  astro@5.2.5(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0):
+  astro@5.3.0(@types/node@22.13.1)(jiti@1.21.7)(rollup@4.34.6)(typescript@5.7.3)(yaml@2.7.0):
     dependencies:
       '@astrojs/compiler': 2.10.4
       '@astrojs/internal-helpers': 0.5.1

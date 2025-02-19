@@ -7,6 +7,7 @@ import { getLangFromUrl } from "@i18n/utils";
 import { userExistsByID } from "@lib/dbFunctions";
 import Rent from "@components/Modal/Rent.astro";
 import { getItems, getRentals } from "@lib/dbFunctions";
+/* import "../styles/global.css"; */
 
 //canonical
 //const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -45,6 +46,14 @@ const data: any[] = items.map((item: any) => {
 ---
 
 <style is:global>
+	/* src/styles/global.css */
+	@font-face {
+		font-family: "Lexend Giga";
+		src: url("/fonts/LexendGiga-VariableFont_wght.ttf") format("truetype");
+		font-weight: 100 900; /* Define o intervalo de pesos suportados */
+		font-display: swap;
+	}
+
 	:root {
 		--background: #171717;
 		--gray: #212121;
@@ -77,6 +86,7 @@ const data: any[] = items.map((item: any) => {
 	html,
 	body {
 		/* background: linear-gradient(135deg, #000000, #0d0d0d, #2e2e2e); */
+		font-family: "Lexend Giga", sans-serif;
 		background: var(--background);
 		background-size: 300% 300%;
 		color: var(--color-white);
@@ -85,7 +95,6 @@ const data: any[] = items.map((item: any) => {
 		width: 100%;
 		height: 100%;
 
-		font-family: "Lexend Giga", serif;
 		font-weight: 100;
 
 		scrollbar-color: var(--color-black), var(--color);
@@ -281,10 +290,6 @@ const data: any[] = items.map((item: any) => {
 		<!-- Google Font -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@100..900&display=swap"
-			rel="stylesheet"
-		/>
 
 		<!-- <link rel="canonical" href={canonicalURL} />
 		<meta property="og:image" content={socialImageURL} /> -->
