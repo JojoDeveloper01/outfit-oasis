@@ -29,6 +29,8 @@ export const ui = {
         'home.costumers': 'Our happy customers',
         'home.reviews': 'Reviews',
 
+        /* ---- */
+
         'home.clothes': 'Our Clothes',
         'home.seeMore': 'See more',
 
@@ -125,6 +127,13 @@ export const ui = {
         'dash.client': 'Client',
         'dash.staff': 'Staff',
 
+        'dash.analytics': 'Analytics',
+        'dash.sales': 'sales',
+        'dash.topUsers': 'Top Users (Rentals)',
+        'dash.rentals': 'Rentals',
+        'dash.totalUserspurchased': 'Users who purchased in total',
+        'dash.totalEarnings': 'Total Earnings (Rent)',
+
         'util.namePlaceHolder': "Enter the item's name",
         'util.item': 'Item',
         'util.active': 'Active',
@@ -142,6 +151,7 @@ export const ui = {
         'util.lowest': 'Lowest',
         'util.highest': 'Highest',
         'util.totalCost': 'Total Cost',
+        'util.total': 'Total Cost',
         'util.noRentalsRecorded.': 'No rentals recorded.',
 
         'color.red': 'red',
@@ -210,14 +220,15 @@ export const ui = {
         'home.loginYourAccount': 'Inicie sessão na sua conta.',
         'home.notRegistered': 'Ainda não tem conta?',
         'home.alreadyRegistered': 'Já tem uma conta?',
-        'home.createAccount': 'Criar conta',
+        'home.noUsersAvailable': 'Nenhum utilizador disponível.',
 
+        'home.createAccount': 'Criar conta',
         'home.account': 'Conta',
         'home.profilePicture': 'Foto de Perfil',
         'home.phone': 'Telefone',
         'home.phonePlaceHolder': 'Introduza o seu número de telefone',
         'home.delete': 'Eliminar',
-        'home.deleteAlert': 'Tem a certeza de que deseja remover',
+        'home.deleteAlert': 'Tem a certeza de que deseja remover?',
         'home.cancel': 'Cancelar',
 
         'his.title': 'O Meu Histórico de Alugueres',
@@ -237,7 +248,8 @@ export const ui = {
         'dash.footwear': 'Calçado',
         'dash.other': 'Outro',
         'dash.size': 'Tamanho',
-        'dash.selectSize': 'Tamanho',
+        'dash.selectSize': 'Selecionar um Tamanho',
+        'dash.color': 'Cor',
         'dash.selectColor': 'Selecionar uma cor',
         'dash.brand': 'Marca',
         'dash.condition': 'Condição',
@@ -249,7 +261,6 @@ export const ui = {
         'dash.enterRentalPrice': 'Introduza o preço de aluguer',
         'dash.image': 'Imagem',
 
-        // Português (pt-PT)
         'dash.historicalRents': 'Histórico de Alugueres',
         'dash.showCompleted': 'Mostrar Concluídos',
         'dash.hideCompleted': 'Ocultar Concluídos',
@@ -269,6 +280,13 @@ export const ui = {
         'dash.client': 'Cliente',
         'dash.staff': 'Funcionário',
 
+        'dash.analytics': 'Análises',
+        'dash.sales': 'Vendas',
+        'dash.topUsers': 'Melhores Utilizadores (Alugueres)',
+        'dash.rentals': 'Alugueres',
+        'dash.totalUserspurchased': 'Utilizadores que efetuaram compras',
+        'dash.totalEarnings': 'Ganhos Totais (Alugueres)',
+
         'util.namePlaceHolder': 'Introduza o nome do artigo',
         'util.item': 'Artigo',
         'util.active': 'Ativo',
@@ -286,16 +304,17 @@ export const ui = {
         'util.lowest': 'Mais Baixo',
         'util.highest': 'Mais Alto',
         'util.totalCost': 'Custo Total',
+        'util.total': 'Custo Total',
         'util.noRentalsRecorded.': 'Nenhum aluguer registado.',
 
-        'color.red': 'vermelho',
-        'color.blue': 'azul',
-        'color.yellow': 'amarelo',
-        'color.green': 'verde',
-        'color.brown': 'marrom',
-        'color.black': 'preto',
-        'color.white': 'branco',
-        'color.other': 'outro',
+        'color.red': 'Vermelho',
+        'color.blue': 'Azul',
+        'color.yellow': 'Amarelo',
+        'color.green': 'Verde',
+        'color.brown': 'Castanho',
+        'color.black': 'Preto',
+        'color.white': 'Branco',
+        'color.other': 'Outro',
     },
     es: {
         'nav.home': 'inicio',
@@ -331,7 +350,7 @@ export const ui = {
         'home.pay': 'Paga con Seguridad',
         'home.paySub': 'Selecciona el período de alquiler y continúa.',
 
-        'home.why': '¿Por Qué Alquilar Con Nosotros?',
+        'home.why': '¿Por Qué Alquilar con Nosotros?',
         'home.affordable': 'Asequible',
         'home.affordableSub': 'Luce increíble por menos.',
         'home.sustainable': 'Sostenible',
@@ -354,20 +373,19 @@ export const ui = {
         'home.loginYourAccount': 'Inicia sesión en tu cuenta.',
         'home.notRegistered': '¿Aún no tienes cuenta?',
         'home.alreadyRegistered': '¿Ya tienes una cuenta?',
-        'home.createAccount': 'Crear cuenta',
+        'home.noUsersAvailable': 'No hay usuarios disponibles.',
 
+        'home.createAccount': 'Crear cuenta',
         'home.account': 'Cuenta',
         'home.profilePicture': 'Foto de Perfil',
         'home.phone': 'Teléfono',
         'home.phonePlaceHolder': 'Introduce tu número de teléfono',
-
         'home.delete': 'Eliminar',
-        'home.deleteAlert': '¿Estás seguro de que quieres eliminar',
+        'home.deleteAlert': '¿Estás seguro de que deseas eliminar?',
         'home.cancel': 'Cancelar',
 
         'his.title': 'Mi Historial de Alquileres',
 
-        'dash.title': 'Panel',
         'dash.goItems': 'Ir a Artículos',
         'dash.goAnalitycs': 'Ir a Análisis',
         'dash.goUsers': 'Ir a Usuarios',
@@ -383,7 +401,8 @@ export const ui = {
         'dash.footwear': 'Calzado',
         'dash.other': 'Otro',
         'dash.size': 'Tamaño',
-        'dash.selectSize': 'Tamaño',
+        'dash.selectSize': 'Seleccionar un Tamaño',
+        'dash.color': 'Color',
         'dash.selectColor': 'Seleccionar un color',
         'dash.brand': 'Marca',
         'dash.condition': 'Condición',
@@ -402,17 +421,24 @@ export const ui = {
         'dash.createUser': 'Crear Usuario',
         'dash.userTitle': 'Gestión de Usuarios',
         'dash.addNewUser': 'Añadir Nuevo Usuario',
-        'dash.enterUserEmail': 'Introduce el correo del usuario',
+        'dash.enterUserEmail': 'Introduce el correo electrónico del usuario',
 
         'dash.enterUserPhone': 'Introduce el teléfono del usuario',
         'dash.unknownUser': 'Usuario Desconocido',
-        'dash.unvailableEmail': 'Correo No Disponible',
+        'dash.unvailableEmail': 'Correo Electrónico No Disponible',
         'dash.noItemsAvailable': 'No hay artículos disponibles.',
 
         'dash.userType': 'Tipo de Usuario',
         'dash.allTypes': 'Todos los Tipos',
         'dash.client': 'Cliente',
         'dash.staff': 'Empleado',
+
+        'dash.analytics': 'Análisis',
+        'dash.sales': 'Ventas',
+        'dash.topUsers': 'Usuarios Destacados (Alquileres)',
+        'dash.rentals': 'Alquileres',
+        'dash.totalUserspurchased': 'Usuarios que han comprado en total',
+        'dash.totalEarnings': 'Ganancias Totales (Alquileres)',
 
         'util.namePlaceHolder': 'Introduce el nombre del artículo',
         'util.item': 'Artículo',
@@ -431,16 +457,17 @@ export const ui = {
         'util.lowest': 'Más Bajo',
         'util.highest': 'Más Alto',
         'util.totalCost': 'Costo Total',
+        'util.total': 'Costo Total',
         'util.noRentalsRecorded.': 'No hay alquileres registrados.',
 
-        'color.red': 'rojo',
-        'color.blue': 'azul',
-        'color.yellow': 'amarillo',
-        'color.green': 'verde',
-        'color.brown': 'marrón',
-        'color.black': 'negro',
-        'color.white': 'blanco',
-        'color.other': 'otro',
+        'color.red': 'Rojo',
+        'color.blue': 'Azul',
+        'color.yellow': 'Amarillo',
+        'color.green': 'Verde',
+        'color.brown': 'Marrón',
+        'color.black': 'Negro',
+        'color.white': 'Blanco',
+        'color.other': 'Otro',
     },
 } as const;
 

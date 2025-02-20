@@ -7,7 +7,7 @@ import { sanitizeName, type Item } from "@lib/functions"
 import type { ComponentChild, VNode } from "preact";
 import type { JSX } from "preact/jsx-runtime";
 
-export default function ItemCard({ items, users, rentals, activeFilters, t }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string }, lang: any, t: any }) {
+export default function ItemCard({ items, users, rentals, activeFilters, t, lang }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string }, lang: any, t: any }) {
     const [data, setData] = useState(items); // Estado dos itens
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState<{ [key: number]: Item }>({}); // Valores originais dos itens
@@ -493,7 +493,7 @@ export default function ItemCard({ items, users, rentals, activeFilters, t }: { 
                                     imagePath={item.image}
                                     type="item"
                                     onDelete={handleDelete}
-                                    t={t}
+                                    lang={lang}
                                 />
                             </div>
                         </div>

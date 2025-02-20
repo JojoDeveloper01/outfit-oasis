@@ -13,7 +13,7 @@ import { sanitizeName } from "@lib/functions"
         .toLowerCase();
 } */
 
-export default function UserTable({ users, activeFilters, userType, t }) {
+export default function UserTable({ users, activeFilters, userType, lang, t }) {
     const [data, setData] = useState(users); // Estado dos usuários
     const [errors, setErrors] = useState({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState({}); // Para valores originais
@@ -206,7 +206,7 @@ export default function UserTable({ users, activeFilters, userType, t }) {
                                         imagePath={user.profile_pic}
                                         type="user"
                                         onDelete={handleDelete}
-                                        t={t}
+                                        lang={lang}
                                     />
                                 </div>
                             )}

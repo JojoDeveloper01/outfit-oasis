@@ -1,9 +1,11 @@
 ---
 import BestSeller from "@components/BestSeller.astro";
-import { getLangFromUrl } from "@i18n/utils";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import { getAnalyticsData } from "@lib/dbFunctions";
+
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang) as (key: string) => string;
 
 // Busca dados para exibição
 const analyticsData = await getAnalyticsData();
@@ -24,7 +26,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
     <section
         class="max-w-[80vw] mx-auto min-h-screen bg-[--background] text-[--color-white] rounded-lg shadow-lg"
     >
-        <h1 class="text-[2vw] md:text-[1.5vw]">Analytics</h1>
+        <h1 class="text-[2vw] md:text-[1.5vw]">{t("dash.analytics")}</h1>
 
         <div class="flex flex-wrap gap-4 md:gap-[2vw] mt-8 md:mt-[2vw]">
             <div
@@ -38,13 +40,13 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                 </div>
                 <div class="md:hidden">
                     {
-                        topPurchasedProducts.map((product, index) => (
+                        topPurchasedProducts.map((product) => (
                             <div class="p-4 mb-4 bg-[--grayLight] rounded-lg shadow">
                                 <h3 class="font-bold text-[4vw]">
                                     {product.name}
                                 </h3>
                                 <p class="text-[3.5vw]">
-                                    Vendas: {product.sales}
+                                    {t("dash.sales")}: {product.sales}
                                 </p>
                                 <p class="text-[3.5vw]">
                                     Total: €{product.total}
@@ -62,16 +64,16 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                 <h2
                     class="text-[4vw] md:text-[1.2vw] font-semibold mb-6 md:mb-8"
                 >
-                    Top Utilizadores (Aluguéis)
+                    {t("dash.topUsers")}
                 </h2>
                 <ul class="max-h-[25rem] overflow-y-auto my-4 px-2">
                     {
                         (Array.isArray(topRenters) ? topRenters : []).map(
-                            (renter, index) => (
+                            (renter) => (
                                 <li class="flex justify-between text-[3.5vw] md:text-[1vw] py-1 border-b border-[--grayLight]">
                                     <span>{renter.name}</span>
                                     <span class="font-bold">
-                                        {renter.count} aluguéis
+                                        {renter.count} {t("dash.rentals")}
                                     </span>
                                 </li>
                             ),
@@ -83,7 +85,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                         href={`/${lang}/dashboard/users`}
                         class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
                     >
-                        Go to users
+                        {t("dash.goUsers")}
                         <img class="svg-yellow" src="/icons/redirect.svg" />
                     </a>
                 </div>
@@ -96,7 +98,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                 <h2
                     class="text-[4vw] md:text-[1.2vw] font-semibold mb-6 md:mb-8"
                 >
-                    Utilizadores que compraram em total
+                    {t("dash.totalUserspurchased")}
                 </h2>
                 <p class="text-[6vw] md:text-[2vw] font-bold">
                     {usersWhoPurchased}
@@ -110,7 +112,7 @@ console.log("totalRentalEarnings: ", totalRentalEarnings); */
                 <h2
                     class="text-[4vw] md:text-[1.2vw] font-semibold mb-6 md:mb-8"
                 >
-                    Ganho Total (Aluguéis)
+                    {t("dash.totalEarnings")}
                 </h2>
                 <p class="text-[6vw] md:text-[2vw] font-bold">
                     € {totalRentalEarnings}

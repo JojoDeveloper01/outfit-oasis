@@ -25,7 +25,7 @@ export default function UsersList({ users, userType, lang }) {
             )}
 
             {/* Tabela */}
-            <UserTable users={filteredUsers} userType={userType} activeFilters={filters} t={t} />
+            <UserTable users={filteredUsers} userType={userType} activeFilters={filters} lang={lang} t={t} />
         </section>
     );
 }

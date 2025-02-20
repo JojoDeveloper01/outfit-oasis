@@ -1,11 +1,13 @@
 import { useState, useEffect } from "preact/hooks";
 import { actions } from "astro:actions";
+import { useTranslations } from "@i18n/utils";
 
-
-const Delete = ({ name, id, imagePath, type, onDelete, t }) => {
+const Delete = ({ name, id, imagePath, type, onDelete, lang }) => {
     const [isClient, setIsClient] = useState(false);
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const t = useTranslations(lang);
 
     useEffect(() => {
         setIsClient(true);

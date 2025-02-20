@@ -32,7 +32,7 @@ export default function ItemList({ items, users, rentals, userType, lang, layout
 
             {/* List */}
             {userType === "staff" ? (
-                <ItemTableStaff items={filteredItems} users={users} lang={lang} rentals={rentals} activeFilters={filters} t={t} />
+                <ItemTableStaff items={filteredItems} users={users} lang={lang} rentals={rentals} activeFilters={filters} lang={lang} t={t} />
             ) : (
                 <ItemTableUser items={filteredItems} rentals={rentals} lang={lang} layoutDirection={layoutDirection} width={width} height={height} />
             )}
