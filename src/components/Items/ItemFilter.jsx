@@ -186,8 +186,8 @@ export default function ItemFilter({ items, setFilteredItems, setFilters, t }) {
                             }`}
                     >
                         <option value="">{t("dash.rentalPrice")}</option>
-                        <option value="lowest">{t("dash.lowest")}</option>
-                        <option value="highest">{t("dash.highest")}</option>
+                        <option value="lowest">{t("util.lowest")}</option>
+                        <option value="highest">{t("util.highest")}</option>
                     </select>
                 </div>
 

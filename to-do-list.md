@@ -74,10 +74,10 @@ pôr o return_date (dia que finalizou o aluguel) e o "completed" em rental_statu
     - Acabar de pôr a página responsiva   
 
 
-- Pôr a página em en, pt e es (procurar como fazer isso mais facilmente com IA)
+- Pôr a página em en, pt e es ✅
+
+- Publicar ou em vercel ou em railway (de preferencia railway) ✅
+  
+- enviar o trabalho ✅
 
 - Ver se dá para optimizar o max possível (mais rapido, mais simples, escalável)
-      
-- Publicar ou em vercel ou em railway (de preferencia railway)
-  
-- enviar o trabalho
