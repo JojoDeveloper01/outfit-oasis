@@ -34,7 +34,7 @@ if (addUserResult?.error) {
 ---
 
 <Dashboard>
-    <h1 class="text-[2vw] md:text-[1.5vw]">User management</h1>
+    <h1 class="text-[2vw] md:text-[1.5vw]">{t("dash.userTitle")}</h1>
 
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
@@ -43,7 +43,7 @@ if (addUserResult?.error) {
     <details>
         <!-- Cabeçalho do Accordion -->
         <summary>
-            <span>Add New User</span>
+            <span>{t("dash.addNewUser")}</span>
             <svg
                 class="w-3 h-3 transition-transform group-open:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +73,7 @@ if (addUserResult?.error) {
                 >
                     <!-- Name Field -->
                     <div class="grid gap-4">
-                        <label for="name"> Name </label>
+                        <label for="name">{t("home.name")}</label>
                         <input
                             type="text"
                             id="name"
@@ -86,19 +86,19 @@ if (addUserResult?.error) {
 
                     <!-- Email Field -->
                     <div class="grid gap-4">
-                        <label for="email"> Email </label>
+                        <label for="email">Email</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            placeholder="Enter the user's email"
+                            placeholder={t("dash.enterUserEmail")}
                             autocomplete="email"
                         />
                     </div>
 
                     <!-- Password Field -->
                     <div class="grid gap-4">
-                        <label for="password"> Password </label>
+                        <label for="password">{t("home.password")}</label>
                         <input
                             type="password"
                             id="password"
@@ -111,21 +111,21 @@ if (addUserResult?.error) {
 
                     <!-- User Type Field -->
                     <div class="grid gap-4">
-                        <label for="user_type"> User Type </label>
+                        <label for="user_type">{t("dash.userType")}</label>
                         <select id="user_type" name="user_type" required>
-                            <option value="client">Client</option>
-                            <option value="staff">Staff</option>
+                            <option value="client">{t("dash.client")}</option>
+                            <option value="staff">{t("dash.staff")}</option>
                         </select>
                     </div>
 
                     <!-- Phone Field -->
                     <div class="grid gap-4">
-                        <label for="phone"> Phone </label>
+                        <label for="phone">{t("home.phone")}</label>
                         <input
                             type="number"
                             id="phone"
                             name="phone"
-                            placeholder="Enter the user's phone"
+                            placeholder={t("dash.enterUserPhone")}
                             autocomplete="tel"
                         />
                     </div>
@@ -134,7 +134,9 @@ if (addUserResult?.error) {
                     <div
                         class="field col-span-1 max-[768px]:col-span-2 lg:col-span-1"
                     >
-                        <label for="profile_pic"> Profile Picture </label>
+                        <label for="profile_pic"
+                            >{t("home.profilePicture")}</label
+                        >
                         <input
                             type="file"
                             id="profile_pic"
@@ -151,7 +153,7 @@ if (addUserResult?.error) {
                         type="submit"
                         class="px-5 py-[.6vw] bg-[--gold] text-black font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
                     >
-                        Create User
+                        {t("dash.createUser")}
                     </button>
                 </div>
             </form>

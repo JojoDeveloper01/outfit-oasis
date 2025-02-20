@@ -13,7 +13,7 @@ import { sanitizeName } from "@lib/functions"
         .toLowerCase();
 } */
 
-export default function UserTable({ users, activeFilters, userType, lang }) {
+export default function UserTable({ users, activeFilters, userType, t }) {
     const [data, setData] = useState(users); // Estado dos usuários
     const [errors, setErrors] = useState({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState({}); // Para valores originais
@@ -115,18 +115,18 @@ export default function UserTable({ users, activeFilters, userType, lang }) {
         <div className="bg-[--gray]">
             {/* Cabeçalho */}
             <div className="p-[1vw] rounded-t-lg grid grid-cols-5 gap-[1vw] text-[1vw] font-semibold bg-[--grayLight] text-[--color-white]">
-                <div>Profile Picture</div>
-                <div>Name</div>
+                <div>{t("home.profilePicture")}</div>
+                <div>{t("home.name")}</div>
                 <div>Email</div>
-                <div>User Type</div>
-                <div>Phone</div>
+                <div>{t("home.userType")}</div>
+                <div>{t("home.phone")}</div>
                 {userType === 'staff' && <div></div>}
             </div>
 
             {/* Lista de usuários */}
             <div className="font-thin  *:text-[--color-white1]">
                 {data.length === 0 ? (
-                    <div className="py-[.8vw] px-[1vw]">No Users available.</div>
+                    <div className="py-[.8vw] px-[1vw]">{t("home.noUsersAvailable")}</div>
                 ) : (
                     data.map((user) => (
                         <div key={user.id} className="p-[1vw] grid grid-cols-5 gap-[1vw] items-center hover:bg-[--background]">
@@ -157,8 +157,8 @@ export default function UserTable({ users, activeFilters, userType, lang }) {
                                                     className={`w-full ${highlightMatch(field, user[field] || "") ? "ring-2 ring-[--gold]" : ""} ${errors[`${user.id}-${field}`] ? "border-red-500" : ""}`}
                                                     onChange={(e) => handleFieldChange(e, user.id, field)}
                                                 >
-                                                    <option value="client">Client</option>
-                                                    <option value="staff">Staff</option>
+                                                    <option value="client">{t("dash.client")}</option>
+                                                    <option value="staff">{t("dash.staff")}</option>
                                                 </select>
                                             ) : userType === "staff" ? (
                                                 <input
@@ -206,7 +206,7 @@ export default function UserTable({ users, activeFilters, userType, lang }) {
                                         imagePath={user.profile_pic}
                                         type="user"
                                         onDelete={handleDelete}
-                                        lang={lang}
+                                        t={t}
                                     />
                                 </div>
                             )}

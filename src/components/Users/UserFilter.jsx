@@ -8,7 +8,7 @@ const debounce = (func, delay) => {
     };
 };
 
-export default function UserFilter({ users, setFilteredUsers, setFilters }) {
+export default function UserFilter({ users, setFilteredUsers, setFilters, t }) {
     const [search, setSearch] = useState("");
     const [type, setType] = useState("");
 
@@ -49,9 +49,9 @@ export default function UserFilter({ users, setFilteredUsers, setFilters }) {
                     onChange={(e) => setType(e.target.value)}
                     className="border p-[.7vw]"
                 >
-                    <option value="">All Types</option>
-                    <option value="client">Client</option>
-                    <option value="staff">Staff</option>
+                    <option value="">{t("dash.allTypes")}</option>
+                    <option value="client">{t("dash.client")}</option>
+                    <option value="staff">{t("dash.staff")}</option>
                 </select>
             </div>
         </div>
