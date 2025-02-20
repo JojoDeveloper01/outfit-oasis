@@ -1,6 +1,6 @@
 ---
 import PreviewImage from "@components/Modal/PreviewImage";
-import { getLangFromUrl } from "@i18n/utils";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
 import { getRentalByID, userExistsByID, getItemByID } from "@lib/dbFunctions";
 
@@ -14,6 +14,8 @@ if (Astro.cookies.has("id")) {
 }
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const user = $user;
 
 if (!user) return Astro.redirect(`/${lang}/`);
@@ -34,32 +36,6 @@ const items = (
 ).filter((rentalWithItem) => rentalWithItem !== null); // Remove os nulos
 
 //console.log("items: ", items);
-
-/* // Função para retornar as classes de status dinamicamente
-function getStatusClass(
-    id: number,
-    endDate: string,
-    returnDate: string | null,
-): string {
-    const today = new Date();
-    const endDateObj = new Date(endDate);
-
-    today.setHours(0, 0, 0, 0);
-    endDateObj.setHours(0, 0, 0, 0);
-
-    if (returnDate) {
-        return "text-white"; // Item já devolvido
-    } else if (endDateObj < today) {
-        // Atrasado
-        editRentalStatus(id, "late");
-
-        return "bg-red-100 text-red-800";
-    } else if (endDateObj.toDateString() === today.toDateString()) {
-        return "bg-yellow-100 text-yellow-800"; // Devolução hoje
-    } else {
-        return "bg-green-100 text-green-800"; // Ainda no prazo
-    }
-} */
 ---
 
 <Layout
@@ -71,7 +47,7 @@ function getStatusClass(
     <section
         class="max-w-[80vw] mx-auto my-6 p-[1vw] min-h-screen bg-[--background] text-[--color-white] rounded-lg shadow-lg"
     >
-        <h1 class="text-[2vw] font-bold my-12">My Rental History</h1>
+        <h1 class="text-[2vw] font-bold my-12">{t("his.title")}</h1>
         <div class="overflow-hidden rounded-lg shadow-md">
             <table
                 class="w-full border-collapse bg-[--gray] rounded-lg hidden min-[884px]:table"
@@ -81,12 +57,12 @@ function getStatusClass(
                 >
                     <tr class="text-center *:p-3">
                         <th>ID</th>
-                        <th>Item</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Status</th>
-                        <th>Return Date</th>
-                        <th>Total Cost</th>
+                        <th>{t("his.title")}</th>
+                        <th>{t("util.startDate")}</th>
+                        <th>{t("util.endDate")}</th>
+                        <th>{t("util.status")}</th>
+                        <th>{t("util.returnDate")}</th>
+                        <th>{t("util.totalCost")}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -132,11 +108,11 @@ function getStatusClass(
                                             }
                                         >
                                             {rental.return_date
-                                                ? "Finished"
+                                                ? t("util.completed")
                                                 : rental.rental_status ===
                                                     "active"
-                                                  ? "Active"
-                                                  : "Pending"}
+                                                  ? t("util.active")
+                                                  : t("util.pending")}
                                         </span>
                                     </td>
                                     <td class="font-semibold text-center">
@@ -151,8 +127,8 @@ function getStatusClass(
                                             {rental.return_date
                                                 ? rental.return_date
                                                 : endDateObj < today
-                                                  ? "Late Return"
-                                                  : "On Time"}
+                                                  ? t("util.lateReturn")
+                                                  : t("util.onTime")}
                                         </span>
                                     </td>
                                     <td class="font-semibold">
@@ -193,21 +169,26 @@ function getStatusClass(
                                 </div>
                                 <div class="flex gap-2 *:font-semibold">
                                     <div>
-                                        <p>Start: {rental.start_date}</p>
-                                        <p>End: {rental.end_date}</p>
+                                        <p>
+                                            {t("util.start")}:{" "}
+                                            {rental.start_date}
+                                        </p>
+                                        <p>
+                                            {t("util.end")}: {rental.end_date}
+                                        </p>
                                     </div>
                                     <div>
                                         <p>
-                                            Status:{" "}
+                                            {t("util.status")}:
                                             {rental.return_date
-                                                ? "Finished"
+                                                ? t("util.completed")
                                                 : rental.rental_status ===
                                                     "active"
-                                                  ? "Active"
-                                                  : "Pending"}
+                                                  ? t("util.active")
+                                                  : t("util.pending")}
                                         </p>
                                         <p>
-                                            Total Cost: $
+                                            {t("util.totalCost")}: $
                                             {rental.total_cost.toFixed(2)}
                                         </p>
                                     </div>

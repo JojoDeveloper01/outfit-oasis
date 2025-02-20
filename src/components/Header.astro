@@ -7,11 +7,13 @@ import {
 import { languages } from "@i18n/ui";
 import LanguagePicker from "./LanguagePicker.astro";
 import UserMenu from "./UserMenu.astro";
-import ModalCart from "./Modal/ModalCart.astro";
+import ModalCart from "./Modal/ModalCart";
 import { dashboardItems } from "@lib/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang) as (key: string) => string;
+const logoutText = t("nav.logout");
+
 const translatePath = useTranslatedPath(lang as keyof typeof languages);
 
 const { user, isStaff } = Astro.props;
@@ -131,6 +133,7 @@ const { user, isStaff } = Astro.props;
                 id="navbar-user"
             >
                 <LanguagePicker
+                    server:defer
                     languages={languages}
                     lang={lang}
                     translatePath={translatePath}
@@ -139,13 +142,19 @@ const { user, isStaff } = Astro.props;
                 {
                     user ? (
                         <UserMenu
+                            server:defer
                             isStaff={isStaff}
                             name={user.name}
                             image={user.profile_pic}
                             email={user.email}
                             lang={lang}
-                            t={t}
-                        />
+                            logoutText={logoutText}
+                        >
+                            <div
+                                slot="fallback"
+                                class="profile-button flex items-center bg-[--color-white] size-[2vw] animate-pulse text-white rounded-full"
+                            />
+                        </UserMenu>
                     ) : (
                         <div class="flex gap-[1vw] ">
                             <button
@@ -153,20 +162,20 @@ const { user, isStaff } = Astro.props;
                                 class="hvLi"
                                 onclick="document.getElementById('modalLogin').showModal()"
                             >
-                                Login
+                                {t("home.login")}
                             </button>
                             <button
                                 id="modalRegister"
                                 class="hvLi"
                                 onclick="document.getElementById('modalRegister').showModal()"
                             >
-                                Register
+                                {t("home.register")}
                             </button>
                         </div>
                     )
                 }
 
-                <ModalCart />
+                <ModalCart lang={lang} client:load />
             </div>
         </div>
     </nav>

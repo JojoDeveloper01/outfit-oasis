@@ -1,10 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
 import { actions } from "astro:actions";
+import { useTranslations } from "@i18n/utils";
 
-const Delete = ({ name, id, imagePath, type, onDelete }) => {
+
+const Delete = ({ name, id, imagePath, type, onDelete, lang }) => {
     const [isClient, setIsClient] = useState(false);
     const [error, setError] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const t = useTranslations(lang);
 
     useEffect(() => {
         setIsClient(true);
@@ -17,7 +21,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
         try {
             // Chamada para o backend usando actions
 
-            const { data, error } = await actions.delete({ id, type, imagePath });
+            const { error } = await actions.delete({ id, type, imagePath });
 
             if (error) {
                 console.error("Delete failed:", error.message);
@@ -58,7 +62,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                 }}
                 className="bg-red-500 text-[--color-white1] px-[.8vw] py-[.6vw] rounded-md hover:bg-red-600 text-[.7vw]"
             >
-                Delete
+                {t("home.delete")}
             </button>
             <dialog
                 id={`delete-${name}-${id}`}
@@ -66,7 +70,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
             >
                 <div className="flex items-center mb-[1.5vw]">
                     <h3 className="text-[1.5vw] max-[768px]:text-[4vw] font-medium">
-                        Are you sure you want to remove {name}?
+                        {t("home.deleteAlert")} {name}?
                     </h3>
                 </div>
 
@@ -84,7 +88,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         className={`text-white bg-red-800 hover:bg-red-900 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw] me-2 ${isDeleting ? "opacity-50 cursor-not-allowed" : ""
                             }`}
                     >
-                        {isDeleting ? "Deleting..." : "Delete"}
+                        {isDeleting ? "Deleting..." : t("home.delete")}
                     </button>
                     <button
                         onClick={() =>
@@ -92,7 +96,7 @@ const Delete = ({ name, id, imagePath, type, onDelete }) => {
                         }
                         className="bg-transparent border border-red-800 hover:bg-red-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300  font-medium rounded-lg text-[1.2vw] px-[.8vw] py-[.5vw]"
                     >
-                        Cancel
+                        {t("home.cancel")}
                     </button>
                 </div>
             </dialog>

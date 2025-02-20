@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import UserFilter from "./UserFilter";
 import UserTable from "./UserTable";
 
-export default function UsersList({ users, userType }) {
+export default function UsersList({ users, userType, lang }) {
     // Estado para usuários filtrados
     const [filteredUsers, setFilteredUsers] = useState(users);
     const [filters, setFilters] = useState({});

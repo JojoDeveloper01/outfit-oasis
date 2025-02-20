@@ -154,9 +154,9 @@ export default function EditableField({ userID, field, name, type, value }) {
             {fieldValue !== originalValue && !errors[`${userID}-${field}`] && (
                 <button
                     onClick={handleSave}
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition"
+                    className="mt-2 bg-blue-600 hover:bg-blue-700 *:text-white px-4 py-1 rounded-md transition"
                 >
-                    Save
+                    <img src="/icons/refresh.svg" alt="" />
                 </button>
             )}
         </div>

@@ -13,7 +13,7 @@ import { sanitizeName } from "@lib/functions"
         .toLowerCase();
 } */
 
-export default function UserTable({ users, activeFilters, userType }) {
+export default function UserTable({ users, activeFilters, userType, lang }) {
     const [data, setData] = useState(users); // Estado dos usuários
     const [errors, setErrors] = useState({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState({}); // Para valores originais
@@ -181,22 +181,7 @@ export default function UserTable({ users, activeFilters, userType }) {
                                                 originalValues[user.id] && // Garante que `originalValues` existe
                                                 user[field] !== originalValues[user.id][field] && (
                                                     <button onClick={() => handleSave(user.id, field)}>
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="24"
-                                                            height="24"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            className="w-full icon"
-                                                        >
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                                        </svg>
+                                                        <img src="/icons/refresh.svg" alt="" />
                                                     </button>
                                                 )}
                                         </div>
@@ -215,7 +200,14 @@ export default function UserTable({ users, activeFilters, userType }) {
                             {/* Botão de deletar para staff */}
                             {userType === 'staff' && (
                                 <div>
-                                    <Delete id={user.id} name={sanitizeName(user.name)} imagePath={user.profile_pic} type="user" onDelete={handleDelete} />
+                                    <Delete
+                                        id={user.id}
+                                        name={sanitizeName(user.name)}
+                                        imagePath={user.profile_pic}
+                                        type="user"
+                                        onDelete={handleDelete}
+                                        lang={lang}
+                                    />
                                 </div>
                             )}
                         </div>

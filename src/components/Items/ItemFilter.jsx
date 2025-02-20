@@ -8,7 +8,7 @@ const debounce = (func, delay) => {
     };
 };
 
-export default function ItemFilter({ items, setFilteredItems, setFilters }) {
+export default function ItemFilter({ items, setFilteredItems, setFilters, t }) {
     const [filters, setLocalFilters] = useState({
         type: "",
         color: "",
@@ -107,10 +107,10 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         className={`border p-[.7vw] rounded ${filters.type ? "border-blue-500" : "border-gray-300"
                             }`}
                     >
-                        <option value="">Type</option>
-                        <option value="clothing">clothing</option>
-                        <option value="footwear">footwear</option>
-                        <option value="other">other</option>
+                        <option value="">{t("dash.selectType")}</option>
+                        <option value="clothing">{t("dash.clothing")}</option>
+                        <option value="footwear">{t("dash.footwear")}</option>
+                        <option value="other">{t("dash.other")}</option>
                     </select>
                 </div>
 
@@ -122,7 +122,7 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         onChange={(e) => updateFilter("size", e.target.value)}
                         className={`border p-[.7vw] rounded`}
                     >
-                        <option value="">Size</option>
+                        <option value="">{t("dash.selectSize")}</option>
                         <option value="XS">XS</option>
                         <option value="S">S</option>
                         <option value="M">M</option>
@@ -140,15 +140,15 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                         onChange={(e) => updateFilter("color", e.target.value)}
                         className={`border p-[.7vw] rounded`}
                     >
-                        <option value="">Colors</option>
-                        <option value="red">red</option>
-                        <option value="blue">blue</option>
-                        <option value="yellow">yellow</option>
-                        <option value="green">green</option>
-                        <option value="brown">brown</option>
-                        <option value="black">black</option>
-                        <option value="white">white</option>
-                        <option value="other">other</option>
+                        <option value="">{t("dash.selectColor")}</option>
+                        <option value="red">{t("color.red")}</option>
+                        <option value="blue">{t("color.blue")}</option>
+                        <option value="yellow">{t("color.yellow")}</option>
+                        <option value="green">{t("color.green")}</option>
+                        <option value="brown">{t("color.brown")}</option>
+                        <option value="black">{t("color.black")}</option>
+                        <option value="white">{t("color.white")}</option>
+                        <option value="other">{t("color.other")}</option>
                     </select>
                 </div>
 
@@ -165,10 +165,10 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                             : "border-gray-300"
                             }`}
                     >
-                        <option value="">Condition</option>
-                        <option value="new">new</option>
-                        <option value="used">used</option>
-                        <option value="worn">worn</option>
+                        <option value="">{t("dash.selectCondition")}</option>
+                        <option value="new">{t("dash.new")}</option>
+                        <option value="used">{t("dash.used")}</option>
+                        <option value="worn">{t("dash.worn")}</option>
                     </select>
                 </div>
 
@@ -185,9 +185,9 @@ export default function ItemFilter({ items, setFilteredItems, setFilters }) {
                             : "border-gray-300"
                             }`}
                     >
-                        <option value="">Rental Price</option>
-                        <option value="lowest">Lowest</option>
-                        <option value="highest">Highest</option>
+                        <option value="">{t("dash.rentalPrice")}</option>
+                        <option value="lowest">{t("dash.lowest")}</option>
+                        <option value="highest">{t("dash.highest")}</option>
                     </select>
                 </div>
 

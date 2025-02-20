@@ -1,10 +1,12 @@
 ---
+const { t } = Astro.props;
+
 const steps = [
     {
         image: "/choose.png",
-        alt: "Choose Clothes",
-        title: "1 - Choose",
-        description: "Browse our stylish collection.",
+        alt: t("home.choose"),
+        title: `1 - ${t("home.choose")}`,
+        description: t("home.chooseSub"),
         icon: `<svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -24,9 +26,9 @@ const steps = [
     },
     {
         image: "/rent.png",
-        alt: "Click Rent",
-        title: "2 - Click 'Rent'",
-        description: "Select your rental period and proceed.",
+        alt: t("home.click"),
+        title: `2 - ${t("home.click")}`,
+        description: t("home.clickSub"),
         icon: `<svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -46,9 +48,9 @@ const steps = [
     },
     {
         image: "/toSchedule.png",
-        alt: "Pick Date",
-        title: "3 - Pick a Date",
-        description: "Select the date for your rental.",
+        alt: t("home.pick"),
+        title: `3 - ${t("home.pick")}`,
+        description: t("home.pickSub"),
         icon: `<svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -70,9 +72,9 @@ const steps = [
     },
     {
         image: "/pay.png",
-        alt: "Payment",
-        title: "4 - Pay Securely",
-        description: "Complete your payment securely.",
+        alt: t("home.pay"),
+        title: `4 - ${t("home.pay")}`,
+        description: t("home.paySub"),
         icon: `<svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -97,7 +99,7 @@ const steps = [
 
 <section class="section flex flex-col">
     <div class="flex flex-col justify-center gap-28 h-full">
-        <h2 class="text-[4vw] font-bold text-white">How It Works</h2>
+        <h2 class="text-[4vw] font-bold text-white">{t("home.how")}</h2>
         <div
             class="h-[58%] grid grid-cols-1 md:grid-cols-4 gap-8 *:flex *:flex-col *:items-center *:text-center *:gap-2"
         >

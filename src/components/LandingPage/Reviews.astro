@@ -1,5 +1,5 @@
 ---
-/* const { reviews } = Astro.props; */
+const { t } = Astro.props;
 
 const defaultReviews = [
     {
@@ -50,7 +50,7 @@ const defaultReviews = [
     class="section flex flex-col items-center w-full overflow-hidden"
 >
     <div class="flex flex-col justify-center gap-16 size-full">
-        <h2 class="text-[4vw] font-bold text-white">What Our Customers Say</h2>
+        <h2 class="text-[4vw] font-bold text-white">{t("home.what")}</h2>
         <div class="w-full overflow-x-auto overflow-y-hidden">
             <ul class="h-full grid grid-rows-2 grid-flow-col gap-4 w-max">
                 {

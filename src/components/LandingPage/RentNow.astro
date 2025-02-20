@@ -1,5 +1,5 @@
 ---
-const { lang } = Astro.props;
+const { lang, t } = Astro.props;
 
 const cta = {
     title: "Ready to renovate your low-cost clothes?",
@@ -13,10 +13,10 @@ const cta = {
         <div class="w-[65%] flex flex-col gap-4">
             <h2 class="text-[1vw] md:text-[2.5vw] font-bold">{cta.title}</h2>
             <a
-                href=`${lang}/clothes`
+                href=`/${lang}/clothes`
                 class="w-fit bg-[--gold] text-2xl text-black font-semibold mt-4 px-12 py-4 rounded-md hover:bg-black hover:text-[--gold] transition"
             >
-                See more
+                {t("home.seeMore")}
             </a>
         </div>
     </div>

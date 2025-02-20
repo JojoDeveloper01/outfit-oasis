@@ -1,14 +1,16 @@
 ---
+const { t } = Astro.props;
+
 const defaultBenefits = [
-    { title: "Affordable", description: "Look great for less." },
-    { title: "Sustainable", description: "Eco-friendly fashion choices." },
-    { title: "Variety", description: "Outfits for every occasion." },
+    { title: t("home.affordable"), description: t("home.affordableSub") },
+    { title: t("home.sustainable"), description: t("home.sustainableSub") },
+    { title: t("home.variety"), description: t("home.varietySub") },
 ];
 ---
 
 <section id="whyRentUs" class="section flex flex-col items-center">
     <div class="flex flex-col justify-center gap-28 size-full">
-        <h2 class="text-[4vw] font-bold text-white">Why Rent With Us?</h2>
+        <h2 class="text-[4vw] font-bold text-white">{t("home.why")}</h2>
         <ul
             class="grid grid-cols-[repeat(3,minmax(0,19rem))] justify-between gap-8"
         >

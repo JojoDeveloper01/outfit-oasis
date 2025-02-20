@@ -6,8 +6,9 @@ import { actions } from "astro:actions";
 import { sanitizeName, type Item } from "@lib/functions"
 import type { ComponentChild, VNode } from "preact";
 import type { JSX } from "preact/jsx-runtime";
+import { useTranslations } from "@i18n/utils";
 
-export default function ItemCard({ items, users, rentals, activeFilters }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string } }) {
+export default function ItemCard({ items, users, rentals, activeFilters, lang, t }: { items: Item[], users: any, rentals: any, activeFilters: { [key: string]: string }, lang: any, t: any }) {
     const [data, setData] = useState(items); // Estado dos itens
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({}); // Estado de erros
     const [originalValues, setOriginalValues] = useState<{ [key: number]: Item }>({}); // Valores originais dos itens
@@ -42,8 +43,8 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                 const user = users.find((u: { id: number; }) => u.id === rental.user_id); // Encontrar usuário correspondente
                 return {
                     ...rental,
-                    userName: user?.name || "Utilizador desconhecido",
-                    email: user?.email || "Email não disponível",
+                    userName: user?.name || t("dash.unknownUser"),
+                    email: user?.email || t("dash.unvailableEmail"),
                 };
             });
 
@@ -232,7 +233,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
     return (
         <div className="flex flex-col gap-[.7vw] mt-8">
             {data.length === 0 ? (
-                <div className="py-[.8vw] px-[1vw]">No items available.</div>
+                <div className="py-[.8vw] px-[1vw]">{t("dash.noItemsAvailable")}</div>
             ) : (
                 data.map((item) => {
                     // Filtra os rentals específicos deste item
@@ -308,15 +309,15 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                         {/* Options for each dropdown */}
                                                         {field === "type" && (
                                                             <>
-                                                                <option value="">Select Type</option>
-                                                                <option value="clothing">Clothing</option>
-                                                                <option value="footwear">Footwear</option>
-                                                                <option value="other">Other</option>
+                                                                <option value="">{t("dash.selectType")}</option>
+                                                                <option value="clothing">{t("dash.clothing")}</option>
+                                                                <option value="footwear">{t("dash.footwear")}</option>
+                                                                <option value="other">{t("dash.other")}</option>
                                                             </>
                                                         )}
                                                         {field === "size" && (
                                                             <>
-                                                                <option value="">Select Size</option>
+                                                                <option value="">{t("dash.selectSize")}</option>
                                                                 <option value="XS">XS</option>
                                                                 <option value="S">S</option>
                                                                 <option value="M">M</option>
@@ -327,23 +328,23 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                         )}
                                                         {field === "color" && (
                                                             <>
-                                                                <option value="">Select Color</option>
-                                                                <option value="red">Red</option>
-                                                                <option value="blue">Blue</option>
-                                                                <option value="yellow">Yellow</option>
-                                                                <option value="green">Green</option>
-                                                                <option value="brown">Brown</option>
-                                                                <option value="black">Black</option>
-                                                                <option value="white">White</option>
-                                                                <option value="other">Other</option>
+                                                                <option value="">{t("dash.selectColor")}</option>
+                                                                <option value="red">{t("color.red")}</option>
+                                                                <option value="blue">{t("color.blue")}</option>
+                                                                <option value="yellow">{t("color.yellow")}</option>
+                                                                <option value="green">{t("color.green")}</option>
+                                                                <option value="brown">{t("color.brown")}</option>
+                                                                <option value="black">{t("color.black")}</option>
+                                                                <option value="white">{t("color.white")}</option>
+                                                                <option value="other">{t("color.other")}</option>
                                                             </>
                                                         )}
                                                         {field === "condition" && (
                                                             <>
-                                                                <option value="">Select Condition</option>
-                                                                <option value="new">New</option>
-                                                                <option value="used">Used</option>
-                                                                <option value="worn">Worn</option>
+                                                                <option value="">{t("dash.selectCondition")}</option>
+                                                                <option value="new">{t("dash.new")}</option>
+                                                                <option value="used">{t("dash.used")}</option>
+                                                                <option value="worn">{t("dash.worn")}</option>
                                                             </>
                                                         )}
                                                     </select>
@@ -357,26 +358,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                     item[field as keyof Item] !==
                                                     originalValues[item.id][field as keyof Item] && (
                                                         <button onClick={() => handleSave(item.id, field)}>
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                width="24"
-                                                                height="24"
-                                                                viewBox="0 0 24 24"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                strokeWidth="2"
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                class="w-full icon"
-                                                            >
-                                                                <path
-                                                                    stroke="none"
-                                                                    d="M0 0h24v24H0z"
-                                                                    fill="none"
-                                                                />
-                                                                <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                                                <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                                            </svg>
+                                                            <img src="/icons/refresh.svg" alt="" />
                                                         </button>
                                                     )}
                                             </div>
@@ -399,7 +381,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                             {/* Locações históricas */}
                             <details className="w-full my-4 px-12">
                                 <summary className="flex items-center justify-between cursor-pointer p-5 font-medium bg-[--background] text-[--color-white1] hover:bg-[--grayLight] rounded-lg">
-                                    Historical Rents
+                                    {t("dash.historicalRents")}
                                     <div className="flex items-center gap-4">
                                         <span className="text-[--gold] font-bold">{itemRentals.length || 0}</span>
 
@@ -410,7 +392,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 onClick={() => setHideCompleted((prev) => !prev)}
                                                 className="ml-4 py-[.3vw] px-2 text-[1vw] rounded bg-[--color-white] text-[--color-black]"
                                             >
-                                                {hideCompleted ? "Mostrar Completados" : "Ocultar Completados"}
+                                                {hideCompleted ? t("dash.showCompleted") : t("dash.hideCompleted")}
                                             </button>
                                         )}
                                     </div>
@@ -426,7 +408,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* Name */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg`}>
-                                                        Name
+                                                        {t("home.name")}
                                                     </span>
                                                     <span className="px-[1vw] font-extralight">{renter.userName}</span>
                                                 </div>
@@ -434,7 +416,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* Start Date */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
-                                                        Start Date
+                                                        {t("util.startDate")}
                                                     </span>
                                                     <span className="px-[1vw] font-extralight">{renter.start_date}</span>
                                                 </div>
@@ -442,7 +424,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* End Date */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
-                                                        End Date
+                                                        {t("util.endDate")}
                                                     </span>
                                                     <span className="px-[1vw] font-extralight">{renter.end_date}</span>
                                                 </div>
@@ -450,7 +432,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* Status */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
-                                                        Status
+                                                        {t("util.status")}
                                                     </span>
                                                     <div className="flex gap-[.7vw]">
                                                         <select
@@ -461,9 +443,9 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                             className={`px-2 py-[.3vw] rounded cursor-pointer text-[--color-black] ${statusBg(String(renter.rental_status))}`}
                                                             onChange={(e) => handleRentalStatusChange(e, renter.rental_id, "rental_status")}
                                                         >
-                                                            <option value="active">Active</option>
-                                                            <option value="completed">Completed</option>
-                                                            <option value="late">Late</option>
+                                                            <option value="active">{t("util.active")}</option>
+                                                            <option value="completed">{t("util.completed")}</option>
+                                                            <option value="late">{t("util.lateReturn")}</option>
                                                         </select>
 
                                                         <div className="w-8">
@@ -474,22 +456,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                                     (r: any) => r.rental_id === renter.rental_id
                                                                 )?.rental_status && (
                                                                     <button onClick={() => handleSaveStatusRent(renter.rental_id, "rental_status")}>
-                                                                        <svg
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            width="24"
-                                                                            height="24"
-                                                                            viewBox="0 0 24 24"
-                                                                            fill="none"
-                                                                            stroke="currentColor"
-                                                                            strokeWidth="2"
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            className="w-full icon"
-                                                                        >
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                                                        </svg>
+                                                                        <img src="/icons/refresh.svg" alt="" />
                                                                     </button>
                                                                 )}
                                                         </div>
@@ -499,7 +466,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* Return */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
-                                                        Return
+                                                        {t("util.return")}
                                                     </span>
                                                     <span className="px-[1vw] font-extralight">{renter.return_date || "Pending"}</span>
                                                 </div>
@@ -507,14 +474,14 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                                 {/* Total Cost */}
                                                 <div className="flex flex-col gap-[.7vw]">
                                                     <span className={` px-[1vw] py-[.3vw] text-[1vw] font-bold rounded-lg}`}>
-                                                        Total Cost
+                                                        {t("util.totalCost")}
                                                     </span>
                                                     <span className="px-[1vw] font-extralight">${renter.total_cost}</span>
                                                 </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="p-5 text-[1vw] text-[--color-white1] bg-[--background]">No rentals recorded.</div>
+                                        <div className="p-5 text-[1vw] text-[--color-white1] bg-[--background]">{t("util.noRentalsRecorded")}</div>
                                     )}
                                 </div>
                             </details>
@@ -527,6 +494,7 @@ export default function ItemCard({ items, users, rentals, activeFilters }: { ite
                                     imagePath={item.image}
                                     type="item"
                                     onDelete={handleDelete}
+                                    lang={lang}
                                 />
                             </div>
                         </div>

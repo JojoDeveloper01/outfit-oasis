@@ -13,7 +13,7 @@ const t = useTranslations(lang);
 
 let items = (await getItems()) as unknown as Item[];
 
-console.log("items: ", items);
+//console.log("items: ", items);
 
 let id: number;
 let $user: any;
@@ -54,7 +54,7 @@ const rentals = await getRentals();
 ---
 
 <Dashboard>
-    <h1 class="text-[2vw] md:text-[1.5vw]">Item management</h1>
+    <h1 class="text-[2vw] md:text-[1.5vw]">{t("dash.itemTitle")}</h1>
 
     <!-- Global error message -->
     {alertMessage && <Alerts message={alertMessage} type={alertType} />}
@@ -62,7 +62,7 @@ const rentals = await getRentals();
     <!-- Add New Item Form -->
     <details>
         <summary>
-            <span>Add New Item</span>
+            <span> {t("dash.addNewItem")} </span>
             <svg
                 class="w-4 h-4 transition-transform group-open:rotate-180"
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,41 +89,45 @@ const rentals = await getRentals();
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
                     <div class="grid gap-4">
-                        <label for="name">Name</label>
+                        <label for="name">{t("home.name")}</label>
                         <input
                             type="text"
                             id="name"
                             name="name"
-                            placeholder="Enter the item's name"
+                            placeholder={t("util.namePlaceHolder")}
                             required
                         />
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="category">Category</label>
+                        <label for="category">{t("dash.category")}</label>
                         <input
                             type="text"
                             id="category"
                             name="category"
-                            placeholder="Enter the item's category"
+                            placeholder={t("dash.categoryPlaceHolder")}
                             required
                         />
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="type">Type</label>
+                        <label for="type">{t("dash.type")}</label>
                         <select id="type" name="type" required>
-                            <option value="">Select a Type</option>
-                            <option value="clothing">Clothing</option>
-                            <option value="footwear">Footwear</option>
-                            <option value="other">Other</option>
+                            <option value="">{t("dash.selectType")}</option>
+                            <option value="clothing"
+                                >{t("dash.clothing")}</option
+                            >
+                            <option value="footwear"
+                                >{t("dash.footwear")}</option
+                            >
+                            <option value="other">{t("dash.other")}</option>
                         </select>
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="size">Size</label>
+                        <label for="size">{t("dash.size")}</label>
                         <select id="size" name="size" required>
-                            <option value="">Select a size</option>
+                            <option value="">{t("dash.selectSize")}</option>
                             <option value="XS">XS</option>
                             <option value="S">S</option>
                             <option value="M">M</option>
@@ -134,22 +138,22 @@ const rentals = await getRentals();
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="color">Color</label>
+                        <label for="color">{t("dash.color")}</label>
                         <select id="color" name="color" required>
-                            <option value="">Select a color</option>
-                            <option value="red">Red</option>
-                            <option value="blue">Blue</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="green">Green</option>
-                            <option value="brown">Brown</option>
-                            <option value="black">Black</option>
-                            <option value="white">White</option>
-                            <option value="other">Other</option>
+                            <option value="">{t("dash.selectColor")}</option>
+                            <option value="red">{t("color.red")}</option>
+                            <option value="blue">{t("color.blue")}</option>
+                            <option value="yellow">{t("color.yellow")}</option>
+                            <option value="green">{t("color.green")}</option>
+                            <option value="brown">{t("color.brown")}</option>
+                            <option value="black">{t("color.black")}</option>
+                            <option value="white">{t("color.white")}</option>
+                            <option value="other">{t("color.other")}</option>
                         </select>
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="brand">Brand</label>
+                        <label for="brand">{t("dash.brand")}</label>
                         <input
                             type="text"
                             id="brand"
@@ -160,22 +164,24 @@ const rentals = await getRentals();
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="condition">Condition</label>
+                        <label for="condition">{t("dash.condition")}</label>
                         <select id="condition" name="condition" required>
-                            <option value="">Select a condition</option>
-                            <option value="new">New</option>
-                            <option value="used">Used</option>
-                            <option value="worn">Worn</option>
+                            <option value="">{t("dash.selectCondition")}</option
+                            >
+                            <option value="new">{t("dash.new")}</option>
+                            <option value="used">{t("dash.used")}</option>
+                            <option value="worn">{t("dash.worn")}</option>
                         </select>
                     </div>
 
                     <div class="grid gap-4">
-                        <label for="rental_price">Rental Price</label>
+                        <label for="rental_price">{t("dash.rentalPrice")}</label
+                        >
                         <input
                             type="text"
                             id="rental_price"
                             name="rental_price"
-                            placeholder="Enter rental price"
+                            placeholder={t("dash.enterRentalPrice")}
                             required
                         />
                     </div>
@@ -183,7 +189,7 @@ const rentals = await getRentals();
                     <div
                         class="field col-span-1 max-[768px]:col-span-2 lg:col-span-1"
                     >
-                        <label for="image">Image</label>
+                        <label for="image">{t("dash.image")}</label>
                         <input
                             type="file"
                             id="image"
@@ -200,7 +206,7 @@ const rentals = await getRentals();
                         type="submit"
                         class="px-5 py-[.6vw] bg-[--gold] text-black font-medium rounded-lg shadow hover:bg-yellow-100 focus:ring-4 focus:ring-yellow-100"
                     >
-                        Create User
+                        {t("dash.createUser")}
                     </button>
                 </div>
             </form>

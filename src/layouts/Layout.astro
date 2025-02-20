@@ -3,7 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import LoginRegister from "@components/LoginRegister.astro";
-import { getLangFromUrl } from "@i18n/utils";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import { userExistsByID } from "@lib/dbFunctions";
 import Rent from "@components/Modal/Rent.astro";
 import { getItems, getRentals } from "@lib/dbFunctions";
@@ -15,6 +15,7 @@ import { getItems, getRentals } from "@lib/dbFunctions";
 //const socialImageURL = new URL("/preview.png", Astro.url);
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 let $user: any;
 
@@ -207,9 +208,9 @@ const data: any[] = items.map((item: any) => {
 		transition: all 0.3s ease-in-out;
 
 		&:focus {
-			border-color: var(--greenBlack);
+			border-color: var(--gold);
 			outline: none;
-			box-shadow: 0 0 0 2px var(--greenBlack);
+			box-shadow: 0 0 0 2px var(--gold);
 		}
 
 		@media (max-width: 768px) {
@@ -301,8 +302,8 @@ const data: any[] = items.map((item: any) => {
 		class="grid min-h-screen grid-rows-[auto_1fr_auto] w-[80%] max-[1000px]:w-[85%] mx-auto"
 	>
 		<!-- Modais -->
-		<LoginRegister />
-		<Rent data={data} />
+		<LoginRegister t={t} />
+		<Rent server:defer data={data} />
 		<!-- Modais -->
 
 		<Header user={user} isStaff={isStaff} />

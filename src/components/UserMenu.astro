@@ -1,5 +1,5 @@
 ---
-const { image, name, email, lang, t } = Astro.props;
+const { image, name, email, lang, logoutText } = Astro.props;
 ---
 
 <style>
@@ -49,7 +49,7 @@ const { image, name, email, lang, t } = Astro.props;
             class="text-[1vw] p-[.5vw] text-black"
         >
             <li>
-                <a id="logout" class="w-full inline-block">{t("nav.logout")}</a>
+                <a id="logout" class="w-full inline-block">{logoutText}</a>
             </li>
         </ul>
     </div>

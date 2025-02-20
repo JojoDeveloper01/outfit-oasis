@@ -1,5 +1,5 @@
 ---
-const { lang } = Astro.props;
+const { lang, t } = Astro.props;
 ---
 
 <style>
@@ -32,22 +32,21 @@ const { lang } = Astro.props;
         <h1
             class="leading-[5vw] font-extrabold text-[--gold] max-[768px]:leading-[14vw] max-[768px]:text-[calc(5vw+3vh)]"
         >
-            The Smart Way to Wear Luxury
+            {t("home.title")}
         </h1>
 
         <!-- Subheading -->
         <p
             class="w-full font-extralight text-[1.3vw] leading-[2vw] max-[768px]:text-[3vw] max-[768px]:leading-[5vw]"
         >
-            Rent designer fashion for any occasion at an affordable price, enjoy
-            luxury without the commitment, and always stay in style.
+            {t("home.subheading")}
         </p>
 
         <a
             href=`/${lang}/clothes/`
             class="px-[1vw] py-[0.7vw] font-semibold text-[1.3vw] max-[768px]:text-[4vw] max-[768px]:ml-[1vw] max-[768px]:px-[4vw] max-[768px]:py-[1.7vw] text-black bg-[--gold] rounded-md hover:bg-black hover:text-[--gold] transition transform hover:scale-110"
         >
-            Discover
+            {t("home.discover")}
         </a>
 
         <div class="w-full flex items-center gap-[.5vw] max-[768px]:gap-[5vw]">
@@ -60,12 +59,15 @@ const { lang } = Astro.props;
             </div>
             <div class="w-3/4 grid gap-[.4vw]">
                 <p class="font-semibold text-[1.3vw] max-[768px]:text-[1.5vw]">
-                    Our happy customers
+                    {t("home.costumers")}
                 </p>
                 <p
                     class="text-[--color-white] text-[1.3vw] max-[768px]:text-[1.5vw]"
                 >
-                    <span class="text-yellow-400">&#9733;</span> 5.0 (1k Reviews)
+                    <span class="text-yellow-400">&#9733;</span> 5.0 (1k {
+                        t("home.reviews")
+                    }
+                    )
                 </p>
             </div>
         </div>

@@ -1,3 +1,7 @@
+---
+const { t } = Astro.props;
+---
+
 <style>
     button {
         background: #ffc107; /* Gold for buttons */
@@ -32,7 +36,9 @@
     >
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b">
-            <h2 class="text-lg md:text-xl font-semibold text-white">Sign in</h2>
+            <h2 class="text-lg md:text-xl font-semibold text-white">
+                {t("home.login")}
+            </h2>
             <button
                 type="button"
                 onclick="document.getElementById('modalLogin').close()"
@@ -46,7 +52,7 @@
             <div>
                 <label
                     for="loginEmail"
-                    class="block text-sm text-white mb-[1vw]">Your Email</label
+                    class="block text-sm text-white mb-[1vw]">Email</label
                 >
                 <input
                     type="email"
@@ -66,7 +72,7 @@
                 <label
                     for="loginPassword"
                     class="block text-sm text-white mb-[1vw]"
-                    >Your password</label
+                    >{t("home.password")}</label
                 >
                 <input
                     type="password"
@@ -89,24 +95,24 @@
                     type="checkbox"
                     class="w-4 h-4 border-gray-300 rounded"
                 />
-                <label for="rememberLogin" class="ml-2 text-sm text-white"
-                    >Remember me</label
-                >
+                <label for="rememberLogin" class="ml-2 text-sm text-white">
+                    {t("home.remember")}
+                </label>
             </div>
             <button
                 type="submit"
                 class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600"
             >
-                Login to your account
+                {t("home.loginYoirAccount")}
             </button>
             <p class="text-sm text-white text-center">
-                Not registered?
+                {t("home.notRegistered")}
                 <button
                     type="button"
                     class="text-yellow-500 hover:underline"
                     onclick="document.getElementById('modalLogin').close(); document.getElementById('modalRegister').showModal();"
                 >
-                    Create account
+                    {t("home.createAccount")}
                 </button>
             </p>
         </div>
@@ -126,7 +132,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b">
             <h2 class="text-lg md:text-xl font-semibold text-white">
-                Register
+                {t("home.register")}
             </h2>
             <button
                 type="button"
@@ -141,7 +147,8 @@
             <div>
                 <label
                     for="registerName"
-                    class="block text-sm text-white mb-[1vw]">Name</label
+                    class="block text-sm text-white mb-[1vw]"
+                    >{t("home.name")}</label
                 >
                 <input
                     type="text"
@@ -159,7 +166,7 @@
             <div>
                 <label
                     for="registerEmail"
-                    class="block text-sm text-white mb-[1vw]">Your email</label
+                    class="block text-sm text-white mb-[1vw]">Email</label
                 >
                 <input
                     type="email"
@@ -177,7 +184,8 @@
             <div>
                 <label
                     for="registerPassword"
-                    class="block text-sm text-white mb-[1vw]">Password</label
+                    class="block text-sm text-white mb-[1vw]"
+                    >{t("home.password")}</label
                 >
                 <input
                     type="password"
@@ -196,7 +204,7 @@
                 <label
                     for="registerConfirmPassword"
                     class="block text-sm text-white mb-[1vw]"
-                    >Confirm password</label
+                    >{t("home.confirmPass")}</label
                 >
                 <input
                     type="password"
@@ -218,23 +226,23 @@
                     class="w-4 h-4 border-gray-300 rounded"
                 />
                 <label for="rememberRegister" class="ml-2 text-sm text-white"
-                    >Remember me</label
+                    >{t("home.remember")}</label
                 >
             </div>
             <button
                 type="submit"
                 class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600"
             >
-                Register
+                {t("home.register")}
             </button>
             <p class="text-sm text-white text-center">
-                Already have an account?
+                {t("home.alreadyRegistered")}
                 <button
                     type="button"
                     class="text-yellow-500 hover:underline"
                     onclick="document.getElementById('modalRegister').close(); document.getElementById('modalLogin').showModal();"
                 >
-                    Login
+                    {t("home.login")}
                 </button>
             </p>
         </div>

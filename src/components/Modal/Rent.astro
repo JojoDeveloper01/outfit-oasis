@@ -729,7 +729,7 @@ const { data } = Astro.props;
                         const { error } = await stripe.confirmPayment({
                             elements,
                             confirmParams: {
-                                return_url: `http://localhost:4321/${lang}/complete?item_id=${encodeURIComponent(currentItem.itemId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&payment_amount=${encodeURIComponent(payment_amount)}`,
+                                return_url: `https://outfit-oasis.up.railway.app/${lang}/complete?item_id=${encodeURIComponent(currentItem.itemId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&payment_amount=${encodeURIComponent(payment_amount)}`,
                             },
                         });
 

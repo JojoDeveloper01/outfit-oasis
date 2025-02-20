@@ -2,7 +2,7 @@
 import BestSeller from "@components/BestSeller.astro";
 import ItemTableUser from "@components/Items/ItemTableUser";
 import UsersList from "@components/Users/UserList";
-import { getLangFromUrl } from "@i18n/utils";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
 import Dashboard from "@layouts/AsideDashboard.astro";
 import {
     getAnalyticsData,
@@ -12,6 +12,7 @@ import {
 } from "@lib/dbFunctions";
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang) as (key: string) => string;
 
 let rows = await getItems();
 let items = rows.map((row: any) => ({
@@ -40,10 +41,10 @@ const { topPurchasedProducts } = analyticsData;
     <div class=`relative w-full h-[16rem]`>
         <div class="mb-3 ml-2">
             <a
-                href={`/${lang}/clothes`}
+                href={`/${lang}/dashboard/items`}
                 class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
             >
-                Go to Clothes
+                {t("dash.goItems")}
                 <img class="svg-yellow" src="/icons/redirect.svg" />
             </a>
         </div>
@@ -91,7 +92,7 @@ const { topPurchasedProducts } = analyticsData;
                     href={`/${lang}/dashboard/items`}
                     class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
                 >
-                    Go to items
+                    {t("dash.goAnalitycs")}
                     <img class="svg-yellow" src="/icons/redirect.svg" />
                 </a>
             </div>
@@ -107,11 +108,16 @@ const { topPurchasedProducts } = analyticsData;
                     href={`/${lang}/dashboard/users`}
                     class="flex items-center gap-3 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
                 >
-                    Go to Users
+                    {t("dash.goUsers")}
                     <img class="svg-yellow" src="/icons/redirect.svg" />
                 </a>
             </div>
-            <UsersList client:load userType="client" users={users} />
+            <UsersList
+                client:load
+                userType="client"
+                users={users}
+                lang={lang}
+            />
         </div>
     </div>
 </Dashboard>

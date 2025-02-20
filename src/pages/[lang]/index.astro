@@ -1,6 +1,6 @@
 ---
 import Layout from "@layouts/Layout.astro";
-import { getItems, getRentals, getUserLogin } from "@lib/dbFunctions";
+import { getItems, getRentals } from "@lib/dbFunctions";
 
 import Hero from "@components/LandingPage/Hero.astro";
 import WhyRentUs from "@components/LandingPage/WhyRentUs.astro";
@@ -13,9 +13,8 @@ import { getLangFromUrl, useTranslations } from "@i18n/utils";
 
 const email = "";
 const pass = "";
-const user = (await getUserLogin(email, pass)) || null;
+//const user = (await getUserLogin(email, pass)) || null;
 const lang = getLangFromUrl(Astro.url);
-const isStaff = user?.user_type === "staff" ? "block" : "hidden";
 const t = useTranslations(lang);
 
 const rentals = await getRentals();
@@ -28,12 +27,12 @@ const items = await getItems();
 	keywords="aluguer, roupa, "
 	canonical="https://outfit-oasis.com"
 >
-	<Hero lang={lang} />
-	<OurClothes items={items} rentals={rentals} lang={lang} />
-	<HowItWorks />
-	<WhyRentUs />
+	<Hero lang={lang} t={t} />
+	<OurClothes items={items} rentals={rentals} lang={lang} t={t} />
+	<HowItWorks t={t} />
+	<WhyRentUs t={t} />
 	<!-- Your Dream Outfit Awaits -->
-	<Reviews />
-	<RentNow lang={lang} />
-	<Partnerships />
+	<Reviews t={t} />
+	<RentNow lang={lang} t={t} />
+	<Partnerships t={t} />
 </Layout>

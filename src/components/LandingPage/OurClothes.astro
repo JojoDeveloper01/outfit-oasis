@@ -1,16 +1,16 @@
 ---
 import ItemTableUser from "@components/Items/ItemTableUser";
 
-const { items, rentals, lang } = Astro.props;
+const { items, rentals, lang, t } = Astro.props;
 ---
 
 <section id="ourclothes" class="section grid justify-center">
     <div class="flex flex-col justify-center gap-12 h-full">
-        <h2 class="text-[4vw] font-bold text-white">Our Clothes</h2>
+        <h2 class="text-[4vw] font-bold text-white">{t("home.clothes")}</h2>
         <div>
             <div class="w-full h-[30vw] relative grid">
                 <ItemTableUser
-                    client:load
+                    client:visible
                     items={items}
                     rentals={rentals}
                     lang={lang}
@@ -47,7 +47,7 @@ const { items, rentals, lang } = Astro.props;
                 href={`/${lang}/clothes`}
                 class="flex items-center gap-3 mt-4 text-yellow-200 text-[3vw] md:text-[.9vw] hover:underline"
             >
-                See more
+                {t("home.seeMore")}
                 <img class="svg-yellow" src="/icons/redirect.svg" />
             </a>
         </div>
