@@ -9,25 +9,80 @@ const partners = [
 ];
 ---
 
+<style>
+    .scroll-container {
+        display: grid;
+        align-items: center;
+        height: 11rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .carousel-primary,
+    .carousel-secondary {
+        position: absolute;
+        display: flex;
+        gap: 2rem;
+        padding: 1rem;
+        transform: translateX(0); /* Posição inicial */
+    }
+
+    .carousel-item {
+        flex-shrink: 0;
+        width: 11rem;
+    }
+
+    .carousel-primary {
+        animation: scroll-horizontal 20s linear infinite;
+    }
+
+    .carousel-secondary {
+        animation: scroll-horizontal 20s linear infinite;
+        animation-delay: -10s;
+    }
+
+    @keyframes scroll-horizontal {
+        from {
+            transform: translateX(100%);
+        }
+        to {
+            transform: translateX(-100%);
+        }
+    }
+</style>
+
 <section
     id="partnerships"
-    class="section flex flex-col justify-around gap-8 text-white py-48 rounded-lg"
+    class="flex flex-col gap-12 text-white py-24 rounded-lg"
 >
-    <h2 class="text-[4vw] font-bold text-white">{t("home.partners")}</h2>
-    <!-- Grid responsivo -->
-    <ul
-        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center justify-center mx-auto"
-    >
-        {
-            partners.map((partner) => (
-                <li class="grid justify-center">
-                    <img
-                        src={`/partnerships/${partner.logo}`}
-                        alt={partner.name}
-                        class="h-32 object-contain"
-                    />
-                </li>
-            ))
-        }
-    </ul>
+    <h2 class="text-[3.5vw] font-bold text-white">{t("home.partners")}</h2>
+
+    <div class="scroll-container">
+        <div class="carousel-primary">
+            {
+                partners.map((partner) => (
+                    <div class="carousel-item">
+                        <img
+                            src={`/partnerships/${partner.logo}`}
+                            alt={partner.name}
+                            class="h-32 w-full object-contain"
+                        />
+                    </div>
+                ))
+            }
+        </div>
+        <div class="carousel-secondary">
+            {
+                partners.map((partner) => (
+                    <div class="carousel-item">
+                        <img
+                            src={`/partnerships/${partner.logo}`}
+                            alt={partner.name}
+                            class="h-32 w-full object-contain"
+                        />
+                    </div>
+                ))
+            }
+        </div>
+    </div>
 </section>

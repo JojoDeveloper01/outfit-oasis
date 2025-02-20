@@ -68,7 +68,7 @@ const Delete = ({ name, id, imagePath, type, onDelete, lang }) => {
                 className="backdrop:bg-black/50 bg-[--gray] text-[--color-white1] shadow-lg max-w-[40vw] w-full m-auto p-[1vw] rounded-lg"
             >
                 <div className="flex items-center mb-[1.5vw]">
-                    <h3 className="text-[1.5vw] max-[768px]:text-[4vw] font-medium">
+                    <h3 className="text-[1.5vw] max-[768px]:text-[3.5vw] font-medium">
                         {t("home.deleteAlert")} {name}?
                     </h3>
                 </div>
