@@ -46,13 +46,66 @@ const data: any[] = items.map((item: any) => {
 });
 ---
 
-<style is:global>
-	/* src/styles/global.css */
-	@font-face {
-		font-family: "Lexend Giga";
-		src: url("/fonts/LexendGiga-VariableFont_wght.ttf") format("truetype");
-	}
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
 
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="canonical" href={canonical} />
+
+		<!-- Font preloads -->
+		<link
+			rel="preload"
+			href="/fonts/LexendGiga-Medium.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			href="/fonts/LexendGiga-Bold.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+
+		<!-- <link rel="canonical" href={canonicalURL} />
+		<meta property="og:image" content={socialImageURL} /> -->
+
+		<title>{title}</title>
+		<ClientRouter />
+	</head>
+	<body
+		class="grid min-h-screen grid-rows-[auto_1fr_auto] w-[80%] max-[1000px]:w-[85%] mx-auto"
+	>
+		<!-- Modais -->
+		<LoginRegister t={t} />
+		<Rent data={data} />
+		<!-- Modais -->
+
+		<Header user={user} isStaff={isStaff} />
+		<main
+			class=`grid size-full relative m-auto ${overflowToggle ? 'overflow-y-hidden' : ''}`
+		>
+			<slot />
+		</main>
+
+		{!hideFooter && <Footer user={user} isStaff={isStaff} />}
+
+		<script src="node_modules/flowbite/dist/flowbite.min.js"></script>
+	</body>
+</html>
+
+<script is:inline define:vars={{ user }}>
+	if (user === null) {
+		document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+	}
+</script>
+
+<style is:global>
 	:root {
 		--background: #171717;
 		--gray: #212121;
@@ -76,6 +129,21 @@ const data: any[] = items.map((item: any) => {
 	/* Para navegadores Webkit (Chrome, Safari, Edge moderno) */
 	*::-webkit-scrollbar {
 		display: none; /* Oculta a barra de rolagem */
+	}
+
+	@font-face {
+		font-family: "Lexend Giga";
+		src: url("/fonts/LexendGiga-Medium.ttf") format("truetype");
+		font-weight: 400;
+		font-style: normal;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: "Lexend Giga";
+		src: url("/fonts/LexendGiga-Bold.ttf") format("truetype");
+		font-weight: 700;
+		font-style: normal;
+		font-display: swap;
 	}
 
 	html {
@@ -275,50 +343,3 @@ const data: any[] = items.map((item: any) => {
 		color: #ffffff;
 	}
 </style>
-
-<html lang={lang}>
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="description" content={description} />
-		<meta name="keywords" content={keywords} />
-
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="canonical" href={canonical} />
-
-		<!-- Google Font -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-		<!-- <link rel="canonical" href={canonicalURL} />
-		<meta property="og:image" content={socialImageURL} /> -->
-
-		<title>{title}</title>
-		<ClientRouter />
-	</head>
-	<body
-		class="grid min-h-screen grid-rows-[auto_1fr_auto] w-[80%] max-[1000px]:w-[85%] mx-auto"
-	>
-		<!-- Modais -->
-		<LoginRegister t={t} />
-		<Rent data={data} />
-		<!-- Modais -->
-
-		<Header user={user} isStaff={isStaff} />
-		<main
-			class=`grid size-full relative m-auto ${overflowToggle ? 'overflow-y-hidden' : ''}`
-		>
-			<slot />
-		</main>
-
-		{!hideFooter && <Footer user={user} isStaff={isStaff} />}
-
-		<script src="node_modules/flowbite/dist/flowbite.min.js"></script>
-	</body>
-</html>
-
-<script is:inline define:vars={{ user }}>
-	if (user === null) {
-		document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-	}
-</script>
